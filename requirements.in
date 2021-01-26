@@ -1,0 +1,33 @@
+# Core
+django>=3.1,<3.2
+django-mysql
+mysqlclient
+SQLAlchemy
+mysql-connector-python
+
+# Analysis
+pandas
+ipykernel
+plotly
+seaborn
+
+# Testing
+pytest
+
+# Dev tools
+django-configurations
+envdir
+django-debug-toolbar
+pip-tools
+black
+flake8
+
+# Project-specific
+django-allauth
+django-cacheops
+django-crispy-forms
+django-extensions
+django-filter
+django-google-analytics-app
+ipython
+whitenoise
