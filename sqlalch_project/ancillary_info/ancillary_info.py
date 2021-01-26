@@ -119,6 +119,7 @@ class AncillaryInfo:
             .join(CompanyType)
             .with_entities(
                 Companies.id,
+                Companies.tidm,
                 Companies.company_name,
                 Companies.company_summary,
                 Industries.industry_name,

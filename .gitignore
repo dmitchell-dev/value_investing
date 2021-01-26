@@ -5,3 +5,5 @@
 /scripts/
 /data/
 /annual_reports/
+
+**/__pycache__
