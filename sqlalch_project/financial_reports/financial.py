@@ -6,6 +6,8 @@ from .financial_objects import FinancialObjects
 
 from ..common.mysql_base import session_factory, engine
 
+from ..ancillary_info.ancillary_objects import Companies, Parameters, ReportSection
+
 
 class Financial:
     def __init__(self):
@@ -78,6 +80,26 @@ class Financial:
             FinancialObjects.__tablename__,
             con=engine
             )
+        return table_df
+
+    def get_financial_data_joined_filtered(self, tidm):
+        session = session_factory()
+        query = (
+            session.query(FinancialObjects)
+            .join(Companies)
+            .join(Parameters)
+            .join(ReportSection)
+            .with_entities(
+                Parameters.param_name,
+                ReportSection.report_section,
+                FinancialObjects.time_stamp,
+                FinancialObjects.value,
+            )
+            .filter(Companies.tidm == tidm)
+        )
+
+        table_df = pd.read_sql(query.statement, query.session.bind)
+
         return table_df
 
     def _process_filename(self, current_company_filename, df_params):

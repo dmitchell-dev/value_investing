@@ -8,6 +8,7 @@ from ..common.mysql_base import session_factory, engine
 
 from ..ancillary_info.ancillary_objects import Companies
 
+
 class SharePrice:
     def __init__(self):
         session_factory()
@@ -71,6 +72,27 @@ class SharePrice:
                 Companies.company_name,
                 Companies.tidm
             )
+        )
+
+        table_df = pd.read_sql(query.statement, query.session.bind)
+
+        return table_df
+
+    def get_share_joined_filtered(self, tidm):
+        session = session_factory()
+        query = (
+            session.query(SharePriceObjects)
+            .join(Companies)
+            .with_entities(
+                SharePriceObjects.id,
+                SharePriceObjects.time_stamp,
+                SharePriceObjects.value,
+                SharePriceObjects.volume,
+                SharePriceObjects.adjustment,
+                Companies.company_name,
+                Companies.tidm
+            )
+            .filter(Companies.tidm == tidm)
         )
 
         table_df = pd.read_sql(query.statement, query.session.bind)
