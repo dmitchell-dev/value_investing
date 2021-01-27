@@ -6,6 +6,7 @@ from .share_price_objects import SharePriceObjects
 
 from ..common.mysql_base import session_factory, engine
 
+from ..ancillary_info.ancillary_objects import Companies
 
 class SharePrice:
     def __init__(self):
@@ -48,6 +49,33 @@ class SharePrice:
                 if_exists="append",
                 index=False,
             )
+
+    def get_share_data(self):
+        table_df = pd.read_sql_table(
+            SharePriceObjects.__tablename__,
+            con=engine
+            )
+        return table_df
+
+    def get_share_joined(self):
+        session = session_factory()
+        query = (
+            session.query(SharePriceObjects)
+            .join(Companies)
+            .with_entities(
+                SharePriceObjects.id,
+                SharePriceObjects.time_stamp,
+                SharePriceObjects.value,
+                SharePriceObjects.volume,
+                SharePriceObjects.adjustment,
+                Companies.company_name,
+                Companies.tidm
+            )
+        )
+
+        table_df = pd.read_sql(query.statement, query.session.bind)
+
+        return table_df
 
     def _format_dataframe(self, df, company_id):
         df.insert(0, "company_id", [company_id] * df.shape[0])

@@ -20,6 +20,8 @@ myRepo = Financial()
 
 # Share Price
 myRepo = SharePrice()
-myRepo.populate_tables()
-# result = myRepo.get_financial_data()
-# print(result.sample(10))
+# myRepo.populate_tables()
+# result = myRepo.get_share_data()
+result = myRepo.get_share_joined()
+
+print(result.sample(10))

@@ -46,10 +46,6 @@ class AncillaryInfo:
         query = session.query(Markets)
         table_df = pd.read_sql(query.statement, query.session.bind)
 
-        # table_df = pd.read_sql_table(
-        #     Markets.__tablename__,
-        #     con=engine
-        # )
         return table_df
 
     def get_company_types(self):
