@@ -1,5 +1,6 @@
 from sqlalch_project.ancillary_info.ancillary_info import AncillaryInfo
 from sqlalch_project.financial_reports.financial import Financial
+from sqlalch_project.share_prices.share_price import SharePrice
 
 
 # Ancillary Info
@@ -13,6 +14,12 @@ myRepo = AncillaryInfo()
 
 # Financial Reporting
 myRepo = Financial()
+# myRepo.populate_tables()
+# result = myRepo.get_financial_data()
+# print(result.sample(10))
+
+# Share Price
+myRepo = SharePrice()
 myRepo.populate_tables()
 # result = myRepo.get_financial_data()
 # print(result.sample(10))

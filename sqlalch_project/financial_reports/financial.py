@@ -1,5 +1,4 @@
 import pandas as pd
-from datetime import datetime
 
 from sqlalch_project.ancillary_info.ancillary_info import AncillaryInfo
 from .csv_import import get_report_list, import_financial_csv
@@ -64,15 +63,7 @@ class Financial:
             )
 
             # Check datetime format
-            date_fmts = ("%d/%m/%y", "%d/%m/%Y")
-            for fmt in date_fmts:
-                try:
-                    df_unpivot["time_stamp"] = pd.to_datetime(
-                        df_unpivot["time_stamp"], format=fmt
-                    )
-                    break
-                except ValueError:
-                    pass
+            df_unpivot = self._datetime_format(self, df_unpivot)
 
             # Populate database
             df_unpivot.to_sql(
@@ -83,7 +74,10 @@ class Financial:
             )
 
     def get_financial_data(self):
-        table_df = pd.read_sql_table(FinancialObjects.__tablename__, con=engine)
+        table_df = pd.read_sql_table(
+            FinancialObjects.__tablename__,
+            con=engine
+            )
         return table_df
 
     def _process_filename(self, current_company_filename, df_params):
@@ -135,3 +129,16 @@ class Financial:
         df_data.index = param_id_list
 
         return df_data
+
+    def _datetime_format(self, df):
+        date_fmts = ("%d/%m/%y", "%d/%m/%Y")
+        for fmt in date_fmts:
+            try:
+                df["time_stamp"] = pd.to_datetime(
+                    df["time_stamp"], format=fmt
+                )
+                break
+            except ValueError:
+                pass
+
+        return df
