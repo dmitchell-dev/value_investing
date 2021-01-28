@@ -98,6 +98,21 @@ class AncillaryInfo:
         table_df = pd.read_sql_table(CalcVariables.__tablename__, con=engine)
         return table_df
 
+    def get_calc_vars_joined(self):
+        session = session_factory()
+        query = (
+            session.query(CalcVariables)
+            .join(Parameters)
+            .with_entities(
+                Parameters.param_name,
+                CalcVariables.value,
+            )
+        )
+
+        table_df = pd.read_sql(query.statement, query.session.bind)
+
+        return table_df
+
     def get_companies(self):
         table_df = pd.read_sql_table(
             Companies.__tablename__,

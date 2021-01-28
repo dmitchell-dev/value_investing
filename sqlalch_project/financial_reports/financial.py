@@ -6,7 +6,11 @@ from .financial_objects import FinancialObjects
 
 from ..common.mysql_base import session_factory, engine
 
-from ..ancillary_info.ancillary_objects import Companies, Parameters, ReportSection
+from ..ancillary_info.ancillary_objects import (
+    Companies,
+    Parameters,
+    ReportSection
+    )
 
 
 class Financial:
@@ -54,7 +58,10 @@ class Financial:
 
             # Format dataframe ready to import into database
             df_unpivot = pd.melt(
-                df_data, var_name="time_stamp", value_name="value", ignore_index=False
+                df_data,
+                var_name="time_stamp",
+                value_name="value",
+                ignore_index=False
             )
             df_unpivot["company_id"] = company_id
             df_unpivot["parameter_id"] = df_unpivot.index

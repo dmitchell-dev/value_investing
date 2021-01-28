@@ -1,8 +1,8 @@
 from sqlalchemy import (Column,
                         ForeignKey,
                         Integer,
-                        Float,
-                        DateTime
+                        DateTime,
+                        String
                         )
 from ..common.mysql_base import Base
 
@@ -22,4 +22,4 @@ class CalculatedStatsObjects(Base):
         nullable=False
         )
     time_stamp = Column(DateTime)
-    value = Column(Float)
+    value = Column(String(255))
