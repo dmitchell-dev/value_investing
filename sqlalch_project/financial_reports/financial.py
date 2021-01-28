@@ -72,7 +72,7 @@ class Financial:
             )
 
             # Check datetime format
-            df_unpivot = self._datetime_format(self, df_unpivot)
+            df_unpivot = self._datetime_format(df_unpivot)
 
             # Populate database
             df_unpivot.to_sql(
