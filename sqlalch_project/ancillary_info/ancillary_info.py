@@ -46,10 +46,6 @@ class AncillaryInfo:
         query = session.query(Markets)
         table_df = pd.read_sql(query.statement, query.session.bind)
 
-        # table_df = pd.read_sql_table(
-        #     Markets.__tablename__,
-        #     con=engine
-        # )
         return table_df
 
     def get_company_types(self):
@@ -102,6 +98,21 @@ class AncillaryInfo:
         table_df = pd.read_sql_table(CalcVariables.__tablename__, con=engine)
         return table_df
 
+    def get_calc_vars_joined(self):
+        session = session_factory()
+        query = (
+            session.query(CalcVariables)
+            .join(Parameters)
+            .with_entities(
+                Parameters.param_name,
+                CalcVariables.value,
+            )
+        )
+
+        table_df = pd.read_sql(query.statement, query.session.bind)
+
+        return table_df
+
     def get_companies(self):
         table_df = pd.read_sql_table(
             Companies.__tablename__,
@@ -119,6 +130,7 @@ class AncillaryInfo:
             .join(CompanyType)
             .with_entities(
                 Companies.id,
+                Companies.tidm,
                 Companies.company_name,
                 Companies.company_summary,
                 Industries.industry_name,
