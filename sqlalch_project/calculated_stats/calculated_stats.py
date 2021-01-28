@@ -6,6 +6,11 @@ from ..share_prices.share_price import SharePrice
 from ..financial_reports.financial import Financial
 from ..common.mysql_base import session_factory, engine
 
+from ..ancillary_info.ancillary_objects import (
+    Companies,
+    Parameters
+    )
+
 from .manager import (
     debt_to_ratio,
     current_ratio,
@@ -238,6 +243,25 @@ class CalculatedStats:
                 if_exists="append",
                 index=False,
             )
+
+    def get_table_joined_filtered(self, rank_type):
+        session = session_factory()
+        query = (
+            session.query(CalculatedStatsObjects)
+            .join(Companies)
+            .join(Parameters)
+            .with_entities(
+                CalculatedStatsObjects.time_stamp,
+                CalculatedStatsObjects.value,
+                Companies.tidm,
+                Parameters.param_name,
+            )
+            .filter(Parameters.param_name == rank_type)
+        )
+
+        table_df = pd.read_sql(query.statement, query.session.bind)
+
+        return table_df
 
     def _replace_with_id(self, df_calculated, company_tidm, df_params, df_companies):
         param_id_list = []
