@@ -13,6 +13,8 @@ seaborn
 
 # Testing
 pytest
+pytest-env
+pytest-dotenv
 
 # Dev tools
 django-configurations
