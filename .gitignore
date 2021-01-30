@@ -1,9 +1,10 @@
 /.vscode/
 
-/envs/
 /research/
 /scripts/
 /data/
 /annual_reports/
+
+value_investing/.env
 
 **/__pycache__

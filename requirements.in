@@ -21,6 +21,7 @@ django-debug-toolbar
 pip-tools
 black
 flake8
+django-environ
 
 # Project-specific
 django-allauth
