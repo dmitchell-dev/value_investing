@@ -128,6 +128,9 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+
 # Security
 if ENVIRONMENT == 'production':
     pass
