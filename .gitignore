@@ -5,6 +5,8 @@
 /data/
 /annual_reports/
 
+/staticfiles/
+
 value_investing/.env
 
 **/__pycache__
