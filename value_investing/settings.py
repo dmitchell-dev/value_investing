@@ -38,9 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     # Third Party
     'crispy_forms',
+    'allauth',
+    'allauth.account',
 
     # Local
     'users.apps.UsersConfig',
@@ -76,6 +79,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'value_investing.wsgi.application'
+
+SITE_ID = 1
 
 # django-crispy-forms
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -139,8 +144,15 @@ STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
+ACCOUNT_LOGOUT_REDIRECT = 'home'
 
 # Security
 if ENVIRONMENT == 'production':
@@ -157,3 +169,10 @@ elif ENVIRONMENT == 'development':
         'PORT': env.str('DB_PORT'),
     }
     DATABASES['default'].update(dev_db)
+
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
