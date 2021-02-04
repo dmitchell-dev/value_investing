@@ -8,111 +8,224 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='CompanyType',
+            name="CompanyType",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('company_type', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("company_type", models.CharField(max_length=255)),
             ],
             options={
-                'db_table': 'company_type',
+                "db_table": "company_type",
             },
         ),
         migrations.CreateModel(
-            name='IndustryRisk',
+            name="IndustryRisk",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('industry_type', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("industry_type", models.CharField(max_length=255)),
             ],
             options={
-                'db_table': 'industry_risk',
+                "db_table": "industry_risk",
             },
         ),
         migrations.CreateModel(
-            name='Markets',
+            name="Markets",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('share_listing', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("share_listing", models.CharField(max_length=255)),
             ],
             options={
-                'db_table': 'markets',
+                "db_table": "markets",
             },
         ),
         migrations.CreateModel(
-            name='ReportType',
+            name="ReportType",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('report_name', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("report_name", models.CharField(max_length=255)),
             ],
             options={
-                'db_table': 'report_type',
+                "db_table": "report_type",
             },
         ),
         migrations.CreateModel(
-            name='ReportSection',
+            name="ReportSection",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('report_section', models.CharField(max_length=255)),
-                ('report_section_last', models.CharField(max_length=255)),
-                ('report_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.reporttype')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("report_section", models.CharField(max_length=255)),
+                ("report_section_last", models.CharField(max_length=255)),
+                (
+                    "report_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ancillary_info.reporttype",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'report_section',
+                "db_table": "report_section",
             },
         ),
         migrations.CreateModel(
-            name='Parameters',
+            name="Parameters",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('param_name', models.CharField(max_length=255)),
-                ('limit_logic', models.CharField(max_length=255)),
-                ('limit_value', models.CharField(max_length=255)),
-                ('param_description', models.CharField(max_length=255)),
-                ('report_section', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.reportsection')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("param_name", models.CharField(max_length=255)),
+                ("limit_logic", models.CharField(max_length=255)),
+                ("limit_value", models.CharField(max_length=255)),
+                ("param_description", models.CharField(max_length=255)),
+                (
+                    "report_section",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ancillary_info.reportsection",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'parameters',
+                "db_table": "parameters",
             },
         ),
         migrations.CreateModel(
-            name='Industries',
+            name="Industries",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('industry_name', models.CharField(max_length=255)),
-                ('industry_risk', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.industryrisk')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("industry_name", models.CharField(max_length=255)),
+                (
+                    "industry_risk",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ancillary_info.industryrisk",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'industries',
+                "db_table": "industries",
             },
         ),
         migrations.CreateModel(
-            name='Companies',
+            name="Companies",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('tidm', models.CharField(max_length=10)),
-                ('company_name', models.CharField(max_length=255)),
-                ('company_summary', models.TextField()),
-                ('comp_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.companytype')),
-                ('industry', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.industries')),
-                ('market', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.markets')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("tidm", models.CharField(max_length=10)),
+                ("company_name", models.CharField(max_length=255)),
+                ("company_summary", models.TextField()),
+                (
+                    "comp_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ancillary_info.companytype",
+                    ),
+                ),
+                (
+                    "industry",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ancillary_info.industries",
+                    ),
+                ),
+                (
+                    "market",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ancillary_info.markets",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'companies',
+                "db_table": "companies",
             },
         ),
         migrations.CreateModel(
-            name='CalcVariables',
+            name="CalcVariables",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('value', models.FloatField()),
-                ('parameter', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.parameters')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("value", models.FloatField()),
+                (
+                    "parameter",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ancillary_info.parameters",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'calc_variables',
+                "db_table": "calc_variables",
             },
         ),
     ]

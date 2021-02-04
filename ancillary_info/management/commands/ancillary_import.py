@@ -4,16 +4,16 @@ from django.core.management.base import BaseCommand
 from django.db.models import AutoField
 
 from ancillary_info.models import (
-        Markets,
-        CompanyType,
-        IndustryRisk,
-        ReportType,
-        Industries,
-        ReportSection,
-        Parameters,
-        CalcVariables,
-        Companies,
-    )
+    Markets,
+    CompanyType,
+    IndustryRisk,
+    ReportType,
+    Industries,
+    ReportSection,
+    Parameters,
+    CalcVariables,
+    Companies,
+)
 
 object_list = [
     Markets,
@@ -31,7 +31,7 @@ BASE_DIR_LOCAL = settings.BASE_DIR
 
 
 class Command(BaseCommand):
-    help = 'Populates Static tables from csv files'
+    help = "Populates Static tables from csv files"
 
     def handle(self, *args, **kwargs):
         for table_object in object_list:
