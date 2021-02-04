@@ -29,23 +29,27 @@ class ReportTypeAdmin(admin.ModelAdmin):
 
 
 class IndustriesAdmin(admin.ModelAdmin):
-    fields = ['industry_risk_id', 'industry_name']
+    fields = ['industry_risk', 'industry_name']
+    list_display = ('industry_name', 'industry_risk',)
 
 
 class ReportSectionAdmin(admin.ModelAdmin):
-    fields = ['report_type_id', 'report_section', 'report_section_last']
+    fields = ['report_type', 'report_section', 'report_section_last']
+    list_display = ('report_section', 'report_type', 'report_section_last',)
 
 
 class ParametersAdmin(admin.ModelAdmin):
-    fields = ['report_section_id', 'param_name', 'limit_logic', 'limit_value', 'param_description']
+    fields = ['report_section', 'param_name', 'limit_logic', 'limit_value', 'param_description']
+    list_display = ('param_name', 'report_section', 'limit_logic', 'limit_value', 'param_description',)
 
 
 class CalcVariablesAdmin(admin.ModelAdmin):
-    fields = ['parameter_id', 'value']
+    fields = ['parameter', 'value']
 
 
 class CompaniesAdmin(admin.ModelAdmin):
-    fields = ['comp_type_id', 'industry_id', 'market_id', 'tidm', 'company_name', 'company_summary']
+    fields = ['comp_type', 'industry', 'market', 'tidm', 'company_name', 'company_summary']
+    list_display = ('company_name', 'tidm', 'comp_type', 'industry', 'market', 'company_summary',)
 
 
 admin.site.register(Markets, MarketsAdmin)

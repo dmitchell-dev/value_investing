@@ -6,6 +6,10 @@ class Markets(models.Model):
 
     class Meta:
         db_table = 'markets'
+        verbose_name_plural = 'Markets'
+
+    def __str__(self):
+        return self.share_listing
 
 
 class CompanyType(models.Model):
@@ -13,6 +17,10 @@ class CompanyType(models.Model):
 
     class Meta:
         db_table = 'company_type'
+        verbose_name_plural = 'Company Types'
+
+    def __str__(self):
+        return self.company_type
 
 
 class IndustryRisk(models.Model):
@@ -20,6 +28,10 @@ class IndustryRisk(models.Model):
 
     class Meta:
         db_table = 'industry_risk'
+        verbose_name_plural = 'Industry Risks'
+
+    def __str__(self):
+        return self.industry_type
 
 
 class ReportType(models.Model):
@@ -27,6 +39,10 @@ class ReportType(models.Model):
 
     class Meta:
         db_table = 'report_type'
+        verbose_name_plural = 'Report Types'
+
+    def __str__(self):
+        return self.report_name
 
 
 class Industries(models.Model):
@@ -38,6 +54,10 @@ class Industries(models.Model):
 
     class Meta:
         db_table = 'industries'
+        verbose_name_plural = 'Industries'
+
+    def __str__(self):
+        return self.industry_name
 
 
 class ReportSection(models.Model):
@@ -50,6 +70,10 @@ class ReportSection(models.Model):
 
     class Meta:
         db_table = 'report_section'
+        verbose_name_plural = 'Report Sections'
+
+    def __str__(self):
+        return self.report_section
 
 
 class Parameters(models.Model):
@@ -64,6 +88,10 @@ class Parameters(models.Model):
 
     class Meta:
         db_table = 'parameters'
+        verbose_name_plural = 'Parameters'
+
+    def __str__(self):
+        return self.param_name
 
 
 class CalcVariables(models.Model):
@@ -75,6 +103,10 @@ class CalcVariables(models.Model):
 
     class Meta:
         db_table = 'calc_variables'
+        verbose_name_plural = 'Calculation Variables'
+
+    def __str__(self):
+        return self.parameter.param_name
 
 
 class Companies(models.Model):
@@ -96,3 +128,7 @@ class Companies(models.Model):
 
     class Meta:
         db_table = 'companies'
+        verbose_name_plural = 'Companies'
+
+    def __str__(self):
+        return self.company_name
