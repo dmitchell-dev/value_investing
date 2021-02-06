@@ -58,4 +58,6 @@ class Command(BaseCommand):
                         row_num = row_num + 1
                         insert_dict[field] = row[row_num]
 
-                    _, created = table_object.objects.get_or_create(**insert_dict)
+                    _, created = table_object.objects.get_or_create(
+                        **insert_dict
+                        )
