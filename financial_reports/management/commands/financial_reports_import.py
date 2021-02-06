@@ -66,12 +66,15 @@ class Command(BaseCommand):
             df_unpivot = self._datetime_format(df_unpivot)
 
             # Populate database
-            df_unpivot.to_sql(
-                FinancialReports.__tablename__,
-                con=engine,
-                if_exists="append",
-                index=False,
-            )
+            reports = [
+                FinancialReports(
+                    company=Companies.objects.get(id=row['company_id']),
+                    parameter=Parameters.objects.get(id=row['parameter_id']),
+                    time_stamp=row['time_stamp'],
+                    value=row['value'],
+                )
+                for i, row in df_unpivot.iterrows()]
+            FinancialReports.objects.bulk_create(reports)
 
     @staticmethod
     def _import_financial_csv(current_company_filename):
