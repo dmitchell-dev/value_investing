@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "pages.apps.PagesConfig",
     "ancillary_info.apps.AncillaryInfoConfig",
     "financial_reports.apps.FinancialReportsConfig",
+    "calculated_stats.apps.CalculatedStatsConfig",
 ]
 
 MIDDLEWARE = [

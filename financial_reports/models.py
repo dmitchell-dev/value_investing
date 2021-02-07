@@ -11,3 +11,6 @@ class FinancialReports(models.Model):
     class Meta:
         db_table = "reporting_data"
         verbose_name_plural = "Financial Reports"
+
+    def __str__(self):
+        return f"{self.company} - {self.parameter} - {self.time_stamp}"
