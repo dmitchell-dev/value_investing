@@ -1,7 +1,12 @@
 import pandas as pd
 from django.core.management.base import BaseCommand
+from ancillary_info.models import (
+    Parameters, 
+    Companies,
+    CalcVariables,
+    )
 
-from calculated_stats.manager import (
+from calculated_stats.managers import (
     debt_to_ratio,
     current_ratio,
     return_on_equity,
@@ -35,9 +40,15 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Get ancillary data
-        df_companies = AncillaryInfo().get_companies_joined()
-        df_params = AncillaryInfo().get_parameters_joined()
-        df_dcf_variables = AncillaryInfo().get_calc_vars_joined()
+        df_params = pd.DataFrame(
+            list(Parameters.objects.get_parameters_joined())
+            )
+        df_companies = pd.DataFrame(
+            list(Companies.objects.get_companies_joined())
+            )
+        df_dcf_variables = pd.DataFrame(
+            list(CalcVariables.objects.get_calc_vars_joined())
+            )
 
         # Calculate values for each company
         # Get list of companies

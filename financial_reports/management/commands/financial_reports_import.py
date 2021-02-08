@@ -10,8 +10,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         print('Import Reports')
-        df_params = pd.DataFrame(list(self._get_params_joined()))
-        df_companies = pd.DataFrame(list(self._get_companies_joined()))
+        df_params = pd.DataFrame(
+            list(Parameters.objects.get_parameters_joined())
+            )
+        df_companies = pd.DataFrame(
+            list(Companies.objects.get_companies_joined())
+            )
 
         file_list = self._get_report_list()
         num_files = len(file_list)
@@ -90,35 +94,6 @@ class Command(BaseCommand):
             df = df.drop(" ")
 
         return df
-
-    @staticmethod
-    def _get_params_joined():
-        return (
-            Parameters.objects.values(
-                'id',
-                'param_name',
-                'limit_logic',
-                'limit_value',
-                'param_description',
-                'report_section__report_section',
-                'report_section__report_section_last',
-                'report_section__report_type__report_name',
-                )
-            )
-
-    @staticmethod
-    def _get_companies_joined():
-        return (
-            Companies.objects.values(
-                'id',
-                'tidm',
-                'company_name',
-                'company_summary',
-                'industry__industry_name',
-                'comp_type__company_type',
-                'market__share_listing',
-                )
-            )
 
     @staticmethod
     def _get_report_list():
