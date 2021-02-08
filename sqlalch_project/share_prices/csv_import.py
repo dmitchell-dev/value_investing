@@ -4,9 +4,7 @@ import os
 
 def import_share_price_csv(current_company_filename):
     # Get company report data
-    df = pd.read_csv(
-        f"data/share_prices/{current_company_filename}"
-        )
+    df = pd.read_csv(f"data/share_prices/{current_company_filename}")
     df = df.where((pd.notnull(df)), None)
 
     return df

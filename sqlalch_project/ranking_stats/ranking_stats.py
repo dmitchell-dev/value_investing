@@ -61,7 +61,7 @@ class RankingStats:
 
             df_growth_values, df_growth_rank = create_growth_list(
                 df_pivot, ranktype_list, rank_num
-                )
+            )
             values_df_list.append(df_growth_values)
             rank_df_list.append(df_growth_rank)
 
@@ -72,18 +72,13 @@ class RankingStats:
         # Growth Rank
         df_growth_rank = pd.concat(rank_df_list, axis=1)
         df_growth_rank["Defensive Rank"] = df_growth_rank.sum(axis=1)
-        df_growth_rank = df_growth_rank.sort_values(
-            by="Defensive Rank",
-            ascending=True
-            )
+        df_growth_rank = df_growth_rank.sort_values(by="Defensive Rank", ascending=True)
 
         # Combine back together
         df_rank_both = pd.concat([df_growth_values, df_growth_rank], axis=1)
 
         # Replace with ids
-        df_unpivot = self._replace_with_id(
-            df_rank_both, df_params, df_companies
-            )
+        df_unpivot = self._replace_with_id(df_rank_both, df_params, df_companies)
 
         # Populate database
         df_unpivot.to_sql(
@@ -109,9 +104,7 @@ class RankingStats:
         company_list = df_rank_both.index
         for company in company_list:
 
-            company_id = df_companies[df_companies.tidm == company].id.values[
-                0
-            ]
+            company_id = df_companies[df_companies.tidm == company].id.values[0]
             company_id_list.append(company_id)
 
         df_rank_both.index = company_id_list
@@ -120,12 +113,12 @@ class RankingStats:
             df_rank_both,
             var_name="parameter_id",
             value_name="value",
-            ignore_index=False
+            ignore_index=False,
         )
 
         time_stamp_now = datetime.now()
 
-        df_unpivot['time_stamp'] = time_stamp_now
+        df_unpivot["time_stamp"] = time_stamp_now
         df_unpivot["company_id"] = df_unpivot.index
 
         return df_unpivot

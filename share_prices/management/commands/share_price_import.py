@@ -8,9 +8,7 @@ class Command(BaseCommand):
     help = "Calculates Stats from Financial Reports"
 
     def handle(self, *args, **kwargs):
-        df_companies = pd.DataFrame(
-            list(Companies.objects.get_companies_joined())
-            )
+        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
         file_list = self.get_share_list()
         num_files = len(file_list)
@@ -48,10 +46,7 @@ class Command(BaseCommand):
             )
 
     def get_share_data(self):
-        table_df = pd.read_sql_table(
-            SharePriceObjects.__tablename__,
-            con=engine
-            )
+        table_df = pd.read_sql_table(SharePriceObjects.__tablename__, con=engine)
         return table_df
 
     def get_share_joined(self):
@@ -66,7 +61,7 @@ class Command(BaseCommand):
                 SharePriceObjects.volume,
                 SharePriceObjects.adjustment,
                 Companies.company_name,
-                Companies.tidm
+                Companies.tidm,
             )
         )
 
@@ -86,7 +81,7 @@ class Command(BaseCommand):
                 SharePriceObjects.volume,
                 SharePriceObjects.adjustment,
                 Companies.company_name,
-                Companies.tidm
+                Companies.tidm,
             )
             .filter(Companies.tidm == tidm)
         )
@@ -97,9 +92,7 @@ class Command(BaseCommand):
 
     def import_share_price_csv(current_company_filename):
         # Get company report data
-        df = pd.read_csv(
-            f"data/share_prices/{current_company_filename}"
-            )
+        df = pd.read_csv(f"data/share_prices/{current_company_filename}")
         df = df.where((pd.notnull(df)), None)
 
         return df
@@ -133,9 +126,7 @@ class Command(BaseCommand):
         date_fmts = ("%d/%m/%y", "%d/%m/%Y")
         for fmt in date_fmts:
             try:
-                df["time_stamp"] = pd.to_datetime(
-                    df["time_stamp"], format=fmt
-                )
+                df["time_stamp"] = pd.to_datetime(df["time_stamp"], format=fmt)
                 break
             except ValueError:
                 pass

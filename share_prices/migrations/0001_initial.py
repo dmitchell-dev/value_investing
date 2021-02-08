@@ -9,23 +9,37 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('ancillary_info', '0002_auto_20210204_2133'),
+        ("ancillary_info", "0002_auto_20210204_2133"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='SharePrices',
+            name="SharePrices",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('time_stamp', models.DateField()),
-                ('value', models.FloatField(max_length=255)),
-                ('volume', models.IntegerField(max_length=255)),
-                ('adjustment', models.SmallIntegerField(max_length=255)),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.reportsection')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("time_stamp", models.DateField()),
+                ("value", models.FloatField(max_length=255)),
+                ("volume", models.IntegerField(max_length=255)),
+                ("adjustment", models.SmallIntegerField(max_length=255)),
+                (
+                    "company",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ancillary_info.reportsection",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Share Prices',
-                'db_table': 'share_price',
+                "verbose_name_plural": "Share Prices",
+                "db_table": "share_price",
             },
         ),
     ]
