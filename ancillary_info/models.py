@@ -1,4 +1,9 @@
 from django.db import models
+from .managers import (
+    CompaniesQueryset,
+    ParametersQueryset,
+    CalcVariablesQueryset,
+)
 
 
 class Markets(models.Model):
@@ -77,6 +82,8 @@ class Parameters(models.Model):
     limit_value = models.CharField(max_length=255)
     param_description = models.CharField(max_length=255)
 
+    objects = ParametersQueryset.as_manager()
+
     class Meta:
         db_table = "parameters"
         verbose_name_plural = "Parameters"
@@ -88,6 +95,8 @@ class Parameters(models.Model):
 class CalcVariables(models.Model):
     parameter = models.ForeignKey(Parameters, on_delete=models.CASCADE)
     value = models.FloatField()
+
+    objects = CalcVariablesQueryset.as_manager()
 
     class Meta:
         db_table = "calc_variables"
@@ -104,6 +113,8 @@ class Companies(models.Model):
     tidm = models.CharField(max_length=10)
     company_name = models.CharField(max_length=255)
     company_summary = models.TextField()
+
+    objects = CompaniesQueryset.as_manager()
 
     class Meta:
         db_table = "companies"
