@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "ancillary_info.apps.AncillaryInfoConfig",
     "financial_reports.apps.FinancialReportsConfig",
     "calculated_stats.apps.CalculatedStatsConfig",
+    "share_prices.apps.SharePricesConfig",
 ]
 
 MIDDLEWARE = [
