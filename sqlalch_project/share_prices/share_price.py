@@ -52,10 +52,7 @@ class SharePrice:
             )
 
     def get_share_data(self):
-        table_df = pd.read_sql_table(
-            SharePriceObjects.__tablename__,
-            con=engine
-            )
+        table_df = pd.read_sql_table(SharePriceObjects.__tablename__, con=engine)
         return table_df
 
     def get_share_joined(self):
@@ -70,7 +67,7 @@ class SharePrice:
                 SharePriceObjects.volume,
                 SharePriceObjects.adjustment,
                 Companies.company_name,
-                Companies.tidm
+                Companies.tidm,
             )
         )
 
@@ -90,7 +87,7 @@ class SharePrice:
                 SharePriceObjects.volume,
                 SharePriceObjects.adjustment,
                 Companies.company_name,
-                Companies.tidm
+                Companies.tidm,
             )
             .filter(Companies.tidm == tidm)
         )
@@ -118,9 +115,7 @@ class SharePrice:
         date_fmts = ("%d/%m/%y", "%d/%m/%Y")
         for fmt in date_fmts:
             try:
-                df["time_stamp"] = pd.to_datetime(
-                    df["time_stamp"], format=fmt
-                )
+                df["time_stamp"] = pd.to_datetime(df["time_stamp"], format=fmt)
                 break
             except ValueError:
                 pass

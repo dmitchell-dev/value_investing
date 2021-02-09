@@ -9,13 +9,9 @@ class Command(BaseCommand):
     help = "Populates Static tables from csv files"
 
     def handle(self, *args, **kwargs):
-        print('Import Reports')
-        df_params = pd.DataFrame(
-            list(Parameters.objects.get_parameters_joined())
-            )
-        df_companies = pd.DataFrame(
-            list(Companies.objects.get_companies_joined())
-            )
+        print("Import Reports")
+        df_params = pd.DataFrame(list(Parameters.objects.get_parameters_joined()))
+        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
         file_list = self._get_report_list()
         num_files = len(file_list)
@@ -53,10 +49,7 @@ class Command(BaseCommand):
 
             # Format dataframe ready to import into database
             df_unpivot = pd.melt(
-                df_data,
-                var_name="time_stamp",
-                value_name="value",
-                ignore_index=False
+                df_data, var_name="time_stamp", value_name="value", ignore_index=False
             )
             df_unpivot["company_id"] = company_id
             df_unpivot["parameter_id"] = df_unpivot.index
@@ -72,12 +65,13 @@ class Command(BaseCommand):
             # Populate database
             reports = [
                 FinancialReports(
-                    company=Companies.objects.get(id=row['company_id']),
-                    parameter=Parameters.objects.get(id=row['parameter_id']),
-                    time_stamp=row['time_stamp'],
-                    value=row['value'],
+                    company=Companies.objects.get(id=row["company_id"]),
+                    parameter=Parameters.objects.get(id=row["parameter_id"]),
+                    time_stamp=row["time_stamp"],
+                    value=row["value"],
                 )
-                for i, row in df_unpivot.iterrows()]
+                for i, row in df_unpivot.iterrows()
+            ]
             FinancialReports.objects.bulk_create(reports)
 
     @staticmethod
@@ -118,9 +112,12 @@ class Command(BaseCommand):
 
         # Get last param name in section
         report_section_last_df = df_params[
-            df_params.report_section__report_type__report_name == current_report_type.title()
+            df_params.report_section__report_type__report_name
+            == current_report_type.title()
         ]
-        report_section_last_df = report_section_last_df["report_section__report_section_last"].unique()
+        report_section_last_df = report_section_last_df[
+            "report_section__report_section_last"
+        ].unique()
         report_section_last_list = report_section_last_df.tolist()
 
         return (current_company_tidm, report_section_last_list)
@@ -163,9 +160,7 @@ class Command(BaseCommand):
         date_fmts = ("%d/%m/%y", "%d/%m/%Y")
         for fmt in date_fmts:
             try:
-                df["time_stamp"] = pd.to_datetime(
-                    df["time_stamp"], format=fmt
-                )
+                df["time_stamp"] = pd.to_datetime(df["time_stamp"], format=fmt)
                 break
             except ValueError:
                 pass

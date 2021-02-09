@@ -6,11 +6,7 @@ from .financial_objects import FinancialObjects
 
 from ..common.mysql_base import session_factory, engine
 
-from ..ancillary_info.ancillary_objects import (
-    Companies,
-    Parameters,
-    ReportSection
-    )
+from ..ancillary_info.ancillary_objects import Companies, Parameters, ReportSection
 
 
 class Financial:
@@ -58,10 +54,7 @@ class Financial:
 
             # Format dataframe ready to import into database
             df_unpivot = pd.melt(
-                df_data,
-                var_name="time_stamp",
-                value_name="value",
-                ignore_index=False
+                df_data, var_name="time_stamp", value_name="value", ignore_index=False
             )
             df_unpivot["company_id"] = company_id
             df_unpivot["parameter_id"] = df_unpivot.index
@@ -83,10 +76,7 @@ class Financial:
             )
 
     def get_financial_data(self):
-        table_df = pd.read_sql_table(
-            FinancialObjects.__tablename__,
-            con=engine
-            )
+        table_df = pd.read_sql_table(FinancialObjects.__tablename__, con=engine)
         return table_df
 
     def get_financial_data_joined_filtered(self, tidm):
@@ -163,9 +153,7 @@ class Financial:
         date_fmts = ("%d/%m/%y", "%d/%m/%Y")
         for fmt in date_fmts:
             try:
-                df["time_stamp"] = pd.to_datetime(
-                    df["time_stamp"], format=fmt
-                )
+                df["time_stamp"] = pd.to_datetime(df["time_stamp"], format=fmt)
                 break
             except ValueError:
                 pass

@@ -86,7 +86,7 @@ class AncillaryInfo:
                 Parameters.param_description,
                 ReportSection.report_section,
                 ReportSection.report_section_last,
-                ReportType.report_name
+                ReportType.report_name,
             )
         )
 
@@ -114,10 +114,7 @@ class AncillaryInfo:
         return table_df
 
     def get_companies(self):
-        table_df = pd.read_sql_table(
-            Companies.__tablename__,
-            con=engine
-        )
+        table_df = pd.read_sql_table(Companies.__tablename__, con=engine)
 
         return table_df
 

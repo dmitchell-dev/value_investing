@@ -4,13 +4,11 @@ from sqlalchemy.orm import sessionmaker
 import os
 
 
-db_username = os.environ['DJANGO_DB_USERNAME']
-db_password = os.environ['DJANGO_DB_PASSWORD']
-db_name = os.environ['DJANGO_DB_NAME']
+db_username = os.environ["DJANGO_DB_USERNAME"]
+db_password = os.environ["DJANGO_DB_PASSWORD"]
+db_name = os.environ["DJANGO_DB_NAME"]
 
-connection_string = (
-    f"mysql://{db_username}:{db_password}@localhost/{db_name}"
-    )
+connection_string = f"mysql://{db_username}:{db_password}@localhost/{db_name}"
 engine = create_engine(connection_string)
 
 _SessionFactory = sessionmaker(bind=engine)

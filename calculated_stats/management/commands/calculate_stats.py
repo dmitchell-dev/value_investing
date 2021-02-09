@@ -1,10 +1,13 @@
 import pandas as pd
 from django.core.management.base import BaseCommand
 from ancillary_info.models import (
-    Parameters, 
+    Parameters,
     Companies,
     CalcVariables,
-    )
+)
+from share_prices.models import SharePrices
+from financial_reports.models import FinancialReports
+from calculated_stats.models import CalculatedStats
 
 from calculated_stats.managers import (
     debt_to_ratio,
@@ -48,7 +51,7 @@ class Command(BaseCommand):
             )
         df_dcf_variables = pd.DataFrame(
             list(CalcVariables.objects.get_calc_vars_joined())
-            )
+        )
 
         # Calculate values for each company
         # Get list of companies
@@ -61,21 +64,31 @@ class Command(BaseCommand):
             print(f"Company {company_num} of {num_companies}, {company_tidm}")
 
             # Get Share Price
-            share_price_instance = SharePrice()
-            df_share_price = share_price_instance.get_share_joined_filtered(
-                company_tidm
+            df_share_price = pd.DataFrame(
+                list(
+                    SharePrices.objects.get_share_joined_filtered(
+                        company_tidm
+                    )
+                )
             )
 
             # Get Financial Data
-            financial_instance = Financial()
-            df = financial_instance.get_financial_data_joined_filtered(company_tidm)
+            df = pd.DataFrame(
+                list(
+                    FinancialReports.objects.get_financial_data_joined_filtered(
+                        company_tidm
+                    )
+                )
+            )
             df["param_name_report_section"] = (
-                df["param_name"] + "_" + df["report_section"]
+                df["parameter__param_name"]
+                + "_"
+                + df["parameter__report_section__report_section"]
             )
             df_pivot = df.pivot(
                 columns="time_stamp",
                 index="param_name_report_section",
-                values="value"
+                values="value",
             )
             df_pivot = df_pivot.astype(float)
 
@@ -140,7 +153,7 @@ class Command(BaseCommand):
             # Calculate DCF Intrinsic Value
             df_dcf_intrinsic_value = dcf_intrinsic_value(
                 df_pivot, df_dcf_variables
-                 )
+                )
             calc_list.append(df_dcf_intrinsic_value)
 
             # Share Price
@@ -221,47 +234,27 @@ class Command(BaseCommand):
 
             # Generate parameter_id and replace index
             df_unpivot = self._replace_with_id(
-                df_calculated,
-                company_tidm,
-                df_params,
-                df_companies
-                )
+                df_calculated, company_tidm, df_params, df_companies
+            )
 
             # Check datetime format
             df_unpivot = self._datetime_format(df_unpivot)
 
             # Replace infinity values
-            df_unpivot['value'] = df_unpivot['value'].astype(str)
-            df_unpivot['value'] = df_unpivot['value'].replace(
-                ["inf", "-inf"], None
-            )
+            df_unpivot["value"] = df_unpivot["value"].astype(str)
+            df_unpivot["value"] = df_unpivot["value"].replace(["inf", "-inf"], None)
 
-            # Populate database
-            df_unpivot.to_sql(
-                CalculatedStatsObjects.__tablename__,
-                con=engine,
-                if_exists="append",
-                index=False,
-            )
-
-    def get_table_joined_filtered(self, rank_type):
-        session = session_factory()
-        query = (
-            session.query(CalculatedStatsObjects)
-            .join(Companies)
-            .join(Parameters)
-            .with_entities(
-                CalculatedStatsObjects.time_stamp,
-                CalculatedStatsObjects.value,
-                Companies.tidm,
-                Parameters.param_name,
-            )
-            .filter(Parameters.param_name == rank_type)
-        )
-
-        table_df = pd.read_sql(query.statement, query.session.bind)
-
-        return table_df
+            # Save to database
+            reports = [
+                CalculatedStats(
+                    company=Companies.objects.get(id=row["company_id"]),
+                    parameter=Parameters.objects.get(id=row["parameter_id"]),
+                    time_stamp=row["time_stamp"],
+                    value=row["value"],
+                )
+                for i, row in df_unpivot.iterrows()
+            ]
+            CalculatedStats.objects.bulk_create(reports)
 
     def _replace_with_id(self, df_calculated, company_tidm, df_params, df_companies):
         param_id_list = []
@@ -274,18 +267,13 @@ class Command(BaseCommand):
         df_calculated.index = param_id_list
 
         # company id
-        company_id = df_companies[
-            df_companies["tidm"] == company_tidm
-        ].id.values[0]
+        company_id = df_companies[df_companies["tidm"] == company_tidm].id.values[0]
 
         df_unpivot = pd.melt(
-            df_calculated,
-            var_name="time_stamp",
-            value_name="value",
-            ignore_index=False
+            df_calculated, var_name="time_stamp", value_name="value", ignore_index=False
         )
 
-        df_unpivot['company_id'] = company_id
+        df_unpivot["company_id"] = company_id
         df_unpivot["parameter_id"] = df_unpivot.index
 
         return df_unpivot
@@ -294,9 +282,7 @@ class Command(BaseCommand):
         date_fmts = ("%d/%m/%y", "%d/%m/%Y")
         for fmt in date_fmts:
             try:
-                df["time_stamp"] = pd.to_datetime(
-                    df["time_stamp"], format=fmt
-                )
+                df["time_stamp"] = pd.to_datetime(df["time_stamp"], format=fmt)
                 break
             except ValueError:
                 pass

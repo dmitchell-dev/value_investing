@@ -1,5 +1,6 @@
 from django.db import models
 from ancillary_info.models import Companies, Parameters
+from .managers import FinancialReportsQueryset
 
 
 class FinancialReports(models.Model):
@@ -7,6 +8,8 @@ class FinancialReports(models.Model):
     parameter = models.ForeignKey(Parameters, on_delete=models.CASCADE)
     time_stamp = models.DateField()
     value = models.FloatField(null=True)
+
+    objects = FinancialReportsQueryset.as_manager()
 
     class Meta:
         db_table = "reporting_data"

@@ -43,9 +43,7 @@ def create_growth_list(df_pivot, ranktype_list, rank_num):
 
     # Rank Dataframe
     df_growth_rank = pd.DataFrame()
-    df_growth_rank[f"{ranktype_list[rank_num]} Rank"] = range(
-        len(df_growth_values)
-    )
+    df_growth_rank[f"{ranktype_list[rank_num]} Rank"] = range(len(df_growth_values))
     df_growth_rank.index = df_growth_values.index
 
-    return(df_growth_values, df_growth_rank)
+    return (df_growth_values, df_growth_rank)

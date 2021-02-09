@@ -6,10 +6,7 @@ from ..share_prices.share_price import SharePrice
 from ..financial_reports.financial import Financial
 from ..common.mysql_base import session_factory, engine
 
-from ..ancillary_info.ancillary_objects import (
-    Companies,
-    Parameters
-    )
+from ..ancillary_info.ancillary_objects import Companies, Parameters
 
 from .manager import (
     debt_to_ratio,
@@ -73,9 +70,7 @@ class CalculatedStats:
                 df["param_name"] + "_" + df["report_section"]
             )
             df_pivot = df.pivot(
-                columns="time_stamp",
-                index="param_name_report_section",
-                values="value"
+                columns="time_stamp", index="param_name_report_section", values="value"
             )
             df_pivot = df_pivot.astype(float)
 
@@ -138,9 +133,7 @@ class CalculatedStats:
             # TODO
 
             # Calculate DCF Intrinsic Value
-            df_dcf_intrinsic_value = dcf_intrinsic_value(
-                df_pivot, df_dcf_variables
-                 )
+            df_dcf_intrinsic_value = dcf_intrinsic_value(df_pivot, df_dcf_variables)
             calc_list.append(df_dcf_intrinsic_value)
 
             # Share Price
@@ -221,20 +214,15 @@ class CalculatedStats:
 
             # Generate parameter_id and replace index
             df_unpivot = self._replace_with_id(
-                df_calculated,
-                company_tidm,
-                df_params,
-                df_companies
-                )
+                df_calculated, company_tidm, df_params, df_companies
+            )
 
             # Check datetime format
             df_unpivot = self._datetime_format(df_unpivot)
 
             # Replace infinity values
-            df_unpivot['value'] = df_unpivot['value'].astype(str)
-            df_unpivot['value'] = df_unpivot['value'].replace(
-                ["inf", "-inf"], None
-            )
+            df_unpivot["value"] = df_unpivot["value"].astype(str)
+            df_unpivot["value"] = df_unpivot["value"].replace(["inf", "-inf"], None)
 
             # Populate database
             df_unpivot.to_sql(
@@ -274,18 +262,13 @@ class CalculatedStats:
         df_calculated.index = param_id_list
 
         # company id
-        company_id = df_companies[
-            df_companies["tidm"] == company_tidm
-        ].id.values[0]
+        company_id = df_companies[df_companies["tidm"] == company_tidm].id.values[0]
 
         df_unpivot = pd.melt(
-            df_calculated,
-            var_name="time_stamp",
-            value_name="value",
-            ignore_index=False
+            df_calculated, var_name="time_stamp", value_name="value", ignore_index=False
         )
 
-        df_unpivot['company_id'] = company_id
+        df_unpivot["company_id"] = company_id
         df_unpivot["parameter_id"] = df_unpivot.index
 
         return df_unpivot
@@ -294,9 +277,7 @@ class CalculatedStats:
         date_fmts = ("%d/%m/%y", "%d/%m/%Y")
         for fmt in date_fmts:
             try:
-                df["time_stamp"] = pd.to_datetime(
-                    df["time_stamp"], format=fmt
-                )
+                df["time_stamp"] = pd.to_datetime(df["time_stamp"], format=fmt)
                 break
             except ValueError:
                 pass

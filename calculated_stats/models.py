@@ -1,12 +1,15 @@
 from django.db import models
 from ancillary_info.models import Companies, Parameters
+from .managers import CalculatedStatsQueryset
 
 
 class CalculatedStats(models.Model):
     company = models.ForeignKey(Companies, on_delete=models.CASCADE)
     parameter = models.ForeignKey(Parameters, on_delete=models.CASCADE)
     time_stamp = models.DateField()
-    value = models.FloatField(null=True)
+    value = models.CharField(max_length=255, null=True)
+
+    objects = CalculatedStatsQueryset.as_manager()
 
     class Meta:
         db_table = "calculated_data"
