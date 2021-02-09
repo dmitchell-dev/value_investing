@@ -1,8 +1,19 @@
+from django.db.models import QuerySet
 import pandas as pd
 import numpy as np
 from datetime import timedelta
 import math
 import statistics
+
+
+class CalculatedStatsQueryset(QuerySet):
+    def get_table_joined_filtered(self):
+        return self.values(
+            "time_stamp",
+            "value",
+            "company__tidm",
+            "parameter__param_name",
+        )
 
 
 def debt_to_ratio(df_pivot):
@@ -150,13 +161,13 @@ def dcf_intrinsic_value(df_pivot, df_dcf_variables):
     base_year_fcf = _dataframe_slice(df_pivot, "Free cash flow (FCF)_Free Cash Flow")
     shares_outstanding = _dataframe_slice(df_pivot, "Average shares (diluted)_Other")
     growth_rate = df_dcf_variables[
-        df_dcf_variables.param_name == ("Estimated Growth Rate")
+        df_dcf_variables.parameter__param_name == ("Estimated Growth Rate")
     ]
     longterm_growth_rate = df_dcf_variables[
-        df_dcf_variables.param_name == ("Estimated Long Term Growth Rate")
+        df_dcf_variables.parameter__param_name == ("Estimated Long Term Growth Rate")
     ]
     discount_rate = df_dcf_variables[
-        df_dcf_variables.param_name == "Estimated Discount Rate"
+        df_dcf_variables.parameter__param_name == "Estimated Discount Rate"
     ]
 
     for col in range(0, df_pivot.shape[1]):

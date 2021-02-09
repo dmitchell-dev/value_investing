@@ -1,14 +1,14 @@
 from django.db import models
-from ancillary_info.models import ReportSection
+from ancillary_info.models import Companies
 from .managers import SharePricesQueryset
 
 
 class SharePrices(models.Model):
-    company = models.ForeignKey(ReportSection, on_delete=models.CASCADE)
+    company = models.ForeignKey(Companies, on_delete=models.CASCADE)
     time_stamp = models.DateField()
-    value = models.FloatField()
-    volume = models.IntegerField()
-    adjustment = models.SmallIntegerField()
+    value = models.FloatField(null=True)
+    volume = models.IntegerField(null=True)
+    adjustment = models.SmallIntegerField(null=True)
 
     objects = SharePricesQueryset.as_manager()
 

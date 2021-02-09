@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from ancillary_info.models import Companies
+from share_prices.models import SharePrices
 import pandas as pd
 import os
 
@@ -37,67 +38,27 @@ class Command(BaseCommand):
             # Check datetime format
             df_data = self._datetime_format(df_data)
 
-            # Populate database
-            df_data.to_sql(
-                SharePriceObjects.__tablename__,
-                con=engine,
-                if_exists="append",
-                index=False,
-            )
+            # Save to database
+            reports = [
+                SharePrices(
+                    company=Companies.objects.get(id=row["company_id"]),
+                    time_stamp=row["time_stamp"],
+                    value=row["value"],
+                    volume=row["volume"],
+                    adjustment=row["adjustment"],
+                )
+                for i, row in df_data.iterrows()
+            ]
+            SharePrices.objects.bulk_create(reports)
 
-    def get_share_data(self):
-        table_df = pd.read_sql_table(SharePriceObjects.__tablename__, con=engine)
-        return table_df
-
-    def get_share_joined(self):
-        session = session_factory()
-        query = (
-            session.query(SharePriceObjects)
-            .join(Companies)
-            .with_entities(
-                SharePriceObjects.id,
-                SharePriceObjects.time_stamp,
-                SharePriceObjects.value,
-                SharePriceObjects.volume,
-                SharePriceObjects.adjustment,
-                Companies.company_name,
-                Companies.tidm,
-            )
-        )
-
-        table_df = pd.read_sql(query.statement, query.session.bind)
-
-        return table_df
-
-    def get_share_joined_filtered(self, tidm):
-        session = session_factory()
-        query = (
-            session.query(SharePriceObjects)
-            .join(Companies)
-            .with_entities(
-                SharePriceObjects.id,
-                SharePriceObjects.time_stamp,
-                SharePriceObjects.value,
-                SharePriceObjects.volume,
-                SharePriceObjects.adjustment,
-                Companies.company_name,
-                Companies.tidm,
-            )
-            .filter(Companies.tidm == tidm)
-        )
-
-        table_df = pd.read_sql(query.statement, query.session.bind)
-
-        return table_df
-
-    def import_share_price_csv(current_company_filename):
+    def import_share_price_csv(self, current_company_filename):
         # Get company report data
         df = pd.read_csv(f"data/share_prices/{current_company_filename}")
         df = df.where((pd.notnull(df)), None)
 
         return df
 
-    def get_share_list():
+    def get_share_list(self):
         # Import each file, process and save to database
         # Get list of reports
         path = "data/share_prices"
