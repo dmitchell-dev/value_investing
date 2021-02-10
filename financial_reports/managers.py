@@ -9,15 +9,3 @@ class FinancialReportsQueryset(QuerySet):
             "time_stamp",
             "value",
         ).filter(company__tidm=tidm)
-
-        # session.query(FinancialObjects)
-        # .join(Companies)
-        # .join(Parameters)
-        # .join(ReportSection)
-        # .with_entities(
-        #     Parameters.param_name,
-        #     ReportSection.report_section,
-        #     FinancialObjects.time_stamp,
-        #     FinancialObjects.value,
-        # )
-        # .filter(Companies.tidm == tidm)

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "financial_reports.apps.FinancialReportsConfig",
     "calculated_stats.apps.CalculatedStatsConfig",
     "share_prices.apps.SharePricesConfig",
+    "ranking_stats.apps.RankingStatsConfig",
 ]
 
 MIDDLEWARE = [
