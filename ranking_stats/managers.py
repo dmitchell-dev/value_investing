@@ -12,6 +12,14 @@ class RankingStatsQueryset(QuerySet):
             "parameter__param_name",
         ).filter(parameter__param_name=rank_type)
 
+    def get_table_joined(self):
+        return self.values(
+            "time_stamp",
+            "value",
+            "company__tidm",
+            "parameter__param_name",
+        )
+
 
 def create_growth_list(df_pivot, ranktype_list, rank_num):
     # Create Growth list

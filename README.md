@@ -19,8 +19,6 @@ The aim of this site is to not only help with value investing, it will also impr
 * Improve Django skills with management commands, Dashboard and timeseries data presentation
 
 ## Initialising Project with initial data
-* python manage.py makemigrations ancillary_info
-* python manage.py migrate
 * python manage.py ancillary_import
 * python manage.py financial_reports_import
 * python manage.py share_price_import

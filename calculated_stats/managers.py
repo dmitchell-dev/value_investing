@@ -15,6 +15,14 @@ class CalculatedStatsQueryset(QuerySet):
             "parameter__param_name",
         ).filter(parameter__param_name=rank_type)
 
+    def get_table_joined(self):
+        return self.values(
+            "time_stamp",
+            "value",
+            "company__tidm",
+            "parameter__param_name",
+        )
+
 
 def debt_to_ratio(df_pivot):
     df_tl = _dataframe_slice(df_pivot, "Total liabilities_Liabilities").reset_index(
