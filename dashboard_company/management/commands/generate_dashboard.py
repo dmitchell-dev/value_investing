@@ -27,7 +27,16 @@ class Command(BaseCommand):
             list(RankingStats.objects.get_table_joined())
             )
 
-        df_test = pd.DataFrame(list(FinancialReports.objects.values('company__tidm', 'parameter').annotate(time_stamp=Max('time_stamp'))))
+        qs = FinancialReports.objects.all()
+        latest_dates = qs.values('company', 'parameter').annotate(max_time_stamp=Max('time_stamp')).values('company__company_name', 'parameter__param_name', 'max_time_stamp', 'value')
+        print(latest_dates.query)
+        print(pd.DataFrame(list(latest_dates)))
+        qs = qs.filter(time_stamp__in=latest_dates.values('max_time_stamp'))
+        print(pd.DataFrame(list(qs)))
+
+        df_test = pd.DataFrame(list(FinancialReports.objects.values('company', 'parameter', 'max_time_stamp', 'value').annotate(max_time_stamp=Max('time_stamp'))))
+        # FinancialReports.objects.values('order_id', 'city', 'locality', 'login_time').order_by().annotate(sum('morning_hours'), sum('afternoon_hours'), sum('evening_hours'), sum('total_hours'))
+
         print(df_test)
 
         FinancialReports.objects.annotate(max_date=Max('company__parameter__time_stamp')).filter(time_stamp=F('max_date'))
