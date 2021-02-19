@@ -1,9 +1,11 @@
 from django.core.management.base import BaseCommand
+from django.db.models.fields import FloatField
 from ancillary_info.models import Parameters, Companies
 from financial_reports.models import FinancialReports
 from calculated_stats.models import CalculatedStats
 from ranking_stats.models import RankingStats
-from django.db.models import Max, F
+from django.db.models import Max, F, OuterRef, Subquery
+from django.db.models.functions import Cast
 import pandas as pd
 
 
@@ -27,12 +29,26 @@ class Command(BaseCommand):
             list(RankingStats.objects.get_table_joined())
             )
 
+        max_ids = FinancialReports.objects.values('parameter', 'company').annotate(max_time_stamp=Max('time_stamp'))
+
+        max_ids = FinancialReports.objects.filter(company_id=OuterRef('company_id'), parameter_id=OuterRef('parameter_id')).order_by('-time_stamp').values('id')
+        reports = FinancialReports.objects.filter(id=Subquery(max_ids[:1])).values('value')
+        print(reports)
+        print(reports.query)
+
+        filter_items = FinancialReports.objects.values('parameter', 'company').annotate(max_time_stamp=Max('time_stamp')).values('id')
+        result = filter_items.filter(FinancialReports=filter_items)
+        print(pd.DataFrame(filter_items))
+
         qs = FinancialReports.objects.all()
-        latest_dates = qs.values('company', 'parameter').annotate(max_time_stamp=Max('time_stamp')).values('company__company_name', 'parameter__param_name', 'max_time_stamp', 'value')
+        latest_dates = qs.values('company', 'parameter').annotate(max_time_stamp=Max('time_stamp')).values('value')
         print(latest_dates.query)
         print(pd.DataFrame(list(latest_dates)))
-        qs = qs.filter(time_stamp__in=latest_dates.values('max_time_stamp'))
-        print(pd.DataFrame(list(qs)))
+
+        # qs = FinancialReports.objects.all()
+        # latest_dates = qs.values('company', 'parameter').annotate(max_time_stamp=Max('time_stamp')).values('company__company_name', 'parameter__param_name', 'max_time_stamp', 'value')
+        # print(latest_dates.query)
+        # print(pd.DataFrame(list(latest_dates)))
 
         df_test = pd.DataFrame(list(FinancialReports.objects.values('company', 'parameter', 'max_time_stamp', 'value').annotate(max_time_stamp=Max('time_stamp'))))
         # FinancialReports.objects.values('order_id', 'city', 'locality', 'login_time').order_by().annotate(sum('morning_hours'), sum('afternoon_hours'), sum('evening_hours'), sum('total_hours'))
