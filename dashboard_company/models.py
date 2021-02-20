@@ -9,7 +9,7 @@ class DashboardCompany(models.Model):
     share_listing = models.CharField(max_length=255, null=True)
     company_type = models.CharField(max_length=255, null=True)
     industry_name = models.CharField(max_length=255, null=True)
-    industry_type = models.CharField(max_length=255, null=True)
+    share_price = models.FloatField()
     debt_to_equity = models.FloatField()
     current_ratio = models.FloatField()
     return_on_equity = models.FloatField()
