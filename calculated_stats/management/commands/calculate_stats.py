@@ -43,12 +43,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Get ancillary data
-        df_params = pd.DataFrame(
-            list(Parameters.objects.get_parameters_joined())
-            )
-        df_companies = pd.DataFrame(
-            list(Companies.objects.get_companies_joined())
-            )
+        df_params = pd.DataFrame(list(Parameters.objects.get_parameters_joined()))
+        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
         df_dcf_variables = pd.DataFrame(
             list(CalcVariables.objects.get_calc_vars_joined())
         )
@@ -65,11 +61,7 @@ class Command(BaseCommand):
 
             # Get Share Price
             df_share_price = pd.DataFrame(
-                list(
-                    SharePrices.objects.get_share_joined_filtered(
-                        company_tidm
-                    )
-                )
+                list(SharePrices.objects.get_share_joined_filtered(company_tidm))
             )
 
             # Get Financial Data
@@ -151,9 +143,7 @@ class Command(BaseCommand):
             # TODO
 
             # Calculate DCF Intrinsic Value
-            df_dcf_intrinsic_value = dcf_intrinsic_value(
-                df_pivot, df_dcf_variables
-                )
+            df_dcf_intrinsic_value = dcf_intrinsic_value(df_pivot, df_dcf_variables)
             calc_list.append(df_dcf_intrinsic_value)
 
             # Share Price
