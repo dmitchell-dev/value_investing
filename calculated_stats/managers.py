@@ -7,13 +7,21 @@ import statistics
 
 
 class CalculatedStatsQueryset(QuerySet):
-    def get_table_joined_filtered(self, rank_type):
+    def get_table_joined_filtered(self, tidm):
         return self.values(
             "time_stamp",
             "value",
             "company__tidm",
             "parameter__param_name",
-        ).filter(parameter__param_name=rank_type)
+        ).filter(company__tidm=tidm)
+
+    def get_table_joined(self):
+        return self.values(
+            "time_stamp",
+            "value",
+            "company__tidm",
+            "parameter__param_name",
+        )
 
 
 def debt_to_ratio(df_pivot):

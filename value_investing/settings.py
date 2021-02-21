@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "allauth",
     "allauth.account",
+    "django_extensions",
     # Local
     "users.apps.UsersConfig",
     "pages.apps.PagesConfig",
@@ -50,6 +51,8 @@ INSTALLED_APPS = [
     "calculated_stats.apps.CalculatedStatsConfig",
     "share_prices.apps.SharePricesConfig",
     "ranking_stats.apps.RankingStatsConfig",
+    "dashboard_company.apps.DashboardCompanyConfig",
+
 ]
 
 MIDDLEWARE = [
