@@ -12,6 +12,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
+        pd.set_option('display.max_rows', None)
+        pd.set_option('display.max_columns', None)
+
         # Companies
         df_companies = pd.DataFrame(
             list(Companies.objects.get_companies_joined())
@@ -103,72 +106,64 @@ class Command(BaseCommand):
             )
 
         # TODO Temp add Dividend Cover
-        df_merged["Dividend Cover"] = str(np.nan)
-
-        # Format column names
-        df_merged = df_merged.rename(columns={
-            "tidm": "tidm",
-            "company_name": "company_name",
-            "company_summary": "company_summary",
-            "market__share_listing": "share_listing",
-            "comp_type__company_type": "company_type",
-            "industry__industry_name": "industry_name",
-            "Share Price": "share_price",
-            "Debt to Equity (D/E)": "debt_to_equity",
-            "Current Ratio": "current_ratio",
-            "Return on Equity (ROE)": "return_on_equity",
-            "Equity (Book Value) Per Share": "equity_per_share",
-            "Price to Earnings (P/E)": "price_to_earnings",
-            "Price to Book Value (Equity)": "price_to_equity",
-            "Annual Yield (Return)": "annual_return",
-            "Free cash flow (FCF)": "fcf_growth_rate",
-            "Dividend Payment": "dividend_payment",
-            "Dividend Cover": "dividend_cover",
-            "Revenue Growth": "revenue_growth",
-            "EPS Growth": "eps_growth",
-            "Dividend Growth": "dividend_growth",
-            "Growth Quality": "growth_quality",
-            "Revenue Growth (10 year)": "revenue_rowth_10",
-            "Earnings Growth (10 year)": "earnings_growth_10",
-            "Dividend Growth (10 year)": "dividend_growth_10",
-            "Overall Growth (10 year)": "overall_growth_10",
-            "Growth Rate (10 year)": "growth_rate_10",
-            "Capital Employed": "capital_employed",
-            "ROCE": "roce",
-            "Median ROCE (10 year)": "median_roce_10",
-            "Debt Ratio": "debt_ratio",
-            "PE10": "pe_10",
-            "DP10": "dp_10",
-            "Growth Rate (10 year) Rank Value": "growth_rate_10_rank_value",
-            "Growth Quality Rank Value": "growth_quality_rank_value",
-            "Median ROCE (10 year) Rank Value": "median_roce_10_rank_value",
-            "PE10 Rank Value": "pe_10_rank_value",
-            "DP10 Rank Value": "dp_10_rank_value",
-            "Growth Rate (10 year) Rank": "growth_rate_10_rank",
-            "Growth Quality Rank": "growth_quality_rank",
-            "Median ROCE (10 year) Rank": "median_roce_10_rank",
-            "PE10 Rank": "pe_10_rank",
-            "DP10 Rank": "dp_10_rank",
-            "Defensive Rank": "defensive_rank",
-            "DCF Intrinsic Value": "dcf_intrinsic_value",
-            "Estimated Growth Rate": "estimated_growth_rate",
-            "Estimated Discount Rate": "estimated_discount_rate",
-            "Estimated Long Term Growth Rate": "estimated_long_term_growth_rate",
-            })
+        df_merged["Dividend Cover"] = "-999"
 
         df_merged = df_merged.drop('id', axis=1)
 
         # Save to database
-        # reports = [
-        #     DashboardCompany(
-        #         company=Companies.objects.get(id=row["company_id"]),
-        #         parameter=Parameters.objects.get(id=row["parameter_id"]),
-        #         time_stamp=row["time_stamp"],
-        #         value=row["value"],
-        #     )
-        #     for i, row in df_unpivot.iterrows()
-        # ]
-        # CalculatedStats.objects.bulk_create(reports)
+        reports = [
+            DashboardCompany(
+                tidm=row["tidm"],
+                company_name=row["company_name"],
+                company_summary=row["company_summary"],
+                share_listing=row["market__share_listing"],
+                company_type=row["comp_type__company_type"],
+                industry_name=row["industry__industry_name"],
+                share_price=float(row["Share Price"]),
+                debt_to_equity=float(row["Debt to Equity (D/E)"]),
+                current_ratio=float(row["Current Ratio"]),
+                return_on_equity=float(row["Return on Equity (ROE)"]),
+                equity_per_share=float(row["Equity (Book Value) Per Share"]),
+                price_to_earnings=float(row["Price to Earnings (P/E)"]),
+                price_to_equity=float(row["Price to Book Value (Equity)"]),
+                annual_return=float(row["Annual Yield (Return)"]),
+                fcf_growth_rate=float(row["Free cash flow (FCF)"]),
+                dividend_payment=row["Dividend Payment"],
+                dividend_cover=float(row["Dividend Cover"]),
+                revenue_growth=row["Revenue Growth"],
+                eps_growth=row["EPS Growth"],
+                dividend_growth=row["Dividend Growth"],
+                growth_quality=float(row["Growth Quality"]),
+                revenue_rowth_10=float(row["Revenue Growth (10 year)"]),
+                earnings_growth_10=float(row["Earnings Growth (10 year)"]),
+                dividend_growth_10=float(row["Dividend Growth (10 year)"]),
+                overall_growth_10=float(row["Overall Growth (10 year)"]),
+                growth_rate_10=float(row["Growth Rate (10 year)"]),
+                capital_employed=float(row["Capital Employed"]),
+                roce=float(row["ROCE"]),
+                median_roce_10=float(row["Median ROCE (10 year)"]),
+                debt_ratio=float(row["Debt Ratio"]),
+                pe_10=float(row["PE10"]),
+                dp_10=float(row["DP10"]),
+                growth_rate_10_rank_value=float(row["Growth Rate (10 year) Rank Value"]),
+                growth_quality_rank_value=float(row["Growth Quality Rank Value"]),
+                median_roce_10_rank_value=float(row["Median ROCE (10 year) Rank Value"]),
+                pe_10_rank_value=float(row["PE10 Rank Value"]),
+                dp_10_rank_value=float(row["DP10 Rank Value"]),
+                growth_rate_10_rank=float(row["Growth Rate (10 year) Rank"]),
+                growth_quality_rank=float(row["Growth Quality Rank"]),
+                median_roce_10_rank=float(row["Median ROCE (10 year) Rank"]),
+                pe_10_rank=float(row["PE10 Rank"]),
+                dp_10_rank=float(row["DP10 Rank"]),
+                defensive_rank=float(row["Defensive Rank"]),
+                dcf_intrinsic_value=float(row["DCF Intrinsic Value"]),
+                estimated_growth_rate=float(row["Estimated Growth Rate"]),
+                estimated_discount_rate=float(row["Estimated Discount Rate"]),
+                estimated_long_term_growth_rate=float(row["Estimated Long Term Growth Rate"]),
+            )
+            for i, row in df_merged.iterrows()
+        ]
+        DashboardCompany.objects.bulk_create(reports)
 
         # Save to csv
         # df_merged.to_csv("./file.csv", sep=',', index=False)
