@@ -16,12 +16,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Get ancillary data
-        df_params = pd.DataFrame(
-            list(Parameters.objects.get_parameters_joined())
-            )
-        df_companies = pd.DataFrame(
-            list(Companies.objects.get_companies_joined())
-            )
+        df_params = pd.DataFrame(list(Parameters.objects.get_parameters_joined()))
+        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
         # Calculate rank for each type
         ranktype_list = [
@@ -42,11 +38,7 @@ class Command(BaseCommand):
             print(f"Rank {rank_num + 1} of {num_ranks}, {rank_type}")
 
             df = pd.DataFrame(
-                list(
-                    CalculatedStats.objects.get_table_joined_filtered(
-                        rank_type
-                    )
-                )
+                list(CalculatedStats.objects.get_table_joined_filtered(rank_type))
             )
 
             # Offset dates by 1 day to account for companies
@@ -79,17 +71,13 @@ class Command(BaseCommand):
         # Growth Rank
         df_growth_rank = pd.concat(rank_df_list, axis=1)
         df_growth_rank["Defensive Rank"] = df_growth_rank.sum(axis=1)
-        df_growth_rank = df_growth_rank.sort_values(
-            by="Defensive Rank", ascending=True
-            )
+        df_growth_rank = df_growth_rank.sort_values(by="Defensive Rank", ascending=True)
 
         # Combine back together
         df_rank_both = pd.concat([df_growth_values, df_growth_rank], axis=1)
 
         # Replace with ids
-        df_unpivot = self._replace_with_id(
-            df_rank_both, df_params, df_companies
-            )
+        df_unpivot = self._replace_with_id(df_rank_both, df_params, df_companies)
 
         # Populate database
         reports = [

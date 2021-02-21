@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class DashboardCompanyConfig(AppConfig):
-    name = 'dashboard_company'
+    name = "dashboard_company"

@@ -9,7 +9,7 @@ class DashboardCompanyAdmin(admin.ModelAdmin):
         "company_type",
         "industry_name",
         "industry_type",
-        ]
+    ]
 
 
 admin.site.register(DashboardCompany, DashboardCompanyAdmin)
