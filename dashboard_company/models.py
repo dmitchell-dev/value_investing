@@ -5,7 +5,7 @@ from django.db import models
 class DashboardCompany(models.Model):
     tidm = models.CharField(max_length=255, null=True)
     company_name = models.CharField(max_length=255, null=True)
-    company_summary = models.CharField(max_length=255, null=True)
+    company_summary = models.TextField()
     share_listing = models.CharField(max_length=255, null=True)
     company_type = models.CharField(max_length=255, null=True)
     industry_name = models.CharField(max_length=255, null=True)

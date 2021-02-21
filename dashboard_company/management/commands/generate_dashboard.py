@@ -47,8 +47,6 @@ class Command(BaseCommand):
             values="value",
         )
 
-        df_calc_latest_pivot = df_calc_latest_pivot.replace(["nan", "None"], "NaN")
-
         # Ranking Stats
         rank_stats_qs = RankingStats.objects.raw(
             '''SELECT ranking_data.id, tidm, company_name, param_name, time_stamp, value
@@ -86,10 +84,6 @@ class Command(BaseCommand):
             values="value",
         )
 
-        df_rank_latest_pivot = df_rank_latest_pivot.replace(
-            ["nan", "None"], "NaN"
-            )
-
         # Join dataframes
         df_merged = pd.merge(
             df_companies,
@@ -107,6 +101,11 @@ class Command(BaseCommand):
 
         # TODO Temp add Dividend Cover
         df_merged["Dividend Cover"] = "-999"
+
+        # Replace NaN for mySQL compatability
+        df_merged = df_merged.replace(
+            [np.nan, "NaN", "nan", "None"], "-9999"
+            )
 
         df_merged = df_merged.drop('id', axis=1)
 
@@ -165,6 +164,4 @@ class Command(BaseCommand):
         ]
         DashboardCompany.objects.bulk_create(reports)
 
-        # Save to csv
-        # df_merged.to_csv("./file.csv", sep=',', index=False)
-        print(df_merged)
+        print('Dashboard Complete')
