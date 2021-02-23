@@ -3,54 +3,88 @@
 {% block title %}{{company.company_name}}{% endblock title %}
 
 {% block content %}
-    <div>
-        <h2><a href="">{{company.company_name}}</a></h2>
-        <p>tidm: {{company.tidm}}</p>
-        <p>Company Summary: {{company.company_summary}}</p>
-        <p>Market Share Listing: {{company.share_listing}}</p>
-        <p>Company Type: {{company.company_type}}</p>
-        <p>Industry Name: {{company.industry_name}}</p>
-        <p>Share Price: {{company.share_price}}</p>
-        <p>Debt to Equity (D/E): {{company.debt_to_equity}}</p>
-        <p>Current Ratio: {{company.current_ratio}}</p>
-        <p>Return on Equity (ROE): {{company.return_on_equity}}</p>
-        <p>Equity (Book Value) Per Share: {{company.equity_per_share}}</p>
-        <p>Price to Earnings (P/E): {{company.price_to_earnings}}</p>
-        <p>Price to Book Value (Equity): {{company.price_to_equity}}</p>
-        <p>Annual Yield (Return): {{company.annual_return}}</p>
-        <p>Free cash flow (FCF): {{company.fcf_growth_rate}}</p>
-        <p>Dividend Payment: {{company.dividend_payment}}</p>
-        <p>Dividend Cover: {{company.dividend_cover}}</p>
-        <p>Revenue Growth: {{company.revenue_growth}}</p>
-        <p>EPS Growth: {{company.eps_growth}}</p>
-        <p>Dividend Growth: {{company.dividend_growth}}</p>
-        <p>Growth Quality: {{company.growth_quality}}</p>
-        <p>Revenue Growth (10 year): {{company.revenue_rowth_10}}</p>
-        <p>Earnings Growth (10 year): {{company.earnings_growth_10}}</p>
-        <p>Dividend Growth (10 year): {{company.dividend_growth_10}}</p>
-        <p>Overall Growth (10 year): {{company.overall_growth_10}}</p>
-        <p>Growth Rate (10 year): {{company.growth_rate_10}}</p>
-        <p>Capital Employed: {{company.capital_employed}}</p>
-        <p>ROCE: {{company.roce}}</p>
-        <p>Median ROCE (10 year): {{company.median_roce_10}}</p>
-        <p>Debt Ratio: {{company.debt_ratio}}</p>
-        <p>PE10: {{company.pe_10}}</p>
-        <p>DP10: {{company.dp_10}}</p>
-        <p>Growth Rate (10 year) Rank Value: {{company.growth_rate_10_rank_value}}</p>
-        <p>Growth Quality Rank Value: {{company.growth_quality_rank_value}}</p>
-        <p>Median ROCE (10 year) Rank Value: {{company.median_roce_10_rank_value}}</p>
-        <p>PE10 Rank Value: {{company.pe_10_rank_value}}</p>
-        <p>DP10 Rank Value: {{company.dp_10_rank_value}}</p>
-        <p>Growth Rate (10 year) Rank: {{company.growth_rate_10_rank}}</p>
-        <p>Growth Quality Rank: {{company.growth_quality_rank}}</p>
-        <p>Median ROCE (10 year) Rank: {{company.median_roce_10_rank}}</p>
-        <p>PE10 Rank: {{company.pe_10_rank}}</p>
-        <p>DP10 Rank: {{company.dp_10_rank}}</p>
-        <p>Defensive Rank: {{company.defensive_rank}}</p>
-        <p>DCF Intrinsic Value: {{company.dcf_intrinsic_value}}</p>
-        <p>Estimated Growth Rate: {{company.estimated_growth_rate}}</p>
-        <p>Estimated Discount Rate: {{company.estimated_discount_rate}}</p>
-        <p>Estimated Long Term Growth Rate: {{company.estimated_long_term_growth_rate}}</p>
 
+<div class="container">
+    <h2><a href="">{{company.company_name}}</a></h2>
+    <p>Company Summary: {{company.company_summary}}</p>
+    
+    <div class="row">
+        <div class="col">
+            <div class="card shadow-sm p-2 mb-2">
+                <div class="card-body">
+                    <h3 class="card-title">tidm</h3>
+                    <h5 class="card-text">{{company.tidm}}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card shadow-sm p-2 mb-2">
+                <div class="card-body">
+                    <h3 class="card-title">Market Share Listing</h3>
+                    <h5 class="card-text">{{company.share_listing}}</h5>
+                </div>
+            </div>
+        </div>
     </div>
+    <div class="row">
+        <div class="col">
+            1 of 3
+        </div>
+        <div class="col">
+            2 of 3
+        </div>
+        <div class="col">
+            3 of 3
+        </div>
+    </div>
+
+    
+    <p>tidm: {{company.tidm}}</p>
+    <p>Company Summary: {{company.company_summary}}</p>
+    <p>Market Share Listing: {{company.share_listing}}</p>
+    <p>Company Type: {{company.company_type}}</p>
+    <p>Industry Name: {{company.industry_name}}</p>
+    <p>Share Price: {{company.share_price}}</p>
+    <p>Debt to Equity (D/E): {{company.debt_to_equity}}</p>
+    <p>Current Ratio: {{company.current_ratio}}</p>
+    <p>Return on Equity (ROE): {{company.return_on_equity}}</p>
+    <p>Equity (Book Value) Per Share: {{company.equity_per_share}}</p>
+    <p>Price to Earnings (P/E): {{company.price_to_earnings}}</p>
+    <p>Price to Book Value (Equity): {{company.price_to_equity}}</p>
+    <p>Annual Yield (Return): {{company.annual_return}}</p>
+    <p>Free cash flow (FCF): {{company.fcf_growth_rate}}</p>
+    <p>Dividend Payment: {{company.dividend_payment}}</p>
+    <p>Dividend Cover: {{company.dividend_cover}}</p>
+    <p>Revenue Growth: {{company.revenue_growth}}</p>
+    <p>EPS Growth: {{company.eps_growth}}</p>
+    <p>Dividend Growth: {{company.dividend_growth}}</p>
+    <p>Growth Quality: {{company.growth_quality}}</p>
+    <p>Revenue Growth (10 year): {{company.revenue_rowth_10}}</p>
+    <p>Earnings Growth (10 year): {{company.earnings_growth_10}}</p>
+    <p>Dividend Growth (10 year): {{company.dividend_growth_10}}</p>
+    <p>Overall Growth (10 year): {{company.overall_growth_10}}</p>
+    <p>Growth Rate (10 year): {{company.growth_rate_10}}</p>
+    <p>Capital Employed: {{company.capital_employed}}</p>
+    <p>ROCE: {{company.roce}}</p>
+    <p>Median ROCE (10 year): {{company.median_roce_10}}</p>
+    <p>Debt Ratio: {{company.debt_ratio}}</p>
+    <p>PE10: {{company.pe_10}}</p>
+    <p>DP10: {{company.dp_10}}</p>
+    <p>Growth Rate (10 year) Rank Value: {{company.growth_rate_10_rank_value}}</p>
+    <p>Growth Quality Rank Value: {{company.growth_quality_rank_value}}</p>
+    <p>Median ROCE (10 year) Rank Value: {{company.median_roce_10_rank_value}}</p>
+    <p>PE10 Rank Value: {{company.pe_10_rank_value}}</p>
+    <p>DP10 Rank Value: {{company.dp_10_rank_value}}</p>
+    <p>Growth Rate (10 year) Rank: {{company.growth_rate_10_rank}}</p>
+    <p>Growth Quality Rank: {{company.growth_quality_rank}}</p>
+    <p>Median ROCE (10 year) Rank: {{company.median_roce_10_rank}}</p>
+    <p>PE10 Rank: {{company.pe_10_rank}}</p>
+    <p>DP10 Rank: {{company.dp_10_rank}}</p>
+    <p>Defensive Rank: {{company.defensive_rank}}</p>
+    <p>DCF Intrinsic Value: {{company.dcf_intrinsic_value}}</p>
+    <p>Estimated Growth Rate: {{company.estimated_growth_rate}}</p>
+    <p>Estimated Discount Rate: {{company.estimated_discount_rate}}</p>
+    <p>Estimated Long Term Growth Rate: {{company.estimated_long_term_growth_rate}}</p>
+</div>
+
 {% endblock content %}
