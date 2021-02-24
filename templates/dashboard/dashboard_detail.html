@@ -5,46 +5,85 @@
 {% block content %}
 
 <div class="container">
-    <h2><a href="">{{company.company_name}}</a></h2>
-    <p>Company Summary: {{company.company_summary}}</p>
-    
     <div class="row">
         <div class="col">
-            <div class="card shadow-sm p-2 mb-2">
-                <div class="card-body">
-                    <h3 class="card-title">tidm</h3>
-                    <h5 class="card-text">{{company.tidm}}</h5>
-                </div>
-            </div>
+            <h2 class="text-info">{{company.company_name}} <span class="badge badge-secondary">{{company.tidm}}</span></h2>
         </div>
         <div class="col">
-            <div class="card shadow-sm p-2 mb-2">
-                <div class="card-body">
-                    <h3 class="card-title">Market Share Listing</h3>
-                    <h5 class="card-text">{{company.share_listing}}</h5>
-                </div>
-            </div>
+            <h3 class="float-right text-secondary">{{company.share_listing}}</h3>
+        </div>
+        <div class="col">
+            <h3 class="float-right bg-dark text-white rounded px-2 py-1">£{{company.share_price}}</h3>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            1 of 3
-        </div>
-        <div class="col">
-            2 of 3
-        </div>
-        <div class="col">
-            3 of 3
+            <p>{{company.company_summary}}</p>
         </div>
     </div>
 
+    <div class="row">
+        <div class="col">
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Defensive Rank:
+                    <span class="badge badge-success badge-pill">{{company.defensive_rank}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    PE10 Rank:
+                    <span class="badge badge-primary badge-pill">{{company.pe_10_rank}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    DP10 Rank:
+                    <span class="badge badge-primary badge-pill">{{company.dp_10_rank}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Growth Quality Rank:
+                    <span class="badge badge-primary badge-pill">{{company.growth_quality_rank}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Growth Rate (10 year) Rank:
+                    <span class="badge badge-primary badge-pill">{{company.growth_rate_10_rank}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Median ROCE (10 year) Rank:
+                    <span class="badge badge-primary badge-pill">{{company.median_roce_10_rank}}</span>
+                </li>
+            </ul>
+        </div>
+        <div class="col">
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    N/A
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    PE10 Rank Value:
+                    <span class="badge badge-primary badge-pill">{{company.pe_10_rank_value}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    DP10 Rank Value:
+                    <span class="badge badge-primary badge-pill">{{company.dp_10_rank_value}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Growth Quality Rank Value:
+                    <span class="badge badge-primary badge-pill">{{company.growth_quality_rank_value}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Growth Rate (10 year) Rank Value:
+                    <span class="badge badge-primary badge-pill">{{company.growth_rate_10_rank_value}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Median ROCE (10 year) Rank Value:
+                    <span class="badge badge-primary badge-pill">{{company.median_roce_10_rank_value}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
     
-    <p>tidm: {{company.tidm}}</p>
-    <p>Company Summary: {{company.company_summary}}</p>
-    <p>Market Share Listing: {{company.share_listing}}</p>
+    <hr>
+
     <p>Company Type: {{company.company_type}}</p>
     <p>Industry Name: {{company.industry_name}}</p>
-    <p>Share Price: {{company.share_price}}</p>
     <p>Debt to Equity (D/E): {{company.debt_to_equity}}</p>
     <p>Current Ratio: {{company.current_ratio}}</p>
     <p>Return on Equity (ROE): {{company.return_on_equity}}</p>
@@ -55,6 +94,8 @@
     <p>Free cash flow (FCF): {{company.fcf_growth_rate}}</p>
     <p>Dividend Payment: {{company.dividend_payment}}</p>
     <p>Dividend Cover: {{company.dividend_cover}}</p>
+    <p>DCF Intrinsic Value: {{company.dcf_intrinsic_value}}</p>
+    <hr>
     <p>Revenue Growth: {{company.revenue_growth}}</p>
     <p>EPS Growth: {{company.eps_growth}}</p>
     <p>Dividend Growth: {{company.dividend_growth}}</p>
@@ -70,21 +111,6 @@
     <p>Debt Ratio: {{company.debt_ratio}}</p>
     <p>PE10: {{company.pe_10}}</p>
     <p>DP10: {{company.dp_10}}</p>
-    <p>Growth Rate (10 year) Rank Value: {{company.growth_rate_10_rank_value}}</p>
-    <p>Growth Quality Rank Value: {{company.growth_quality_rank_value}}</p>
-    <p>Median ROCE (10 year) Rank Value: {{company.median_roce_10_rank_value}}</p>
-    <p>PE10 Rank Value: {{company.pe_10_rank_value}}</p>
-    <p>DP10 Rank Value: {{company.dp_10_rank_value}}</p>
-    <p>Growth Rate (10 year) Rank: {{company.growth_rate_10_rank}}</p>
-    <p>Growth Quality Rank: {{company.growth_quality_rank}}</p>
-    <p>Median ROCE (10 year) Rank: {{company.median_roce_10_rank}}</p>
-    <p>PE10 Rank: {{company.pe_10_rank}}</p>
-    <p>DP10 Rank: {{company.dp_10_rank}}</p>
-    <p>Defensive Rank: {{company.defensive_rank}}</p>
-    <p>DCF Intrinsic Value: {{company.dcf_intrinsic_value}}</p>
-    <p>Estimated Growth Rate: {{company.estimated_growth_rate}}</p>
-    <p>Estimated Discount Rate: {{company.estimated_discount_rate}}</p>
-    <p>Estimated Long Term Growth Rate: {{company.estimated_long_term_growth_rate}}</p>
 </div>
 
 {% endblock content %}
