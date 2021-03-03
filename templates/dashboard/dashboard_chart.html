@@ -1,0 +1,10 @@
+{% extends '_base.html' %}
+
+{% block title %}Dashboard{% endblock title %}
+
+{% block content %}
+    {% if graph %}
+        <img src="data:image/png;base64, {{ graph | safe }}">
+    {% endif %}
+    <div>{{ df | safe }}</div>
+{% endblock content %}

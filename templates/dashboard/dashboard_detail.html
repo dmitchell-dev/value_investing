@@ -33,6 +33,14 @@
         </div>
     </div>
 
+    <div class="container border rounded py-2 mb-3">
+        <div class="row">
+            <div class="col">
+                <a href="{% url 'dashboard_company:dashboard_chart' pk=company.id %}"><p>Share Price Chart</p></a>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col">
             <ul class="list-group">
@@ -69,23 +77,23 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     PE10 Rank Value
-                    <span class="badge badge-primary badge-pill">{{company.pe_10_rank_value}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.pe_10_rank_value|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     DP10 Rank Value
-                    <span class="badge badge-primary badge-pill">{{company.dp_10_rank_value}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.dp_10_rank_value|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Growth Quality Rank Value
-                    <span class="badge badge-primary badge-pill">{{company.growth_quality_rank_value}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.growth_quality_rank_value|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Growth Rate (10 year) Rank Value
-                    <span class="badge badge-primary badge-pill">{{company.growth_rate_10_rank_value}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.growth_rate_10_rank_value|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Median ROCE (10 year) Rank Value
-                    <span class="badge badge-primary badge-pill">{{company.median_roce_10_rank_value}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.median_roce_10_rank_value|floatformat}}</span>
                 </li>
             </ul>
         </div>
@@ -98,27 +106,27 @@
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Debt to Equity Ratio (<0.5)
-                    <span class="badge badge-primary badge-pill">{{company.debt_to_equity}}</span>
+                    <span class="badge {% if company.debt_to_equity < 0.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.debt_to_equity | floatformat }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Current Ratio (>1.5)
-                    <span class="badge badge-primary badge-pill">{{company.current_ratio}}</span>
+                    <span class="badge {% if company.current_ratio < 1.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.current_ratio | floatformat }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Return on Equity (>8%)
-                    <span class="badge badge-primary badge-pill">{{company.return_on_equity}}</span>
+                    <span class="badge {% if company.return_on_equity > 0.08 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.return_on_equity | floatformat:2 }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Equity (Book Value) Per Share
-                    <span class="badge badge-primary badge-pill">£{{company.equity_per_share}}</span>
+                    <span class="badge badge-primary badge-pill">£{{company.equity_per_share|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Price to Earnings (<15)
-                    <span class="badge badge-primary badge-pill">{{company.price_to_earnings}}</span>
+                    <span class="badge {% if company.price_to_earnings < 15 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.price_to_earnings | floatformat }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Price to Book Value (<1.5)
-                    <span class="badge badge-primary badge-pill">{{company.price_to_equity}}</span>
+                    <span class="badge {% if company.price_to_equity < 1.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.price_to_equity | floatformat }}</span>
                 </li>
             </ul>
         </div>
@@ -126,11 +134,11 @@
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Annual Yield (Return)
-                    <span class="badge badge-primary badge-pill">{{company.annual_return}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.annual_return|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Free cash flow (FCF)
-                    <span class="badge badge-primary badge-pill">{{company.fcf_growth_rate}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.fcf_growth_rate|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Dividend Payment
@@ -138,11 +146,11 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Dividend Cover
-                    <span class="badge badge-primary badge-pill">{{company.dividend_cover}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.dividend_cover|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     DCF Intrinsic Value
-                    <span class="badge badge-primary badge-pill">{{company.dcf_intrinsic_value}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.dcf_intrinsic_value|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                      N/A
@@ -158,7 +166,7 @@
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center active">
                     Growth Quality (>50%)
-                    <span class="badge badge-success badge-pill">{{company.growth_quality}}</span>
+                    <span class="badge {% if company.growth_quality > 50 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.growth_quality|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Revenue Growth
@@ -181,23 +189,23 @@
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center active">
                     Growth Rate (>2%)
-                    <span class="badge badge-success badge-pill">{{company.growth_rate_10}}</span>
+                    <span class="badge {% if company.growth_rate_10 > 2 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.growth_rate_10|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Overall Growth (10 year)
-                    <span class="badge badge-primary badge-pill">{{company.overall_growth_10}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.overall_growth_10|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Revenue Growth (10 year)
-                    <span class="badge badge-primary badge-pill">{{company.revenue_rowth_10}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.revenue_rowth_10|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Earnings Growth (10 year)
-                    <span class="badge badge-primary badge-pill">{{company.earnings_growth_10}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.earnings_growth_10|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Dividend Growth (10 year)
-                    <span class="badge badge-primary badge-pill">{{company.dividend_growth_10}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.dividend_growth_10|floatformat}}</span>
                 </li>
             </ul>
         </div>
@@ -210,15 +218,15 @@
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Capital Employed
-                    <span class="badge badge-primary badge-pill">£{{company.capital_employed}}</span>
+                    <span class="badge badge-primary badge-pill">£{{company.capital_employed|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     ROCE
-                    <span class="badge badge-primary badge-pill">{{company.roce}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.roce|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Median ROCE (>7%)
-                    <span class="badge badge-primary badge-pill">{{company.median_roce_10}}</span>
+                    <span class="badge {% if company.median_roce_10 > 7 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.median_roce_10|floatformat}}</span>
                 </li>
             </ul>
         </div>
@@ -226,15 +234,15 @@
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Debt Ratio (<4)
-                    <span class="badge badge-primary badge-pill">{{company.debt_ratio}}</span>
+                    <span class="badge {% if company.debt_ratio < 4 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.debt_ratio|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     PE10 (<30)
-                    <span class="badge badge-primary badge-pill">{{company.pe_10}}</span>
+                    <span class="badge {% if company.pe_10 < 30 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.pe_10|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     DP10 (<60)
-                    <span class="badge badge-primary badge-pill">{{company.dp_10}}</span>
+                    <span class="badge {% if company.dp_10 < 60 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.dp_10|floatformat}}</span>
                 </li>
             </ul>
         </div>
