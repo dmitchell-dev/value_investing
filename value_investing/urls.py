@@ -23,4 +23,5 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     # Local Apps
     path("", include("pages.urls")),
+    path("dashboard/", include('dashboard_company.urls')),
 ]

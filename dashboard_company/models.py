@@ -1,6 +1,5 @@
 from django.db import models
-
-# from .managers import CalculatedStatsQueryset
+from django.urls import reverse
 
 
 class DashboardCompany(models.Model):
@@ -60,3 +59,9 @@ class DashboardCompany(models.Model):
 
     def __str__(self):
         return self.company_name
+
+    def get_absolute_url(self):
+        return reverse(
+            "dashboard_company:dashboard_detail",
+            args=[str(self.id)]
+            )

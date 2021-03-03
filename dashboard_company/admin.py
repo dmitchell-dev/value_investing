@@ -8,7 +8,6 @@ class DashboardCompanyAdmin(admin.ModelAdmin):
         "share_listing",
         "company_type",
         "industry_name",
-        "industry_type",
     ]
 
 

@@ -1,0 +1,34 @@
+{% extends '_base.html' %}
+
+{% block title %}Dashboard{% endblock title %}
+
+{% block content %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">PE10</th>
+            <th scope="col">DP10</th>
+            <th scope="col">Growth Qual</th>
+            <th scope="col">Growth Rate</th>
+            <th scope="col">ROCE</th>
+            <th scope="col">Defensive</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for company in company_list %}
+            <tr>
+                <td><a href="{{ company.get_absolute_url }}">{{company.company_name}}</a></td>
+                <td>{{company.pe_10_rank}}</td>
+                <td>{{company.dp_10_rank}}</td>
+                <td>{{company.growth_quality_rank}}</td>
+                <td>{{company.growth_rate_10_rank}}</td>
+                <td>{{company.median_roce_10_rank}}</td>
+                <td>{{ company.defensive_rank }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}
+
+
