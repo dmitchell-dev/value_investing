@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 from django.contrib.auth.models import User
@@ -9,7 +8,7 @@ def get_salesman_from_id(val):
     return salesman
 
 
-def get_image():
+def get_image(plt):
     # create a bytes buffer for the image to save
     buffer = BytesIO()
     # create the plot with the use of BytesIO object as its 'file'
