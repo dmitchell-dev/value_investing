@@ -74,6 +74,8 @@ def _param_chart(company_id, DataSource, param_name):
     df = pd.DataFrame(DataSource.objects.filter(
         company_id=company_id, parameter_id=param_id
         ).values())
+    df['value'] = df['value'].astype(float)
+    print(df)
     plt.switch_backend('Agg')
     plt.xticks(rotation=45)
     sns.lineplot(x='time_stamp', y='value', markers=True, data=df)
