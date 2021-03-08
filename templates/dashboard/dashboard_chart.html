@@ -6,36 +6,48 @@
     <div class="row">
         <div class="col">
             {% if share_chart %}
-                <img src="data:image/png;base64, {{ share_chart | safe }}">
+                <img src="data:image/png;base64, {{ share_chart | safe }}" height="420" width="auto">
             {% endif %}
         </div>
         <div class="col">
             {% if eps_chart %}
-                <img src="data:image/png;base64, {{ eps_chart | safe }}">
+                <img src="data:image/png;base64, {{ eps_chart | safe }}" height="420" width="auto">
             {% endif %}
         </div>
     </div>
     <div class="row">
         <div class="col">
             {% if dividend_chart %}
-                <img src="data:image/png;base64, {{ dividend_chart | safe }}">
+                <img src="data:image/png;base64, {{ dividend_chart | safe }}" height="420" width="auto">
             {% endif %}
         </div>
         <div class="col">
             {% if roe_chart %}
-                <img src="data:image/png;base64, {{ roe_chart | safe }}">
+                <img src="data:image/png;base64, {{ roe_chart | safe }}" height="420" width="auto">
             {% endif %}
         </div>
     </div>
     <div class="row">
         <div class="col">
             {% if equity_chart %}
-                <img src="data:image/png;base64, {{ equity_chart | safe }}">
+                <img src="data:image/png;base64, {{ equity_chart | safe }}" height="420" width="auto">
             {% endif %}
         </div>
         <div class="col">
             {% if roce_chart %}
-                <img src="data:image/png;base64, {{ roce_chart | safe }}">
+                <img src="data:image/png;base64, {{ roce_chart | safe }}" height="420" width="auto">
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {% if total_chart %}
+                <img src="data:image/png;base64, {{ total_chart | safe }}" height="420" width="auto">
+            {% endif %}
+        </div>
+        <div class="col">
+            {% if current_chart %}
+                <img src="data:image/png;base64, {{ current_chart | safe }}" height="420" width="auto">
             {% endif %}
         </div>
     </div>
