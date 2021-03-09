@@ -12,7 +12,12 @@
             <h3 class="float-right text-secondary">{{company.share_listing}}</h3>
         </div>
         <div class="col">
-            <h3 class="float-right bg-dark text-white rounded px-2 py-1">£{{company.share_price}}</h3>
+            <p class="text-right px-2">Share Price</p>
+            <p class="text-right"><h3 class="float-right bg-dark text-white rounded px-2 py-1">£{{company.share_price|floatformat:2}}</h3></p>
+        </div>
+        <div class="col">
+            <p class="text-right px-2">Intrinsic Value</p>
+            <p class="text-right"><h3 class="float-right {% if company.dcf_intrinsic_value > company.share_price %}bg-success{% else %}bg-danger{% endif %} text-white rounded mx-2 px-2 py-1">£{{company.dcf_intrinsic_value|floatformat:2}}</h3></p>
         </div>
     </div>
     <div class="row">
@@ -105,27 +110,23 @@
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Debt to Equity Ratio (<0.5)
-                    <span class="badge {% if company.debt_to_equity < 0.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.debt_to_equity | floatformat }}</span>
+                    <span class="badge {% if company.debt_to_equity < 0.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.debt_to_equity|floatformat }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Current Ratio (>1.5)
-                    <span class="badge {% if company.current_ratio > 1.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.current_ratio | floatformat }}</span>
+                    <span class="badge {% if company.current_ratio > 1.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.current_ratio|floatformat }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Return on Equity (>8%)
-                    <span class="badge {% if company.return_on_equity > 0.08 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.return_on_equity | floatformat:2 }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Equity (Book Value) Per Share
-                    <span class="badge badge-primary badge-pill">£{{company.equity_per_share|floatformat}}</span>
+                    <span class="badge {% if company.return_on_equity > 0.08 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.return_on_equity|floatformat:2 }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Price to Earnings (<15)
-                    <span class="badge {% if company.price_to_earnings < 15 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.price_to_earnings | floatformat }}</span>
+                    <span class="badge {% if company.price_to_earnings < 15 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.price_to_earnings|floatformat }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Price to Book Value (<1.5)
-                    <span class="badge {% if company.price_to_equity < 1.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.price_to_equity | floatformat }}</span>
+                    <span class="badge {% if company.price_to_equity < 1.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.price_to_equity|floatformat }}</span>
                 </li>
             </ul>
         </div>
@@ -137,7 +138,7 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Free cash flow (FCF)
-                    <span class="badge badge-primary badge-pill">{{company.fcf_growth_rate|floatformat}}</span>
+                    <span class="badge badge-primary badge-pill">£{{company.fcf_growth_rate|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Dividend Payment
@@ -148,11 +149,8 @@
                     <span class="badge badge-primary badge-pill">{{company.dividend_cover|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    DCF Intrinsic Value
-                    <span class="badge badge-primary badge-pill">{{company.dcf_intrinsic_value|floatformat}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                        N/A
+                    Equity (Book Value) Per Share
+                    <span class="badge badge-primary badge-pill">£{{company.equity_per_share|floatformat}}</span>
                 </li>
             </ul>
         </div>
@@ -165,7 +163,7 @@
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center active">
                     Growth Quality (>50%)
-                    <span class="badge {% if company.growth_quality > 50 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.growth_quality|floatformat}}</span>
+                    <span class="badge {% if company.growth_quality > 50 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.growth_quality|floatformat}}%</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Revenue Growth
@@ -188,7 +186,7 @@
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center active">
                     Growth Rate (>2%)
-                    <span class="badge {% if company.growth_rate_10 > 2 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.growth_rate_10|floatformat}}</span>
+                    <span class="badge {% if company.growth_rate_10 > 2 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.growth_rate_10|floatformat}}%</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Overall Growth (10 year)
