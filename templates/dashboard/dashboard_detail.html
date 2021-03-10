@@ -34,13 +34,8 @@
             <div class="col">
                 <h5 class="float-right text-secondary">{{company.industry_name}}</h5>
             </div>
-        </div>
-    </div>
-
-    <div class="container border rounded py-2 mb-3">
-        <div class="row">
             <div class="col">
-                <a href="{% url 'dashboard_company:dashboard_chart' pk=company.id %}"><p>Share Price Chart</p></a>
+                <a class="float-right" href="{% url 'dashboard_company:dashboard_chart' pk=company.id %}"><p><i class="fas fa-chart-bar fa-3x" style="color: blue;"></i></p></a>
             </div>
         </div>
     </div>
@@ -53,53 +48,12 @@
                     <span class="badge badge-success badge-pill">{{company.defensive_rank}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    PE10 Rank
-                    <span class="badge badge-primary badge-pill">{{company.pe_10_rank}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    DP10 Rank
-                    <span class="badge badge-primary badge-pill">{{company.dp_10_rank}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Growth Quality Rank
-                    <span class="badge badge-primary badge-pill">{{company.growth_quality_rank}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Growth Rate (10 year) Rank
-                    <span class="badge badge-primary badge-pill">{{company.growth_rate_10_rank}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Median ROCE (10 year) Rank
-                    <span class="badge badge-primary badge-pill">{{company.median_roce_10_rank}}</span>
+                    <canvas id="myChart"></canvas>
                 </li>
             </ul>
         </div>
         <div class="col">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    N/A
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    PE10 Rank Value
-                    <span class="badge badge-primary badge-pill">{{company.pe_10_rank_value|floatformat}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    DP10 Rank Value
-                    <span class="badge badge-primary badge-pill">{{company.dp_10_rank_value|floatformat}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Growth Quality Rank Value
-                    <span class="badge badge-primary badge-pill">{{company.growth_quality_rank_value|floatformat}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Growth Rate (10 year) Rank Value
-                    <span class="badge badge-primary badge-pill">{{company.growth_rate_10_rank_value|floatformat}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Median ROCE (10 year) Rank Value
-                    <span class="badge badge-primary badge-pill">{{company.median_roce_10_rank_value|floatformat}}</span>
-                </li>
-            </ul>
+            <canvas id="myChart"></canvas>
         </div>
     </div>
 
@@ -245,5 +199,34 @@
         </div>
     </div>
 
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: ['PE10', 'DP10', 'Growth Qual', 'Growth Rate', 'ROCE'],
+        datasets: [{
+            label: 'Rankings',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            hoverBorderColor: 'rgb(255, 255, 132)',
+            data: [
+            {{company.pe_10_rank}},
+            {{company.dp_10_rank}},
+            {{company.growth_quality_rank}},
+            {{company.growth_rate_10_rank}},
+            {{company.median_roce_10_rank}}
+            ],
+            fill: false,
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+</script>
 
 {% endblock content %}
