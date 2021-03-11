@@ -199,55 +199,57 @@
         </div>
     </div>
 
-<script>
-
-// Chart JS Example
-var ctx = document.getElementById('myChart').getContext('2d');
-var chart = new Chart(ctx, {
-    // The type of chart we want to create
-    type: 'line',
-
-    // The data for our dataset
-    data: {
-        labels: ['PE10', 'DP10', 'Growth Qual', 'Growth Rate', 'ROCE'],
-        datasets: [{
-            label: 'Rankings',
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
-            hoverBorderColor: 'rgb(255, 255, 132)',
-            data: [
-            {{company.pe_10_rank}},
-            {{company.dp_10_rank}},
-            {{company.growth_quality_rank}},
-            {{company.growth_rate_10_rank}},
-            {{company.median_roce_10_rank}}
-            ],
-            fill: false,
-        }]
-    },
-
-    // Configuration options go here
-    options: {}
-});
-</script>
 
 <script>
-// API Data
-{% block jquery %}
-    var endpoint = 'api/chart/data/'
-    $.ajax({
-        method: "GET",
-        url: endpoint,
-        success: function(data){
-            console.log(data)
-            console.log(data.customers)
+
+    // Chart JS Example
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+            labels: ['PE10', 'DP10', 'Growth Qual', 'Growth Rate', 'ROCE'],
+            datasets: [{
+                label: 'Rankings',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                hoverBorderColor: 'rgb(255, 255, 132)',
+                data: [
+                {{company.pe_10_rank}},
+                {{company.dp_10_rank}},
+                {{company.growth_quality_rank}},
+                {{company.growth_rate_10_rank}},
+                {{company.median_roce_10_rank}}
+                ],
+                fill: false,
+            }]
         },
-        error: function(error_data){
-            console.log("error")
-            console.log(error_data)
-        }
-    })
-{% endblock jquery %}
+
+        // Configuration options go here
+        options: {}
+    });
+
 </script>
 
 {% endblock content %}
+
+<script>
+    // API Data
+    {% block jquery %}
+        var endpoint = 'api/chart/data/';
+        $.ajax({
+            method: "GET",
+            url: endpoint,
+            success: function(data){
+                console.log(data)
+                console.log(data.customers)
+            },
+            error: function(error_data){
+                console.log("error")
+                console.log(error_data)
+            }
+        });
+    {% endblock jquery %}
+</script>
