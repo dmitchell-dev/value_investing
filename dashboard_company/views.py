@@ -1,5 +1,6 @@
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render
+from numpy.lib.shape_base import _column_stack_dispatcher
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -9,6 +10,9 @@ from share_prices.models import SharePrices
 from financial_reports.models import FinancialReports
 from calculated_stats.models import CalculatedStats
 from .managers import get_image
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 
 class DashboardListView(ListView):
@@ -145,3 +149,15 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
     plt.tight_layout()
     chart = get_image(plt)
     return chart
+
+
+class ChartData(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, format=None):
+        data = {
+            "sales": 100,
+            "customers": 10,
+        }
+        return Response(data)
