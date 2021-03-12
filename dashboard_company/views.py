@@ -155,9 +155,24 @@ class ChartData(APIView):
     authentication_classes = []
     permission_classes = []
 
-    def get(self, request, format=None):
+    def get(self, request, pk, format=None):
+        company_name = DashboardCompany.objects.filter(
+            id=pk
+            ).values()[0]['company_name']
+        company_id = Companies.objects.filter(
+            company_name=company_name
+            ).values()[0]['id']
+        share_qs = SharePrices.objects.filter(company_id=company_id).values()
+        y_data = []
+        labels = []
+        for item in share_qs:
+            y_data.append(item['value'])
+            labels.append(item['time_stamp'])
+        y_data.reverse()
+        labels.reverse()
         data = {
-            "sales": 100,
-            "customers": 10,
+            "labels": labels,
+            "y_data": y_data,
         }
+        print(share_qs)
         return Response(data)

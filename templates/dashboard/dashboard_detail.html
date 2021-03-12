@@ -53,7 +53,7 @@
             </ul>
         </div>
         <div class="col">
-            <canvas id="myChart"></canvas>
+            <canvas id="myChart2"></canvas>
         </div>
     </div>
 
@@ -198,17 +198,50 @@
             </ul>
         </div>
     </div>
-
+{% endblock content %}
 
 <script>
+    // API Data
+    {% block jquery %}
+        var endpoint = 'api/chart/data/';
+        var labels = [];
+        var y_data = [];
+        $.ajax({
+            method: "GET",
+            url: endpoint,
+            success: function(data){
+                labels = data.labels
+                y_data = data.y_data
+                setChart()
+            },
+            error: function(error_data){
+                console.log("error")
+                console.log(error_data)
+            }
+        });
+
+    function setChart(){
+        var ctx = document.getElementById('myChart2').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Rankings',
+                    data: y_data,
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    pointRadius: 0,
+                    fill: false,
+                }]
+            }
+        })
+    }
 
     // Chart JS Example
     var ctx = document.getElementById('myChart').getContext('2d');
     var chart = new Chart(ctx, {
-        // The type of chart we want to create
         type: 'line',
-
-        // The data for our dataset
         data: {
             labels: ['PE10', 'DP10', 'Growth Qual', 'Growth Rate', 'ROCE'],
             datasets: [{
@@ -226,30 +259,8 @@
                 fill: false,
             }]
         },
-
-        // Configuration options go here
         options: {}
     });
 
-</script>
-
-{% endblock content %}
-
-<script>
-    // API Data
-    {% block jquery %}
-        var endpoint = 'api/chart/data/';
-        $.ajax({
-            method: "GET",
-            url: endpoint,
-            success: function(data){
-                console.log(data)
-                console.log(data.customers)
-            },
-            error: function(error_data){
-                console.log("error")
-                console.log(error_data)
-            }
-        });
     {% endblock jquery %}
 </script>
