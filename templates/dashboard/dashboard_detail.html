@@ -72,7 +72,7 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Return on Equity (>8%)
-                    <span class="badge {% if company.return_on_equity > 0.08 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.return_on_equity|floatformat:2 }}</span>
+                    <span class="badge {% if company.return_on_equity > 8 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.return_on_equity|floatformat:1}}%</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Price to Earnings (<15)
@@ -92,7 +92,7 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Free cash flow (FCF)
-                    <span class="badge badge-primary badge-pill">£{{company.fcf_growth_rate|floatformat}}</span>
+                    <span class="badge badge-primary badge-pill">£{{company.fcf_growth_rate|floatformat:2}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Dividend Payment
@@ -104,7 +104,7 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Equity (Book Value) Per Share
-                    <span class="badge badge-primary badge-pill">£{{company.equity_per_share|floatformat}}</span>
+                    <span class="badge badge-primary badge-pill">£{{company.equity_per_share|floatformat:2}}</span>
                 </li>
             </ul>
         </div>
@@ -169,7 +169,7 @@
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Capital Employed
-                    <span class="badge badge-primary badge-pill">£{{company.capital_employed|floatformat}}</span>
+                    <span class="badge badge-primary badge-pill">£{{company.capital_employed|floatformat:2}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     ROCE

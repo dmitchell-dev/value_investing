@@ -57,7 +57,7 @@ def return_on_equity(df_pivot):
         drop=True
     )
     if not df_profit.empty and not df_nav.empty:
-        df_roe = df_profit.div(df_nav)
+        df_roe = df_profit.div(df_nav) * 100
         df_roe.index = ["Return on Equity (ROE)"]
 
     return df_roe
