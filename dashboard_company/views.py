@@ -174,5 +174,5 @@ class ChartData(APIView):
             "labels": labels,
             "y_data": y_data,
         }
-        print(share_qs)
+
         return Response(data)

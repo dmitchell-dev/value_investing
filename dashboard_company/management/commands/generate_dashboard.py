@@ -103,9 +103,6 @@ class Command(BaseCommand):
             df_merged, df_rank_latest_pivot, left_index=True, right_index=True
         )
 
-        # TODO Temp add Dividend Cover
-        df_merged["Dividend Cover"] = "-999"
-
         # Replace NaN for mySQL compatability
         df_merged = df_merged.replace([np.nan, "NaN", "nan", "None"], "-9999")
 

@@ -19,6 +19,7 @@ from calculated_stats.managers import (
     annual_yield,
     fcf_growth_rate,
     div_payment,
+    div_cover,
     dcf_intrinsic_value,
     share_price,
     revenue_growth,
@@ -140,7 +141,8 @@ class Command(BaseCommand):
             calc_list.append(df_div_payment)
 
             # Dividend Cover
-            # TODO
+            df_div_cover = div_cover(df_pivot)
+            calc_list.append(df_div_cover)
 
             # Calculate DCF Intrinsic Value
             df_dcf_intrinsic_value = dcf_intrinsic_value(df_pivot, df_dcf_variables)

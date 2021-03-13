@@ -203,22 +203,22 @@
 <script>
     // API Data
     {% block jquery %}
-        var endpoint = 'api/chart/data/';
+        var request = new XMLHttpRequest()
         var labels = [];
         var y_data = [];
-        $.ajax({
-            method: "GET",
-            url: endpoint,
-            success: function(data){
+
+        request.open('GET', 'api/chart/data/', true)
+        request.onload = function () {
+            var data = JSON.parse(this.response)
+            if (request.status >= 200 && request.status < 400) {
                 labels = data.labels
                 y_data = data.y_data
                 setChart()
-            },
-            error: function(error_data){
-                console.log("error")
-                console.log(error_data)
+            } else {
+                console.log('error')
             }
-        });
+        }
+        request.send()
 
     function setChart(){
         var ctx = document.getElementById('myChart2').getContext('2d');
