@@ -57,7 +57,7 @@ def return_on_equity(df_pivot):
         drop=True
     )
     if not df_profit.empty and not df_nav.empty:
-        df_roe = df_profit.div(df_nav)
+        df_roe = df_profit.div(df_nav) * 100
         df_roe.index = ["Return on Equity (ROE)"]
 
     return df_roe
@@ -162,6 +162,25 @@ def div_payment(df_pivot):
     df_div_payment.index = ["Dividend Payment"]
 
     return df_div_payment
+
+
+def div_cover(df_pivot):
+    row_title = "Post-tax profit_Continuous Operatings"
+    df_profit = _dataframe_slice(df_pivot, row_title)
+
+    row_title = "Dividend (adjusted) ps_Per Share Values"
+    df_div = _dataframe_slice(df_pivot, row_title)
+
+    row_title = "Number of shares_Other"
+    df_num_shares = _dataframe_slice(df_pivot, row_title)
+
+    df_total_div = df_div.reset_index(drop=True).mul(df_num_shares.reset_index(drop=True)) / 100
+
+    df_div_cover = df_profit.reset_index(drop=True).div(df_total_div)
+
+    df_div_cover.index = ["Dividend Cover"]
+
+    return df_div_cover
 
 
 def dcf_intrinsic_value(df_pivot, df_dcf_variables):
