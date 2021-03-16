@@ -29,6 +29,38 @@ class DashboardDetailView(DetailView):
     template_name = 'dashboard/dashboard_detail.html'
 
 
+def dashboard_table(request, pk):
+
+    error_message = None
+
+    param_df = pd.DataFrame(Parameters.objects.all().values())
+    company_name = DashboardCompany.objects.filter(
+        id=pk
+        ).values()[0]['company_name']
+    company_id = Companies.objects.filter(
+        company_name=company_name
+        ).values()[0]['id']
+
+    finance_df = pd.DataFrame(FinancialReports.objects.filter(
+        company_id=company_id
+    ).select_related().values())
+
+    finance_df['param_name'] = param_df[param_df["id"] == finance_df["parameter_id"]]
+
+    finance_df_pivot = finance_df.pivot(
+        columns="time_stamp",
+        index="parameter_id",
+        values="value",
+    )
+
+    context = {
+        'finance_table': finance_df_pivot.to_html(),
+        'error_message': error_message,
+    }
+
+    return render(request, 'dashboard/dashboard_table.html', context)
+
+
 def dashboard_chart(request, pk):
 
     error_message = None
