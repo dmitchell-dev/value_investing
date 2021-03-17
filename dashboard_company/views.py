@@ -29,11 +29,11 @@ class DashboardDetailView(DetailView):
     template_name = 'dashboard/dashboard_detail.html'
 
 
-def dashboard_table(request, pk):
+def dashboard_table(request, pk, report_type):
 
     error_message = None
-
-    param_df = pd.DataFrame(Parameters.objects.all().values())
+    print(report_type)
+    # Get correct company id
     company_name = DashboardCompany.objects.filter(
         id=pk
         ).values()[0]['company_name']
@@ -41,20 +41,26 @@ def dashboard_table(request, pk):
         company_name=company_name
         ).values()[0]['id']
 
-    finance_df = pd.DataFrame(FinancialReports.objects.filter(
-        company_id=company_id
-    ).select_related().values())
+    # Get financial data
+    finance_qs = FinancialReports.objects.select_related('parameter_id').filter(
+        company_id=company_id,
+        parameter_id__report_section_id__report_type_id__report_name="Income Statement"
+    )
 
-    finance_df['param_name'] = param_df[param_df["id"] == finance_df["parameter_id"]]
+    finance_data = finance_qs.values('id', 'time_stamp', 'parameter_id__param_name', 'value')
+
+    finance_df = pd.DataFrame(finance_data)
+
+    finance_df = finance_df.drop_duplicates(subset=['time_stamp', 'parameter_id__param_name'], keep='last')
 
     finance_df_pivot = finance_df.pivot(
         columns="time_stamp",
-        index="parameter_id",
+        index="parameter_id__param_name",
         values="value",
     )
 
     context = {
-        'finance_table': finance_df_pivot.to_html(),
+        'finance_table': finance_df_pivot.to_html(classes="table", border=0),
         'error_message': error_message,
     }
 

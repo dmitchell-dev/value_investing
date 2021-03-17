@@ -14,5 +14,5 @@ urlpatterns = [
     path("<int:pk>/api/chart/data/", ChartData.as_view()),
     path("<int:pk>/", DashboardDetailView.as_view(), name="dashboard_detail"),
     path("chart/<int:pk>/", dashboard_chart, name='dashboard_chart'),
-    path("table/<int:pk>/", dashboard_table, name='dashboard_table'),
+    path("table/<int:pk>/<str:report_type>/", dashboard_table, name='dashboard_table'),
 ]

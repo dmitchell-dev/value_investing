@@ -35,7 +35,7 @@
                 <h5 class="float-right text-secondary">{{company.industry_name}}</h5>
             </div>
             <div class="col">
-                <a class="float-right" href="{% url 'dashboard_company:dashboard_table' pk=company.id %}"><p><i class="fas fa-table fa-3x" style="color: blue;"></i></p></a>
+                <a class="float-right" href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type="Income Statement" %}"><p><i class="fas fa-table fa-3x" style="color: blue;"></i></p></a>
             </div>
             <div class="col">
                 <a class="float-right" href="{% url 'dashboard_company:dashboard_chart' pk=company.id %}"><p><i class="fas fa-chart-bar fa-3x" style="color: blue;"></i></p></a>
