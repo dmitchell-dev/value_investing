@@ -44,7 +44,7 @@ def dashboard_table(request, pk, report_type):
     # Get financial data
     finance_qs = FinancialReports.objects.select_related('parameter_id').filter(
         company_id=company_id,
-        parameter_id__report_section_id__report_type_id__report_name="Income Statement"
+        parameter_id__report_section_id__report_type_id__report_name=report_type
     )
 
     finance_data = finance_qs.values('id', 'time_stamp', 'parameter_id__param_name', 'value')
@@ -61,6 +61,7 @@ def dashboard_table(request, pk, report_type):
 
     context = {
         'finance_table': finance_df_pivot.to_html(classes="table", border=0),
+        'report_type': report_type,
         'error_message': error_message,
     }
 
