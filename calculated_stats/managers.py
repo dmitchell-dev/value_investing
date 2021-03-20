@@ -174,7 +174,9 @@ def div_cover(df_pivot):
     row_title = "Number of shares_Other"
     df_num_shares = _dataframe_slice(df_pivot, row_title)
 
-    df_total_div = df_div.reset_index(drop=True).mul(df_num_shares.reset_index(drop=True)) / 100
+    df_total_div = (
+        df_div.reset_index(drop=True).mul(df_num_shares.reset_index(drop=True)) / 100
+    )
 
     df_div_cover = df_profit.reset_index(drop=True).div(df_total_div)
 

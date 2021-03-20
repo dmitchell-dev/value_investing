@@ -16,9 +16,7 @@ class Command(BaseCommand):
         pd.set_option("display.max_columns", None)
 
         # Companies
-        df_companies = pd.DataFrame(
-            list(Companies.objects.get_companies_joined())
-            )
+        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
         df_companies.index = df_companies["tidm"]
 
@@ -146,9 +144,7 @@ class Command(BaseCommand):
                 growth_rate_10_rank_value=float(
                     row["Growth Rate (10 year) Rank Value"]
                 ),
-                growth_quality_rank_value=float(
-                    row["Growth Quality Rank Value"]
-                ),
+                growth_quality_rank_value=float(row["Growth Quality Rank Value"]),
                 median_roce_10_rank_value=float(
                     row["Median ROCE (10 year) Rank Value"]
                 ),
