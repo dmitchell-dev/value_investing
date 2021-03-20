@@ -4,6 +4,9 @@ from numpy.lib.shape_base import _column_stack_dispatcher
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+import plotly.express as px
+
 from .models import DashboardCompany
 from ancillary_info.models import Parameters, Companies
 from share_prices.models import SharePrices
@@ -13,6 +16,8 @@ from .managers import get_image
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+pd.options.plotting.backend = "plotly"
 
 
 class DashboardListView(ListView):
@@ -29,10 +34,40 @@ class DashboardDetailView(DetailView):
     template_name = 'dashboard/dashboard_detail.html'
 
 
+def dashboard_plotly(request, pk):
+
+    error_message = None
+
+    # Get correct company id
+    company_name = DashboardCompany.objects.filter(
+        id=pk
+        ).values()[0]['company_name']
+    company_id = Companies.objects.filter(
+        company_name=company_name
+        ).values()[0]['id']
+
+    # Get share data
+    df = pd.DataFrame(SharePrices.objects.filter(company_id=company_id).values())
+
+    # Plot Chart
+    fig = px.line(df, x="time_stamp", y="value", title="Share Price", labels={"time_stamp": "Date", "value": "pence",})
+    fig_div = fig.to_html(full_html=False, include_plotlyjs=False)
+
+    fig2 = px.line(df, x="time_stamp", y="value")
+    fig_div2 = fig2.to_html(full_html=False, include_plotlyjs=False)
+
+    context = {
+        'error_message': error_message,
+        'plot': fig_div,
+        'plot2': fig_div2,
+    }
+
+    return render(request, 'dashboard/dashboard_plotly.html', context)
+
+
 def dashboard_table(request, pk, report_type):
 
     error_message = None
-    print(report_type)
     # Get correct company id
     company_name = DashboardCompany.objects.filter(
         id=pk
