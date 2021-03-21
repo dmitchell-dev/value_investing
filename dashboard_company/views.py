@@ -36,9 +36,9 @@ class DashboardDetailView(DetailView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
 
         context['share_chart'] = _share_chart(self.kwargs['pk'])
+        context['parameters'] = Parameters.objects.all()
 
         return context
 
@@ -185,6 +185,7 @@ def _share_chart(company_id):
         },
     )
     fig_div = fig.to_html(full_html=False, include_plotlyjs=False)
+
     return fig_div
 
 
