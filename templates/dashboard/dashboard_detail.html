@@ -73,12 +73,27 @@
 
     <hr>
 
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        Launch demo modal
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    {{ share_chart | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col">
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Debt to Equity (D/E)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>Debt to Equity Ratio (<0.5)</span>
-                    <span class="badge {% if company.debt_to_equity < 0.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.debt_to_equity|floatformat }}</span>
+                    <span class="badge {% if company.debt_to_equity < 0.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill" data-toggle="modal" data-target="#exampleModal">{{ company.debt_to_equity|floatformat }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Current Ratio' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>Current Ratio (>1.5, <2.5)</span>
@@ -221,6 +236,10 @@
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
         });
+
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        })
 
         var request = new XMLHttpRequest()
         var labels = [];
