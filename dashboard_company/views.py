@@ -1,9 +1,11 @@
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render
-from numpy.lib.shape_base import _column_stack_dispatcher
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+from django.http import JsonResponse
+from django.views import View
 
 import plotly.express as px
 
@@ -14,8 +16,6 @@ from financial_reports.models import FinancialReports
 from calculated_stats.models import CalculatedStats
 from .managers import get_image
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
 
 pd.options.plotting.backend = "plotly"
 
@@ -48,11 +48,17 @@ def dashboard_plotly(request, pk):
     error_message = None
 
     # Get correct company id
-    company_name = DashboardCompany.objects.filter(id=pk).values()[0]["company_name"]
-    company_id = Companies.objects.filter(company_name=company_name).values()[0]["id"]
+    company_name = DashboardCompany.objects.filter(
+        id=pk
+        ).values()[0]["company_name"]
+    company_id = Companies.objects.filter(
+        company_name=company_name
+        ).values()[0]["id"]
 
     # Get share data
-    df = pd.DataFrame(SharePrices.objects.filter(company_id=company_id).values())
+    df = pd.DataFrame(SharePrices.objects.filter(
+        company_id=company_id
+        ).values())
 
     # Plot Chart
     fig = px.line(
@@ -83,8 +89,12 @@ def dashboard_table(request, pk, report_type):
 
     error_message = None
     # Get correct company id
-    company_name = DashboardCompany.objects.filter(id=pk).values()[0]["company_name"]
-    company_id = Companies.objects.filter(company_name=company_name).values()[0]["id"]
+    company_name = DashboardCompany.objects.filter(
+        id=pk
+        ).values()[0]["company_name"]
+    company_id = Companies.objects.filter(
+        company_name=company_name
+        ).values()[0]["id"]
 
     # Get financial data
     finance_qs = FinancialReports.objects.select_related("parameter_id").filter(
@@ -121,8 +131,12 @@ def dashboard_chart(request, pk):
 
     error_message = None
 
-    company_name = DashboardCompany.objects.filter(id=pk).values()[0]["company_name"]
-    company_id = Companies.objects.filter(company_name=company_name).values()[0]["id"]
+    company_name = DashboardCompany.objects.filter(
+        id=pk
+        ).values()[0]["company_name"]
+    company_id = Companies.objects.filter(
+        company_name=company_name
+        ).values()[0]["id"]
 
     share_chart = _share_chart(
         company_id
@@ -220,9 +234,15 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
     param_name_2 = kwargs["chart_name_2"]
     param_name_3 = kwargs["chart_name_3"]
 
-    param_id_1 = Parameters.objects.filter(param_name=param_name_1).values()[0]["id"]
-    param_id_2 = Parameters.objects.filter(param_name=param_name_2).values()[0]["id"]
-    param_id_3 = Parameters.objects.filter(param_name=param_name_3).values()[0]["id"]
+    param_id_1 = Parameters.objects.filter(
+        param_name=param_name_1
+        ).values()[0]["id"]
+    param_id_2 = Parameters.objects.filter(
+        param_name=param_name_2
+        ).values()[0]["id"]
+    param_id_3 = Parameters.objects.filter(
+        param_name=param_name_3
+        ).values()[0]["id"]
 
     df_1 = pd.DataFrame(
         DataSource.objects.filter(
@@ -252,28 +272,30 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
     return chart
 
 
-class ChartData(APIView):
-    authentication_classes = []
-    permission_classes = []
+class ChartData(View):
 
-    def get(self, request, pk, format=None):
-        company_name = DashboardCompany.objects.filter(id=pk).values()[0][
-            "company_name"
-        ]
-        company_id = Companies.objects.filter(company_name=company_name).values()[0][
-            "id"
-        ]
-        share_qs = SharePrices.objects.filter(company_id=company_id).values()
+    def get(self, request, pk):
+        company_name = DashboardCompany.objects.filter(
+            id=pk
+            ).values()[0]["company_name"]
+        company_id = Companies.objects.filter(
+            company_name=company_name
+            ).values()[0]["id"]
+        share_qs = SharePrices.objects.filter(
+            company_id=company_id
+            ).values()
+
         y_data = []
-        labels = []
+        x_data = []
+
         for item in share_qs:
             y_data.append(item["value"])
-            labels.append(item["time_stamp"])
+            x_data.append(item["time_stamp"])
         y_data.reverse()
-        labels.reverse()
+        x_data.reverse()
         data = {
-            "labels": labels,
+            "x_data": x_data,
             "y_data": y_data,
         }
 
-        return Response(data)
+        return JsonResponse(data)
