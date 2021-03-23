@@ -43,48 +43,6 @@ class DashboardDetailView(DetailView):
         return context
 
 
-def dashboard_plotly(request, pk):
-
-    error_message = None
-
-    # Get correct company id
-    company_name = DashboardCompany.objects.filter(
-        id=pk
-        ).values()[0]["company_name"]
-    company_id = Companies.objects.filter(
-        company_name=company_name
-        ).values()[0]["id"]
-
-    # Get share data
-    df = pd.DataFrame(SharePrices.objects.filter(
-        company_id=company_id
-        ).values())
-
-    # Plot Chart
-    fig = px.line(
-        df,
-        x="time_stamp",
-        y="value",
-        title="Share Price",
-        labels={
-            "time_stamp": "Date",
-            "value": "pence",
-        },
-    )
-    fig_div = fig.to_html(full_html=False, include_plotlyjs=False)
-
-    fig2 = px.line(df, x="time_stamp", y="value")
-    fig_div2 = fig2.to_html(full_html=False, include_plotlyjs=False)
-
-    context = {
-        "error_message": error_message,
-        "plot": fig_div,
-        "plot2": fig_div2,
-    }
-
-    return render(request, "dashboard/dashboard_plotly.html", context)
-
-
 def dashboard_table(request, pk, report_type):
 
     error_message = None
@@ -261,7 +219,7 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
     )
 
     df = pd.concat([df_1, df_2, df_3])
-    print(df)
+    # print(df)
     df["value"] = df["value"].astype(float)
     plt.switch_backend("Agg")
     plt.xticks(rotation=45)
@@ -272,7 +230,7 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
     return chart
 
 
-class ChartData(View):
+class ShareChartDataView(View):
 
     def get(self, request, pk):
         company_name = DashboardCompany.objects.filter(
@@ -291,6 +249,7 @@ class ChartData(View):
         for item in share_qs:
             y_data.append(item["value"])
             x_data.append(item["time_stamp"])
+
         y_data.reverse()
         x_data.reverse()
         data = {

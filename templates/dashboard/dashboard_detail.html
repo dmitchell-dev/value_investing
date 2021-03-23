@@ -44,9 +44,9 @@
                 <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type='Balance Sheet' %}">Balance Sheet</a></p>
                 <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type='Cash Flow' %}">Cash Flow</a></p>
             </div>
-            <div class="col">
-                <a class="float-right" href="{% url 'dashboard_company:dashboard_plotly' pk=company.id %}"><i class="fas fa-chart-bar fa-3x" style="color: blue;"></i></a>
-            </div>
+            {% comment %} <div class="col"> {% endcomment %}
+                {% comment %} <a class="float-right" href="{% url 'dashboard_company:dashboard_plotly' pk=company.id %}"><i class="fas fa-chart-bar fa-3x" style="color: blue;"></i></a> {% endcomment %}
+            {% comment %} </div> {% endcomment %}
             <div class="col">
                 <a class="float-right" href="{% url 'dashboard_company:dashboard_chart' pk=company.id %}"><i class="fas fa-chart-bar fa-3x" style="color: blue;"></i></a>
             </div>
@@ -247,15 +247,19 @@
 
         $('#myModal').on('shown.bs.modal', function () {
             $('#myInput').trigger('focus')
-        })
+        });
 
         var request = new XMLHttpRequest()
+        var urltest = '{% url 'dashboard_company:dashboard_detail' pk=company.id %}'
+        // console.log(urltest)
         var labels = [];
         var y_data = [];
 
-        request.open('GET', 'api/chart/data/', true)
+        request.open('GET', urltest+'api/chart/data/', true)
         request.onload = function () {
             var data = JSON.parse(this.response)
+            var comp_id = '{{company.id|escapejs}}';
+
             if (request.status >= 200 && request.status < 400) {
                 sharePriceChart(data)
                 rankingChart(data)
@@ -274,7 +278,7 @@
         var data = [trace1];
 
         Plotly.newPlot('sharePriceDiv', data);
-    }
+    };
 
     function rankingChart(data){
         var trace1 = {
@@ -291,49 +295,7 @@
         var data = [trace1];
 
         Plotly.newPlot('rankingDiv', data);
-    }
-
-    function setChart(){
-        var ctx = document.getElementById('myChart2').getContext('2d');
-        var chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Rankings',
-                    data: y_data,
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    pointRadius: 0,
-                    fill: false,
-                }]
-            }
-        })
-    }
-
-    // Chart JS Example
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['PE10', 'DP10', 'Growth Qual', 'Growth Rate', 'ROCE'],
-            datasets: [{
-                label: 'Rankings',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                hoverBorderColor: 'rgb(255, 255, 132)',
-                data: [
-                {{company.pe_10_rank}},
-                {{company.dp_10_rank}},
-                {{company.growth_quality_rank}},
-                {{company.growth_rate_10_rank}},
-                {{company.median_roce_10_rank}}
-                ],
-                fill: false,
-            }]
-        },
-        options: {}
-    });
+    };
 
     {% endblock jquery %}
 </script>
