@@ -250,15 +250,12 @@
         });
 
         var request = new XMLHttpRequest()
-        var urltest = '{% url 'dashboard_company:dashboard_detail' pk=company.id %}'
-        // console.log(urltest)
         var labels = [];
         var y_data = [];
 
-        request.open('GET', urltest+'api/chart/data/', true)
+        request.open('GET', 'data/share-price', true)
         request.onload = function () {
             var data = JSON.parse(this.response)
-            var comp_id = '{{company.id|escapejs}}';
 
             if (request.status >= 200 && request.status < 400) {
                 sharePriceChart(data)

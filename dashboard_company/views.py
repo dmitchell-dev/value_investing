@@ -37,7 +37,7 @@ class DashboardDetailView(DetailView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
 
-        context['share_chart'] = _share_chart(self.kwargs['pk'])
+        # context['share_chart'] = _share_chart(self.kwargs['pk'])
         context['parameters'] = Parameters.objects.all()
 
         return context
@@ -96,15 +96,15 @@ def dashboard_chart(request, pk):
         company_name=company_name
         ).values()[0]["id"]
 
-    share_chart = _share_chart(
-        company_id
-    )
-    eps_chart = _param_chart(
-        company_id, FinancialReports, "EPS norm. continuous"
-    )
-    dividend_chart = _param_chart(
-        company_id, FinancialReports, "Dividend (adjusted) ps"
-    )
+    # share_chart = _share_chart(
+    #     company_id
+    # )
+    # eps_chart = _param_chart(
+    #     company_id, FinancialReports, "EPS norm. continuous"
+    # )
+    # dividend_chart = _param_chart(
+    #     company_id, FinancialReports, "Dividend (adjusted) ps"
+    # )
     roe_chart = _param_chart(
         company_id, CalculatedStats, "Return on Equity (ROE)"
     )
@@ -128,9 +128,9 @@ def dashboard_chart(request, pk):
     )
 
     context = {
-        "share_chart": share_chart,
-        "eps_chart": eps_chart,
-        "dividend_chart": dividend_chart,
+        # "share_chart": share_chart,
+        # "eps_chart": eps_chart,
+        # "dividend_chart": dividend_chart,
         "roe_chart": roe_chart,
         "equity_chart": equity_chart,
         "roce_chart": roce_chart,
@@ -140,25 +140,6 @@ def dashboard_chart(request, pk):
     }
 
     return render(request, "dashboard/dashboard_chart.html", context)
-
-
-def _share_chart(company_id):
-    df = pd.DataFrame(SharePrices.objects.filter(
-        company_id=company_id
-        ).values())
-
-    fig = px.line(
-        df,
-        x="time_stamp",
-        y="value",
-        labels={
-            "time_stamp": "Date",
-            "value": "pence",
-        },
-    )
-    fig_div = fig.to_html(full_html=False, include_plotlyjs=False)
-
-    return fig_div
 
 
 def _param_chart(company_id, DataSource, param_name):
@@ -257,4 +238,76 @@ class ShareChartDataView(View):
             "y_data": y_data,
         }
 
+        return JsonResponse(data)
+
+
+class EpsNormDataView(View):
+
+    def get(self, request, pk):
+
+        company_name = DashboardCompany.objects.filter(
+            id=pk
+            ).values()[0]["company_name"]
+        company_id = Companies.objects.filter(
+            company_name=company_name
+            ).values()[0]["id"]
+        param_id = Parameters.objects.filter(
+            param_name="EPS norm. continuous"
+            ).values()[0]["id"]
+
+        df = pd.DataFrame(
+            FinancialReports.objects.filter(
+                company_id=company_id, parameter_id=param_id
+            ).values()
+        )
+        df["value"] = df["value"].astype(float)
+
+        y_data = []
+        x_data = []
+
+        for index, row in df.iterrows():
+            y_data.append(row['value'])
+            x_data.append(row['time_stamp'])
+
+        data = {
+            "x_data": x_data,
+            "y_data": y_data,
+        }
+
+        return JsonResponse(data)
+
+
+class DividendDataView(View):
+
+    def get(self, request, pk):
+
+        company_name = DashboardCompany.objects.filter(
+            id=pk
+            ).values()[0]["company_name"]
+        company_id = Companies.objects.filter(
+            company_name=company_name
+            ).values()[0]["id"]
+        param_id = Parameters.objects.filter(
+            param_name="Dividend (adjusted) ps"
+            ).values()[0]["id"]
+
+        df = pd.DataFrame(
+            FinancialReports.objects.filter(
+                company_id=company_id, parameter_id=param_id
+            ).values()
+        )
+        df["value"] = df["value"].astype(float)
+
+        y_data = []
+        x_data = []
+
+        for index, row in df.iterrows():
+            y_data.append(row['value'])
+            x_data.append(row['time_stamp'])
+
+        data = {
+            "x_data": x_data,
+            "y_data": y_data,
+        }
+        print(data)
         return JsonResponse(data)

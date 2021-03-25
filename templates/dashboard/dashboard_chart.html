@@ -5,24 +5,20 @@
 {% block content %}
     <div class="row">
         <div class="col">
-            {% if share_chart %}
-                <h3>Share Price</h3>
-                {{ share_chart | safe }}
-            {% endif %}
+            <h3>Share Price</h3>
+            <div id="sharePriceDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            {% if eps_chart %}
-                {{ eps_chart | safe }}
-            {% endif %}
+            <h3>EPS Norm</h3>
+            <div id="epsNormDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            {% if dividend_chart %}
-                {{ dividend_chart | safe }}
-            {% endif %}
+            <h3>Dividend</h3>
+            <div id="dividendDiv"></div>
         </div>
     </div>
     <div class="row">
@@ -50,7 +46,6 @@
         <div class="col">
             {% if total_chart %}
                 <img src="data:image/png;base64, {{ total_chart | safe }}" height="420" width="auto">
-                {% comment %} {{ total_chart | safe }} {% endcomment %}
             {% endif %}
         </div>
     </div>
@@ -58,8 +53,48 @@
         <div class="col">
             {% if current_chart %}
                 <img src="data:image/png;base64, {{ current_chart | safe }}" height="420" width="auto">
-                {% comment %} {{ current_chart | safe }} {% endcomment %}
             {% endif %}
         </div>
     </div>
 {% endblock content %}
+
+<script>
+    // API Data
+    {% block jquery %}
+
+        var index = ["share-price/", "eps-norm/", "dividend/"];
+        var div_index = ["sharePriceDiv", "epsNormDiv", "dividendDiv"];
+        var index_size = index.length;
+
+        var f = (function(){
+        var xhr = [], i;
+        for(i = 0; i < index_size; i++){ //for loop
+            (function(i){
+
+                var url = "data/" + index[i];
+                var div_id = div_index[i]
+                console.log(url)
+                console.log(div_id)
+
+                xhr[i] = new XMLHttpRequest();
+                xhr[i].open("GET", url, true);
+                xhr[i].onreadystatechange = function(){
+                    if (xhr[i].readyState === 4 && xhr[i].status === 200){
+                        var data = JSON.parse(xhr[i].responseText);
+                        console.log(data)
+                        var trace1 = {
+                            x: data.x_data,
+                            y: data.y_data,
+                            type: 'scatter'
+                        };
+                        var data = [trace1];
+                        Plotly.newPlot(div_id, data);
+                        }
+                    };
+                    xhr[i].send();
+                })(i);
+            }
+        })();
+
+    {% endblock jquery %}
+</script>
