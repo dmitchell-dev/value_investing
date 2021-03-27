@@ -6,6 +6,11 @@ from .views import (
     DividendDataView,
     DashboardListView,
     DashboardDetailView,
+    RoeDataView,
+    EpsDataView,
+    RoceDataView,
+    TotalMultiDataView,
+    CurrentMultiDataView,
     dashboard_chart,
     dashboard_table,
 )
@@ -24,6 +29,11 @@ data_patterns = (
         path("<int:pk>/chart/data/share-price/", ShareChartDataView.as_view()),
         path("<int:pk>/chart/data/eps-norm/", EpsNormDataView.as_view()),
         path("<int:pk>/chart/data/dividend/", DividendDataView.as_view()),
+        path("<int:pk>/chart/data/roe/", RoeDataView.as_view()),
+        path("<int:pk>/chart/data/eps/", EpsDataView.as_view()),
+        path("<int:pk>/chart/data/roce/", RoceDataView.as_view()),
+        path("<int:pk>/chart/data/total-multi/", TotalMultiDataView.as_view()),
+        path("<int:pk>/chart/data/current-multi/", CurrentMultiDataView.as_view()),
     ],
     "data",
 )

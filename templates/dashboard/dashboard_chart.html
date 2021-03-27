@@ -23,37 +23,32 @@
     </div>
     <div class="row">
         <div class="col">
-            {% if roe_chart %}
-                {{ roe_chart | safe }}
-            {% endif %}
+            <h3>Return on Equity</h3>
+            <div id="roeDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            {% if equity_chart %}
-                {{ equity_chart | safe }}
-            {% endif %}
+            <h3>Equity per Share</h3>
+            <div id="epsDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            {% if roce_chart %}
-                {{ roce_chart | safe }}
-            {% endif %}
+            <h3>ROCE</h3>
+            <div id="roceDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            {% if total_chart %}
-                <img src="data:image/png;base64, {{ total_chart | safe }}" height="420" width="auto">
-            {% endif %}
+            <h3>Total Charts</h3>
+            <div id="totalDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            {% if current_chart %}
-                <img src="data:image/png;base64, {{ current_chart | safe }}" height="420" width="auto">
-            {% endif %}
+            <h3>Current Charts</h3>
+            <div id="currentDiv"></div>
         </div>
     </div>
 {% endblock content %}
@@ -62,8 +57,8 @@
     // API Data
     {% block jquery %}
 
-        var index = ["share-price/", "eps-norm/", "dividend/"];
-        var div_index = ["sharePriceDiv", "epsNormDiv", "dividendDiv"];
+        var index = ["share-price/", "eps-norm/", "dividend/", "roe/", "eps/", "roce/"];
+        var div_index = ["sharePriceDiv", "epsNormDiv", "dividendDiv", "roeDiv", "epsDiv", "roceDiv"];
         var index_size = index.length;
 
         var f = (function(){
@@ -80,7 +75,7 @@
                 xhr[i].open("GET", url, true);
                 xhr[i].onreadystatechange = function(){
                     if (xhr[i].readyState === 4 && xhr[i].status === 200){
-                        var data = JSON.parse(xhr[i].responseText);
+                        var data = JSON.parse(xhr[i].responseText.replace(/\bNaN\b/g, "null"));
                         console.log(data)
                         var trace1 = {
                             x: data.x_data,
@@ -95,6 +90,51 @@
                 })(i);
             }
         })();
+
+        var index = ["total-multi/", "current-multi/"];
+        var div_index = ["totalDiv", "currentDiv"];
+        var index_size = index.length;
+
+        var f = (function(){
+        var xhr = [], i;
+        for(i = 0; i < index_size; i++){ //for loop
+            (function(i){
+
+                var url = "data/" + index[i];
+                var div_id = div_index[i]
+                console.log(url)
+                console.log(div_id)
+
+                xhr[i] = new XMLHttpRequest();
+                xhr[i].open("GET", url, true);
+                xhr[i].onreadystatechange = function(){
+                    if (xhr[i].readyState === 4 && xhr[i].status === 200){
+                        var data = JSON.parse(xhr[i].responseText.replace(/\bNaN\b/g, "null"));
+                        console.log(data)
+                        var trace1 = {
+                            x: data.df1_x_data,
+                            y: data.df1_y_data,
+                            type: 'scatter'
+                        };
+                        var trace2 = {
+                            x: data.df2_x_data,
+                            y: data.df2_y_data,
+                            type: 'scatter'
+                        };
+                        var trace3 = {
+                            x: data.df3_x_data,
+                            y: data.df3_y_data,
+                            type: 'scatter'
+                        };
+                        var data = [trace1, trace2, trace3];
+                        Plotly.newPlot(div_id, data);
+                        }
+                    };
+                    xhr[i].send();
+                })(i);
+            }
+        })();
+
 
     {% endblock jquery %}
 </script>

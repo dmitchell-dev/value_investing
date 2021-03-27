@@ -1,20 +1,15 @@
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 from django.http import JsonResponse
 from django.views import View
-
-import plotly.express as px
 
 from .models import DashboardCompany
 from ancillary_info.models import Parameters, Companies
 from share_prices.models import SharePrices
 from financial_reports.models import FinancialReports
 from calculated_stats.models import CalculatedStats
-from .managers import get_image
 
 
 pd.options.plotting.backend = "plotly"
@@ -105,47 +100,51 @@ def dashboard_chart(request, pk):
     # dividend_chart = _param_chart(
     #     company_id, FinancialReports, "Dividend (adjusted) ps"
     # )
-    roe_chart = _param_chart(
-        company_id, CalculatedStats, "Return on Equity (ROE)"
-    )
-    equity_chart = _param_chart(
-        company_id, CalculatedStats, "Equity (Book Value) Per Share"
-    )
-    roce_chart = _param_chart(company_id, CalculatedStats, "ROCE")
-    total_chart = _multi_chart(
-        company_id,
-        FinancialReports,
-        chart_name_1="Post-tax profit",
-        chart_name_2="Total equity",
-        chart_name_3="Total liabilities",
-    )
-    current_chart = _multi_chart(
-        company_id,
-        FinancialReports,
-        chart_name_1="Post-tax profit",
-        chart_name_2="Current assets",
-        chart_name_3="Current liabilities",
-    )
+    # roe_chart = _param_chart(
+    #     company_id, CalculatedStats, "Return on Equity (ROE)"
+    # )
+    # equity_chart = _param_chart(
+    #     company_id, CalculatedStats, "Equity (Book Value) Per Share"
+    # )
+    # roce_chart = _param_chart(
+    #     company_id, CalculatedStats, "ROCE"
+    #     )
+    # total_chart = _multi_chart(
+    #     company_id,
+    #     FinancialReports,
+    #     chart_name_1="Post-tax profit",
+    #     chart_name_2="Total equity",
+    #     chart_name_3="Total liabilities",
+    # )
+    # current_chart = _multi_chart(
+    #     company_id,
+    #     FinancialReports,
+    #     chart_name_1="Post-tax profit",
+    #     chart_name_2="Current assets",
+    #     chart_name_3="Current liabilities",
+    # )
 
     context = {
         # "share_chart": share_chart,
         # "eps_chart": eps_chart,
         # "dividend_chart": dividend_chart,
-        "roe_chart": roe_chart,
-        "equity_chart": equity_chart,
-        "roce_chart": roce_chart,
+        # "roe_chart": roe_chart,
+        # "equity_chart": equity_chart,
+        # "roce_chart": roce_chart,
         "error_message": error_message,
-        "total_chart": total_chart,
-        "current_chart": current_chart,
+        # "total_chart": total_chart,
+        # "current_chart": current_chart,
     }
 
     return render(request, "dashboard/dashboard_chart.html", context)
 
 
 def _param_chart(company_id, DataSource, param_name):
+
     param_id = Parameters.objects.filter(
         param_name=param_name
         ).values()[0]["id"]
+
     df = pd.DataFrame(
         DataSource.objects.filter(
             company_id=company_id, parameter_id=param_id
@@ -153,19 +152,19 @@ def _param_chart(company_id, DataSource, param_name):
     )
     df["value"] = df["value"].astype(float)
 
-    fig = px.line(
-        df,
-        x="time_stamp",
-        y="value",
-        title=param_name,
-        labels={
-            "time_stamp": "Date",
-            "value": "pence",
-        },
-    )
-    fig_div = fig.to_html(full_html=False, include_plotlyjs=False)
+    y_data = []
+    x_data = []
 
-    return fig_div
+    for index, row in df.iterrows():
+        y_data.append(row['value'])
+        x_data.append(row['time_stamp'])
+
+    data = {
+        "x_data": x_data,
+        "y_data": y_data,
+    }
+
+    return data
 
 
 def _multi_chart(company_id, DataSource, *args, **kwargs):
@@ -199,27 +198,56 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
         ).values()
     )
 
-    df = pd.concat([df_1, df_2, df_3])
-    # print(df)
-    df["value"] = df["value"].astype(float)
-    plt.switch_backend("Agg")
-    plt.xticks(rotation=45)
-    sns.lineplot(x="time_stamp", y="value", markers=True, data=df, hue="parameter_id")
-    plt.title(param_name_1)
-    plt.tight_layout()
-    chart = get_image(plt)
-    return chart
+    df_1["value"] = df_1["value"].astype(float)
+    df_2["value"] = df_2["value"].astype(float)
+    df_3["value"] = df_3["value"].astype(float)
+
+    df1_y_data = []
+    df1_x_data = []
+    df2_y_data = []
+    df2_x_data = []
+    df3_y_data = []
+    df3_x_data = []
+
+    for index, row in df_1.iterrows():
+        df1_y_data.append(row['value'])
+        df1_x_data.append(row['time_stamp'])
+    for index, row in df_2.iterrows():
+        df2_y_data.append(row['value'])
+        df2_x_data.append(row['time_stamp'])
+    for index, row in df_3.iterrows():
+        df3_y_data.append(row['value'])
+        df3_x_data.append(row['time_stamp'])
+
+    data = {
+        "df1_x_data": df1_x_data,
+        "df1_y_data": df1_y_data,
+        "df2_x_data": df2_x_data,
+        "df2_y_data": df2_y_data,
+        "df3_x_data": df3_x_data,
+        "df3_y_data": df3_y_data,
+    }
+
+    return data
+
+
+def _pk_to_comp_id(pk):
+    company_name = DashboardCompany.objects.filter(
+        id=pk
+        ).values()[0]["company_name"]
+    company_id = Companies.objects.filter(
+        company_name=company_name
+        ).values()[0]["id"]
+
+    return company_id
 
 
 class ShareChartDataView(View):
 
     def get(self, request, pk):
-        company_name = DashboardCompany.objects.filter(
-            id=pk
-            ).values()[0]["company_name"]
-        company_id = Companies.objects.filter(
-            company_name=company_name
-            ).values()[0]["id"]
+
+        company_id = _pk_to_comp_id(pk)
+
         share_qs = SharePrices.objects.filter(
             company_id=company_id
             ).values()
@@ -245,34 +273,11 @@ class EpsNormDataView(View):
 
     def get(self, request, pk):
 
-        company_name = DashboardCompany.objects.filter(
-            id=pk
-            ).values()[0]["company_name"]
-        company_id = Companies.objects.filter(
-            company_name=company_name
-            ).values()[0]["id"]
-        param_id = Parameters.objects.filter(
-            param_name="EPS norm. continuous"
-            ).values()[0]["id"]
+        company_id = _pk_to_comp_id(pk)
 
-        df = pd.DataFrame(
-            FinancialReports.objects.filter(
-                company_id=company_id, parameter_id=param_id
-            ).values()
-        )
-        df["value"] = df["value"].astype(float)
-
-        y_data = []
-        x_data = []
-
-        for index, row in df.iterrows():
-            y_data.append(row['value'])
-            x_data.append(row['time_stamp'])
-
-        data = {
-            "x_data": x_data,
-            "y_data": y_data,
-        }
+        data = _param_chart(
+            company_id, FinancialReports, "EPS norm. continuous"
+            )
 
         return JsonResponse(data)
 
@@ -281,33 +286,83 @@ class DividendDataView(View):
 
     def get(self, request, pk):
 
-        company_name = DashboardCompany.objects.filter(
-            id=pk
-            ).values()[0]["company_name"]
-        company_id = Companies.objects.filter(
-            company_name=company_name
-            ).values()[0]["id"]
-        param_id = Parameters.objects.filter(
-            param_name="Dividend (adjusted) ps"
-            ).values()[0]["id"]
+        company_id = _pk_to_comp_id(pk)
 
-        df = pd.DataFrame(
-            FinancialReports.objects.filter(
-                company_id=company_id, parameter_id=param_id
-            ).values()
+        data = _param_chart(
+            company_id, FinancialReports, "Dividend (adjusted) ps"
+            )
+
+        return JsonResponse(data)
+
+
+class RoeDataView(View):
+
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(
+            company_id, CalculatedStats, "Return on Equity (ROE)"
+            )
+
+        return JsonResponse(data)
+
+
+class EpsDataView(View):
+
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(
+            company_id, CalculatedStats, "Equity (Book Value) Per Share"
+            )
+
+        return JsonResponse(data)
+
+
+class RoceDataView(View):
+
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(
+            company_id, CalculatedStats, "ROCE"
+            )
+
+        return JsonResponse(data)
+
+
+class TotalMultiDataView(View):
+
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _multi_chart(
+            company_id,
+            FinancialReports,
+            chart_name_1="Post-tax profit",
+            chart_name_2="Total equity",
+            chart_name_3="Total liabilities",
         )
-        df["value"] = df["value"].astype(float)
 
-        y_data = []
-        x_data = []
+        return JsonResponse(data)
 
-        for index, row in df.iterrows():
-            y_data.append(row['value'])
-            x_data.append(row['time_stamp'])
 
-        data = {
-            "x_data": x_data,
-            "y_data": y_data,
-        }
-        print(data)
+class CurrentMultiDataView(View):
+
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _multi_chart(
+            company_id,
+            FinancialReports,
+            chart_name_1="Post-tax profit",
+            chart_name_2="Current assets",
+            chart_name_3="Current liabilities",
+        )
+
         return JsonResponse(data)
