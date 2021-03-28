@@ -34,11 +34,21 @@
             <div class="col">
                 <h5 class="float-right text-secondary">{{company.industry_name}}</h5>
             </div>
+        </div>
+    </div>
+
+    <div class="container border rounded py-2 mb-3">    
+        <div class="row">
             <div class="col">
-                <a class="float-right" href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type="Income Statement" %}"><p><i class="fas fa-table fa-3x" style="color: blue;"></i></p></a>
+                <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type='Income Statement' %}">Income Statement</a></p>
+                <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type='Balance Sheet' %}">Balance Sheet</a></p>
+                <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type='Cash Flow' %}">Cash Flow</a></p>
             </div>
+            {% comment %} <div class="col"> {% endcomment %}
+                {% comment %} <a class="float-right" href="{% url 'dashboard_company:dashboard_plotly' pk=company.id %}"><i class="fas fa-chart-bar fa-3x" style="color: blue;"></i></a> {% endcomment %}
+            {% comment %} </div> {% endcomment %}
             <div class="col">
-                <a class="float-right" href="{% url 'dashboard_company:dashboard_chart' pk=company.id %}"><p><i class="fas fa-chart-bar fa-3x" style="color: blue;"></i></p></a>
+                <a class="float-right" href="{% url 'dashboard_company:dashboard_chart' pk=company.id %}"><i class="fas fa-chart-bar fa-3x" style="color: blue;"></i></a>
             </div>
         </div>
     </div>
@@ -51,26 +61,50 @@
                     <span class="badge badge-success badge-pill">{{company.defensive_rank}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <canvas id="myChart"></canvas>
+                    {% comment %} <canvas id="myChart"></canvas> {% endcomment %}
+                    <div id="rankingDiv"></div>
                 </li>
             </ul>
         </div>
         <div class="col">
-            <canvas id="myChart2"></canvas>
+            <div id="sharePriceDiv"></div>
+            {% comment %} <canvas id="myChart2"></canvas> {% endcomment %}
+            {% comment %} {{ share_chart | safe }} {% endcomment %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div id="rankingDiv"></div>
         </div>
     </div>
 
     <hr>
 
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        Launch demo modal
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    {{ share_chart | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col">
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Total Debt / Total Equity"></i>Debt to Equity Ratio (<0.5)</span>
-                    <span class="badge {% if company.debt_to_equity < 0.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.debt_to_equity|floatformat }}</span>
+                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Debt to Equity (D/E)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>Debt to Equity Ratio (<0.5)</span>
+                    <span class="badge {% if company.debt_to_equity < 0.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill" data-toggle="modal" data-target="#exampleModal">{{ company.debt_to_equity|floatformat }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Current Assets / Current Liabilities"></i>Current Ratio (>1.5, <2.5)</span>
+                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Current Ratio' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>Current Ratio (>1.5, <2.5)</span>
                     <span class="badge {% if company.current_ratio > 1.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.current_ratio|floatformat }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -211,64 +245,54 @@
             $('[data-toggle="tooltip"]').tooltip()
         });
 
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        });
+
         var request = new XMLHttpRequest()
         var labels = [];
         var y_data = [];
 
-        request.open('GET', 'api/chart/data/', true)
+        request.open('GET', 'data/share-price', true)
         request.onload = function () {
             var data = JSON.parse(this.response)
+
             if (request.status >= 200 && request.status < 400) {
-                labels = data.labels
-                y_data = data.y_data
-                setChart()
+                sharePriceChart(data)
+                rankingChart(data)
             } else {
                 console.log('error')
             }
         }
         request.send()
 
-    function setChart(){
-        var ctx = document.getElementById('myChart2').getContext('2d');
-        var chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Rankings',
-                    data: y_data,
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    pointRadius: 0,
-                    fill: false,
-                }]
-            }
-        })
-    }
+    function sharePriceChart(data){
+        var trace1 = {
+            x: data.x_data,
+            y: data.y_data,
+            type: 'scatter'
+        };
+        var data = [trace1];
 
-    // Chart JS Example
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['PE10', 'DP10', 'Growth Qual', 'Growth Rate', 'ROCE'],
-            datasets: [{
-                label: 'Rankings',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                hoverBorderColor: 'rgb(255, 255, 132)',
-                data: [
+        Plotly.newPlot('sharePriceDiv', data);
+    };
+
+    function rankingChart(data){
+        var trace1 = {
+            x: ['PE10', 'DP10', 'Growth Qual', 'Growth Rate', 'ROCE'],
+            y: [
                 {{company.pe_10_rank}},
                 {{company.dp_10_rank}},
                 {{company.growth_quality_rank}},
                 {{company.growth_rate_10_rank}},
                 {{company.median_roce_10_rank}}
                 ],
-                fill: false,
-            }]
-        },
-        options: {}
-    });
+            type: 'scatter'
+        };
+        var data = [trace1];
+
+        Plotly.newPlot('rankingDiv', data);
+    };
 
     {% endblock jquery %}
 </script>

@@ -3,5 +3,7 @@
 {% block title %}Dashboard{% endblock title %}
 
 {% block content %}
+
+<h1>{{ report_type }}</h1>
     {{ finance_table | safe }}
 {% endblock content %}
