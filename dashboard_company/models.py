@@ -61,7 +61,4 @@ class DashboardCompany(models.Model):
         return self.company_name
 
     def get_absolute_url(self):
-        return reverse(
-            "dashboard_company:dashboard_detail",
-            args=[str(self.id)]
-            )
+        return reverse("dashboard_company:dashboard_detail", args=[str(self.id)])
