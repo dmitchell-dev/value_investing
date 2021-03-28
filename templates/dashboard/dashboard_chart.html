@@ -5,50 +5,165 @@
 {% block content %}
     <div class="row">
         <div class="col">
-            {% if share_chart %}
-                <img src="data:image/png;base64, {{ share_chart | safe }}" height="420" width="auto">
-            {% endif %}
-        </div>
-        <div class="col">
-            {% if eps_chart %}
-                <img src="data:image/png;base64, {{ eps_chart | safe }}" height="420" width="auto">
-            {% endif %}
+            <div id="sharePriceDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            {% if dividend_chart %}
-                <img src="data:image/png;base64, {{ dividend_chart | safe }}" height="420" width="auto">
-            {% endif %}
-        </div>
-        <div class="col">
-            {% if roe_chart %}
-                <img src="data:image/png;base64, {{ roe_chart | safe }}" height="420" width="auto">
-            {% endif %}
+            <div id="epsNormDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            {% if equity_chart %}
-                <img src="data:image/png;base64, {{ equity_chart | safe }}" height="420" width="auto">
-            {% endif %}
-        </div>
-        <div class="col">
-            {% if roce_chart %}
-                <img src="data:image/png;base64, {{ roce_chart | safe }}" height="420" width="auto">
-            {% endif %}
+            <div id="dividendDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            {% if total_chart %}
-                <img src="data:image/png;base64, {{ total_chart | safe }}" height="420" width="auto">
-            {% endif %}
+            <div id="roeDiv"></div>
         </div>
+    </div>
+    <div class="row">
         <div class="col">
-            {% if current_chart %}
-                <img src="data:image/png;base64, {{ current_chart | safe }}" height="420" width="auto">
-            {% endif %}
+            <div id="epsDiv"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div id="roceDiv"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div id="totalDiv"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div id="currentDiv"></div>
         </div>
     </div>
 {% endblock content %}
+
+<script>
+    // API Data
+    {% block jquery %}
+
+        var index = ["share-price/", "eps-norm/", "dividend/", "roe/", "eps/", "roce/"];
+        var div_index = ["sharePriceDiv", "epsNormDiv", "dividendDiv", "roeDiv", "epsDiv", "roceDiv"];
+        var index_size = index.length;
+
+        var f = (function(){
+        var xhr = [], i;
+        for(i = 0; i < index_size; i++){ //for loop
+            (function(i){
+
+                var url = "data/" + index[i];
+                var div_id = div_index[i]
+                //console.log(url)
+                //console.log(div_id)
+
+                xhr[i] = new XMLHttpRequest();
+                xhr[i].open("GET", url, true);
+                xhr[i].onreadystatechange = function(){
+                    if (xhr[i].readyState === 4 && xhr[i].status === 200){
+                        var data = JSON.parse(xhr[i].responseText.replace(/\bNaN\b/g, "null"));
+                        //console.log(data)
+                        var trace1 = {
+                            x: data.x_data,
+                            y: data.y_data,
+                            type: 'scatter'
+                        };
+                        var layout = {
+                            title: data.param_name,
+                            plot_bgcolor: "#ebedeb",
+                            paper_bgcolor: "#fff",
+                            "xaxis": {
+                                gridcolor: "#fff"
+                            },
+                            "yaxis": {
+                                gridcolor: "#fff"
+                            }
+                        };
+                        var data = [trace1];
+                        Plotly.newPlot(div_id, data, layout);
+                        }
+                    };
+                    xhr[i].send();
+                })(i);
+            }
+        })();
+
+        var index = ["total-multi/", "current-multi/"];
+        var div_index = ["totalDiv", "currentDiv"];
+        var index_size = index.length;
+
+        var f = (function(){
+        var xhr = [], i;
+        for(i = 0; i < index_size; i++){ //for loop
+            (function(i){
+
+                var url = "data/" + index[i];
+                var div_id = div_index[i]
+                //console.log(url)
+                //console.log(div_id)
+
+                xhr[i] = new XMLHttpRequest();
+                xhr[i].open("GET", url, true);
+                xhr[i].onreadystatechange = function(){
+                    if (xhr[i].readyState === 4 && xhr[i].status === 200){
+                        var data = JSON.parse(xhr[i].responseText.replace(/\bNaN\b/g, "null"));
+                        //console.log(data)
+                        var trace1 = {
+                            x: data.df1_x_data,
+                            y: data.df1_y_data,
+                            type: 'scatter',
+                            name: data.df1_name
+                        };
+                        var trace2 = {
+                            x: data.df2_x_data,
+                            y: data.df2_y_data,
+                            type: 'scatter',
+                            name: data.df2_name
+                        };
+                        var trace3 = {
+                            x: data.df3_x_data,
+                            y: data.df3_y_data,
+                            type: 'scatter',
+                            name: data.df3_name
+                        };
+                        var layout = {
+                            title: data.chart_title,
+                            showlegend: true,
+                            legend: {
+                                x: 0,
+                                xanchor: 'left',
+                                y: 1,
+                                font: {
+                                    family: 'sans-serif',
+                                    size: 12,
+                                    color: '#000'
+                                    },
+                                bgcolor: '#ebedeb',
+                            },
+                            plot_bgcolor: "#ebedeb",
+                            paper_bgcolor: "#fff",
+                            "xaxis": {
+                                gridcolor: "#fff"
+                            },
+                            "yaxis": {
+                                gridcolor: "#fff"
+                            }
+                        };
+                        var data = [trace1, trace2, trace3];
+                        Plotly.newPlot(div_id, data, layout);
+                        }
+                    };
+                    xhr[i].send();
+                })(i);
+            }
+        })();
+
+
+    {% endblock jquery %}
+</script>
