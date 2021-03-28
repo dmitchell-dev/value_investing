@@ -84,56 +84,8 @@ def dashboard_chart(request, pk):
 
     error_message = None
 
-    company_name = DashboardCompany.objects.filter(
-        id=pk
-        ).values()[0]["company_name"]
-    company_id = Companies.objects.filter(
-        company_name=company_name
-        ).values()[0]["id"]
-
-    # share_chart = _share_chart(
-    #     company_id
-    # )
-    # eps_chart = _param_chart(
-    #     company_id, FinancialReports, "EPS norm. continuous"
-    # )
-    # dividend_chart = _param_chart(
-    #     company_id, FinancialReports, "Dividend (adjusted) ps"
-    # )
-    # roe_chart = _param_chart(
-    #     company_id, CalculatedStats, "Return on Equity (ROE)"
-    # )
-    # equity_chart = _param_chart(
-    #     company_id, CalculatedStats, "Equity (Book Value) Per Share"
-    # )
-    # roce_chart = _param_chart(
-    #     company_id, CalculatedStats, "ROCE"
-    #     )
-    # total_chart = _multi_chart(
-    #     company_id,
-    #     FinancialReports,
-    #     chart_name_1="Post-tax profit",
-    #     chart_name_2="Total equity",
-    #     chart_name_3="Total liabilities",
-    # )
-    # current_chart = _multi_chart(
-    #     company_id,
-    #     FinancialReports,
-    #     chart_name_1="Post-tax profit",
-    #     chart_name_2="Current assets",
-    #     chart_name_3="Current liabilities",
-    # )
-
     context = {
-        # "share_chart": share_chart,
-        # "eps_chart": eps_chart,
-        # "dividend_chart": dividend_chart,
-        # "roe_chart": roe_chart,
-        # "equity_chart": equity_chart,
-        # "roce_chart": roce_chart,
         "error_message": error_message,
-        # "total_chart": total_chart,
-        # "current_chart": current_chart,
     }
 
     return render(request, "dashboard/dashboard_chart.html", context)
@@ -162,8 +114,9 @@ def _param_chart(company_id, DataSource, param_name):
     data = {
         "x_data": x_data,
         "y_data": y_data,
+        "param_name": param_name,
     }
-
+    print(data)
     return data
 
 
@@ -171,7 +124,8 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
     param_name_1 = kwargs["chart_name_1"]
     param_name_2 = kwargs["chart_name_2"]
     param_name_3 = kwargs["chart_name_3"]
-
+    chart_title = kwargs["chart_title"]
+    
     param_id_1 = Parameters.objects.filter(
         param_name=param_name_1
         ).values()[0]["id"]
@@ -222,10 +176,14 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
     data = {
         "df1_x_data": df1_x_data,
         "df1_y_data": df1_y_data,
+        "df1_name": param_name_1,
         "df2_x_data": df2_x_data,
         "df2_y_data": df2_y_data,
+        "df2_name": param_name_2,
         "df3_x_data": df3_x_data,
         "df3_y_data": df3_y_data,
+        "df3_name": param_name_3,
+        "chart_title": chart_title,
     }
 
     return data
@@ -264,6 +222,7 @@ class ShareChartDataView(View):
         data = {
             "x_data": x_data,
             "y_data": y_data,
+            "param_name": "Share Price",
         }
 
         return JsonResponse(data)
@@ -346,6 +305,7 @@ class TotalMultiDataView(View):
             chart_name_1="Post-tax profit",
             chart_name_2="Total equity",
             chart_name_3="Total liabilities",
+            chart_title="Total Charts",
         )
 
         return JsonResponse(data)
@@ -363,6 +323,7 @@ class CurrentMultiDataView(View):
             chart_name_1="Post-tax profit",
             chart_name_2="Current assets",
             chart_name_3="Current liabilities",
+            chart_title="Current Charts",
         )
 
         return JsonResponse(data)

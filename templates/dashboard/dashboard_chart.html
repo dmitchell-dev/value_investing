@@ -5,49 +5,41 @@
 {% block content %}
     <div class="row">
         <div class="col">
-            <h3>Share Price</h3>
             <div id="sharePriceDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <h3>EPS Norm</h3>
             <div id="epsNormDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <h3>Dividend</h3>
             <div id="dividendDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <h3>Return on Equity</h3>
             <div id="roeDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <h3>Equity per Share</h3>
             <div id="epsDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <h3>ROCE</h3>
             <div id="roceDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <h3>Total Charts</h3>
             <div id="totalDiv"></div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <h3>Current Charts</h3>
             <div id="currentDiv"></div>
         </div>
     </div>
@@ -68,22 +60,33 @@
 
                 var url = "data/" + index[i];
                 var div_id = div_index[i]
-                console.log(url)
-                console.log(div_id)
+                //console.log(url)
+                //console.log(div_id)
 
                 xhr[i] = new XMLHttpRequest();
                 xhr[i].open("GET", url, true);
                 xhr[i].onreadystatechange = function(){
                     if (xhr[i].readyState === 4 && xhr[i].status === 200){
                         var data = JSON.parse(xhr[i].responseText.replace(/\bNaN\b/g, "null"));
-                        console.log(data)
+                        //console.log(data)
                         var trace1 = {
                             x: data.x_data,
                             y: data.y_data,
                             type: 'scatter'
                         };
+                        var layout = {
+                            title: data.param_name,
+                            plot_bgcolor: "#ebedeb",
+                            paper_bgcolor: "#fff",
+                            "xaxis": {
+                                gridcolor: "#fff"
+                            },
+                            "yaxis": {
+                                gridcolor: "#fff"
+                            }
+                        };
                         var data = [trace1];
-                        Plotly.newPlot(div_id, data);
+                        Plotly.newPlot(div_id, data, layout);
                         }
                     };
                     xhr[i].send();
@@ -102,32 +105,58 @@
 
                 var url = "data/" + index[i];
                 var div_id = div_index[i]
-                console.log(url)
-                console.log(div_id)
+                //console.log(url)
+                //console.log(div_id)
 
                 xhr[i] = new XMLHttpRequest();
                 xhr[i].open("GET", url, true);
                 xhr[i].onreadystatechange = function(){
                     if (xhr[i].readyState === 4 && xhr[i].status === 200){
                         var data = JSON.parse(xhr[i].responseText.replace(/\bNaN\b/g, "null"));
-                        console.log(data)
+                        //console.log(data)
                         var trace1 = {
                             x: data.df1_x_data,
                             y: data.df1_y_data,
-                            type: 'scatter'
+                            type: 'scatter',
+                            name: data.df1_name
                         };
                         var trace2 = {
                             x: data.df2_x_data,
                             y: data.df2_y_data,
-                            type: 'scatter'
+                            type: 'scatter',
+                            name: data.df2_name
                         };
                         var trace3 = {
                             x: data.df3_x_data,
                             y: data.df3_y_data,
-                            type: 'scatter'
+                            type: 'scatter',
+                            name: data.df3_name
+                        };
+                        var layout = {
+                            title: data.chart_title,
+                            showlegend: true,
+                            legend: {
+                                x: 0,
+                                xanchor: 'left',
+                                y: 1,
+                                font: {
+                                    family: 'sans-serif',
+                                    size: 12,
+                                    color: '#000'
+                                    },
+                                bgcolor: '#ebedeb',
+                            },
+                            plot_bgcolor: "#ebedeb",
+                            paper_bgcolor: "#fff",
+                            "xaxis": {
+                                gridcolor: "#fff"
+                            },
+                            "yaxis": {
+                                gridcolor: "#fff"
+                            }
                         };
                         var data = [trace1, trace2, trace3];
-                        Plotly.newPlot(div_id, data);
+                        Plotly.newPlot(div_id, data, layout);
                         }
                     };
                     xhr[i].send();
