@@ -21,10 +21,6 @@ urlpatterns = [
     path("", DashboardListView.as_view(), name="dashboard_list"),
     path("<int:pk>/chart/", dashboard_chart, name="dashboard_chart"),
     path("<int:pk>/", DashboardDetailView.as_view(), name="dashboard_detail"),
-<<<<<<< HEAD
-    path("chart/<int:pk>/", dashboard_chart, name="dashboard_chart"),
-    path("table/<int:pk>/<str:report_type>/", dashboard_table, name="dashboard_table"),
-=======
     path("table/<int:pk>/<str:report_type>/", dashboard_table, name="dashboard_table"),
 ]
 
@@ -44,5 +40,4 @@ data_patterns = (
 
 urlpatterns += [
     path("", include(data_patterns)),
->>>>>>> 2357711a1be0f784030c6ed3a20a2a06e5709292
 ]

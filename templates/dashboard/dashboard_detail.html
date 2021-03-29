@@ -44,9 +44,6 @@
                 <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type='Balance Sheet' %}">Balance Sheet</a></p>
                 <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type='Cash Flow' %}">Cash Flow</a></p>
             </div>
-            {% comment %} <div class="col"> {% endcomment %}
-                {% comment %} <a class="float-right" href="{% url 'dashboard_company:dashboard_plotly' pk=company.id %}"><i class="fas fa-chart-bar fa-3x" style="color: blue;"></i></a> {% endcomment %}
-            {% comment %} </div> {% endcomment %}
             <div class="col">
                 <a class="float-right" href="{% url 'dashboard_company:dashboard_chart' pk=company.id %}"><i class="fas fa-chart-bar fa-3x" style="color: blue;"></i></a>
             </div>
@@ -60,25 +57,20 @@
                     Defensive Rank
                     <span class="badge badge-success badge-pill">{{company.defensive_rank}}</span>
                 </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    {% comment %} <canvas id="myChart"></canvas> {% endcomment %}
-                    <div id="rankingDiv"></div>
-                </li>
             </ul>
         </div>
-        <div class="col">
-            <div id="sharePriceDiv"></div>
-            {% comment %} <canvas id="myChart2"></canvas> {% endcomment %}
-            {% comment %} {{ share_chart | safe }} {% endcomment %}
-        </div>
+
     </div>
 
     <div class="row">
         <div class="col">
-            <div id="rankingDiv"></div>
+            <div id="rankingDiv" class="responsive-plot"></div>
+        </div>
+        <div class="col">
+            <div id="sharePriceDiv" class="responsive-plot"></div>
         </div>
     </div>
-
+    
     <hr>
 
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
@@ -90,7 +82,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    {{ share_chart | safe }}
+                    <div id="rankingDiv" class="responsive-plot" style="width: 100%;"></div>
                 </div>
             </div>
         </div>
@@ -246,14 +238,18 @@
         });
 
         $('#myModal').on('shown.bs.modal', function () {
-            $('#myInput').trigger('focus')
+            $('#myInput').trigger('focus');
         });
 
+        //$('#myModal').on('shown.bs.modal', function (e) {
+        //    Plotly.relayout('rankingDiv', layout);
+        //});
+    
         var request = new XMLHttpRequest()
         var labels = [];
         var y_data = [];
 
-        request.open('GET', 'data/share-price', true)
+        request.open('GET', 'chart/data/share-price', true)
         request.onload = function () {
             var data = JSON.parse(this.response)
 
@@ -275,6 +271,9 @@
         var data = [trace1];
 
         Plotly.newPlot('sharePriceDiv', data);
+        //$('#myModal').on('shown.bs.modal', function (e) {
+        //    Plotly.relayout('rankingDiv',layout);
+        //});
     };
 
     function rankingChart(data){
@@ -293,6 +292,35 @@
 
         Plotly.newPlot('rankingDiv', data);
     };
+
+
+
+    // MAKE THE PLOTS RESPONSIVE
+    (function() {
+    var d3 = Plotly.d3;
+    var WIDTH_IN_PERCENT_OF_PARENT = 100,
+        HEIGHT_IN_PERCENT_OF_PARENT = 90;
+    
+    var gd3 = d3.selectAll(".responsive-plot")
+        .style({
+            width: WIDTH_IN_PERCENT_OF_PARENT + '%',
+            //'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
+            'margin-left': '2px',
+            
+            //height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',
+            height: '300px',
+            //'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'
+            'margin-top': '2px'
+        });
+
+    var nodes_to_resize = gd3[0]; //not sure why but the goods are within a nested array
+    window.onresize = function() {
+        for (var i = 0; i < nodes_to_resize.length; i++) {
+        Plotly.Plots.resize(nodes_to_resize[i]);
+        }
+    };
+    
+    })();
 
     {% endblock jquery %}
 </script>
