@@ -45,7 +45,7 @@
                 <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type='Cash Flow' %}">Cash Flow</a></p>
             </div>
             <div class="col">
-                <a class="float-right" href="{% url 'dashboard_company:dashboard_chart' pk=company.id %}"><i class="fas fa-chart-bar fa-3x" style="color: blue;"></i></a>
+                <a class="float-right icon-blue" href="{% url 'dashboard_company:dashboard_chart' pk=company.id %}"><i class="fas fa-chart-bar fa-3x"></i></a>
             </div>
         </div>
     </div>
@@ -61,28 +61,24 @@
         </div>
 
     </div>
-
-    <div class="row">
-        <div class="col">
-            <div id="rankingDiv" class="responsive-plot"></div>
-        </div>
-        <div class="col">
-            <div id="sharePriceDiv" class="responsive-plot"></div>
-        </div>
-    </div>
     
     <hr>
 
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        Launch demo modal
-    </button>
-
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- Modals -->
+    <div class="modal fade" id="sharePriceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <div id="rankingDiv" class="responsive-plot" style="width: 100%;"></div>
+                    <div id="sharePriceDiv" class="responsive-plot"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="epsNormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="epsNormDiv" class="responsive-plot"></div>
                 </div>
             </div>
         </div>
@@ -92,11 +88,19 @@
         <div class="col">
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Debt to Equity (D/E)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>Debt to Equity Ratio (<0.5)</span>
+                    <span>
+                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Debt to Equity (D/E)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                    <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#sharePriceModal"></i>
+                        Debt to Equity Ratio (<0.5)
+                    </span>
                     <span class="badge {% if company.debt_to_equity < 0.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill" data-toggle="modal" data-target="#exampleModal">{{ company.debt_to_equity|floatformat }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Current Ratio' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>Current Ratio (>1.5, <2.5)</span>
+                    <span>
+                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Current Ratio' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                    <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#epsNormModal"></i>
+                        Current Ratio (>1.5, <2.5)
+                    </span>
                     <span class="badge {% if company.current_ratio > 1.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.current_ratio|floatformat }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -233,66 +237,54 @@
     // API Data
     {% block jquery %}
 
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        });
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
 
-        $('#myModal').on('shown.bs.modal', function () {
-            $('#myInput').trigger('focus');
-        });
+    var index = ["share-price/", "eps-norm/", "dividend/", "roe/", "eps/", "roce/"];
+    var div_index = ["sharePriceDiv", "epsNormDiv", "dividendDiv", "roeDiv", "epsDiv", "roceDiv"];
+    var index_size = index.length;
 
-        //$('#myModal').on('shown.bs.modal', function (e) {
-        //    Plotly.relayout('rankingDiv', layout);
-        //});
-    
-        var request = new XMLHttpRequest()
-        var labels = [];
-        var y_data = [];
+    var f = (function(){
+    var xhr = [], i;
+    for(i = 0; i < index_size; i++){ //for loop
+        (function(i){
 
-        request.open('GET', 'chart/data/share-price', true)
-        request.onload = function () {
-            var data = JSON.parse(this.response)
+            var url = "chart/data/" + index[i];
+            var div_id = div_index[i]
+            console.log(url)
+            console.log(div_id)
 
-            if (request.status >= 200 && request.status < 400) {
-                sharePriceChart(data)
-                rankingChart(data)
-            } else {
-                console.log('error')
-            }
+            xhr[i] = new XMLHttpRequest();
+            xhr[i].open("GET", url, true);
+            xhr[i].onreadystatechange = function(){
+                if (xhr[i].readyState === 4 && xhr[i].status === 200){
+                    var data = JSON.parse(xhr[i].responseText.replace(/\bNaN\b/g, "null"));
+                    //console.log(data)
+                    var trace1 = {
+                        x: data.x_data,
+                        y: data.y_data,
+                        type: 'scatter'
+                    };
+                    var layout = {
+                        title: data.param_name,
+                        plot_bgcolor: "#ebedeb",
+                        paper_bgcolor: "#fff",
+                        "xaxis": {
+                            gridcolor: "#fff"
+                        },
+                        "yaxis": {
+                            gridcolor: "#fff"
+                        }
+                    };
+                    var data = [trace1];
+                    Plotly.newPlot(div_id, data, layout);
+                    }
+                };
+                xhr[i].send();
+            })(i);
         }
-        request.send()
-
-    function sharePriceChart(data){
-        var trace1 = {
-            x: data.x_data,
-            y: data.y_data,
-            type: 'scatter'
-        };
-        var data = [trace1];
-
-        Plotly.newPlot('sharePriceDiv', data);
-        //$('#myModal').on('shown.bs.modal', function (e) {
-        //    Plotly.relayout('rankingDiv',layout);
-        //});
-    };
-
-    function rankingChart(data){
-        var trace1 = {
-            x: ['PE10', 'DP10', 'Growth Qual', 'Growth Rate', 'ROCE'],
-            y: [
-                {{company.pe_10_rank}},
-                {{company.dp_10_rank}},
-                {{company.growth_quality_rank}},
-                {{company.growth_rate_10_rank}},
-                {{company.median_roce_10_rank}}
-                ],
-            type: 'scatter'
-        };
-        var data = [trace1];
-
-        Plotly.newPlot('rankingDiv', data);
-    };
-
+    })();
 
 
     // MAKE THE PLOTS RESPONSIVE
