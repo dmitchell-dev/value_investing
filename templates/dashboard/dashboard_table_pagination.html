@@ -1,0 +1,62 @@
+{% extends '_base.html' %}
+
+{% block title %}Dashboard{% endblock title %}
+
+{% block content %}
+
+<h1>Test table 2</h1>
+
+<table class="table table-bordered">
+  <tbody>
+
+    {% comment %} {% for user in users %} {% endcomment %}
+        {% comment %} {% for key, value in users.first.items %}
+            <tr>
+                <td>{{key}}</td>
+            </tr>
+        {% endfor %} {% endcomment %}
+    {% comment %} {% endfor %} {% endcomment %}
+
+    {% for user in users %}
+        {% for key, value in user.items %}
+            <tr>
+                <td>{{value}}</td>
+            </tr>
+        {% endfor %}
+    {% endfor %}
+
+    {% comment %} {% for user in users %}
+      <tr>
+        <td>
+            {% for key, value in user.items %} 
+                <li>{{key}} - {{value}}</li>
+            {% endfor %}
+        </td>
+      </tr>
+    {% endfor %} {% endcomment %}
+  </tbody>
+</table>
+
+{% if users.has_other_pages %}
+  <ul class="pagination">
+    {% if users.has_previous %}
+      <li><a href="?page={{ users.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in users.paginator.page_range %}
+      {% if users.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if users.has_next %}
+      <li><a href="?page={{ users.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+{% endblock content %}

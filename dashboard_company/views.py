@@ -1,5 +1,9 @@
 from django.views.generic import ListView, DetailView
+from django.views.generic.base import TemplateView
 from django.shortcuts import render
+
+from django.core.paginator import Paginator
+
 import pandas as pd
 
 from django.http import JsonResponse
@@ -35,6 +39,58 @@ class DashboardDetailView(DetailView):
         # context['share_chart'] = _share_chart(self.kwargs['pk'])
         context['parameters'] = Parameters.objects.all()
 
+        return context
+
+
+class DashboardTableView(TemplateView):
+
+    template_name = "dashboard/dashboard_table_pagination.html"
+
+    def get_context_data(self, pk, **kwargs):
+        error_message = None
+        # Get correct company id
+        company_name = DashboardCompany.objects.filter(
+            id=pk
+            ).values()[0]["company_name"]
+        company_id = Companies.objects.filter(
+            company_name=company_name
+            ).values()[0]["id"]
+
+        report_type = "Income Statement"
+
+        # Get financial data
+        finance_qs = FinancialReports.objects.select_related("parameter_id").filter(
+            company_id=company_id,
+            parameter_id__report_section_id__report_type_id__report_name=report_type,
+        )
+
+        finance_data = finance_qs.values(
+            "id", "time_stamp", "parameter_id__param_name", "value"
+        )
+
+        finance_df = pd.DataFrame(finance_data)
+
+        finance_df = finance_df.drop_duplicates(
+            subset=["time_stamp", "parameter_id__param_name"], keep="last"
+        )
+
+        finance_df_pivot = finance_df.pivot(
+            columns="time_stamp",
+            index="parameter_id__param_name",
+            values="value",
+        )
+
+        records = finance_df_pivot.to_dict(orient='records')
+
+        paginator = Paginator(records, 10)
+        page = self.request.GET.get('page')
+        records = paginator.get_page(page)
+
+        context = {
+            "users": records,
+            "report_type": report_type,
+            "error_message": error_message,
+        }
         return context
 
 

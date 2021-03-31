@@ -11,6 +11,7 @@ from .views import (
     RoceDataView,
     TotalMultiDataView,
     CurrentMultiDataView,
+    DashboardTableView,
     dashboard_chart,
     dashboard_table,
 )
@@ -22,6 +23,7 @@ urlpatterns = [
     path("<int:pk>/chart/", dashboard_chart, name="dashboard_chart"),
     path("<int:pk>/", DashboardDetailView.as_view(), name="dashboard_detail"),
     path("table/<int:pk>/<str:report_type>/", dashboard_table, name="dashboard_table"),
+    path("<int:pk>/table-pag/", DashboardTableView.as_view(), name="dashboard_table_pagination"),
 ]
 
 data_patterns = (
