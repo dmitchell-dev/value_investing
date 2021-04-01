@@ -9,31 +9,30 @@
 <table class="table table-bordered">
   <tbody>
 
-    {% comment %} {% for user in users %} {% endcomment %}
-        {% comment %} {% for key, value in users.first.items %}
-            <tr>
-                <td>{{key}}</td>
-            </tr>
-        {% endfor %} {% endcomment %}
-    {% comment %} {% endfor %} {% endcomment %}
+	<tr>
+		{% for data in records %}
+			<th>{{ data }}</th>
+		{% endfor %}
 
-    {% for user in users %}
-        {% for key, value in user.items %}
-            <tr>
-                <td>{{value}}</td>
-            </tr>
-        {% endfor %}
-    {% endfor %}
+		{% for _, record in records.iterrows %}
+			<tr>
+				{% for value in data %}
+					<td>{{ value }}</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</tr>
 
-    {% comment %} {% for user in users %}
-      <tr>
-        <td>
-            {% for key, value in user.items %} 
-                <li>{{key}} - {{value}}</li>
-            {% endfor %}
-        </td>
-      </tr>
+
+    {% comment %} {% for record in records %}
+      {% for key, value in record.items %}
+        <tr>
+          <td>{{ value }}</td>
+        </tr>
+      {% endfor %}
     {% endfor %} {% endcomment %}
+
+
   </tbody>
 </table>
 

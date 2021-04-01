@@ -80,14 +80,14 @@ class DashboardTableView(TemplateView):
             values="value",
         )
 
-        records = finance_df_pivot.to_dict(orient='records')
+        records = finance_df_pivot.to_dict(orient='list')
 
         paginator = Paginator(records, 10)
         page = self.request.GET.get('page')
         records = paginator.get_page(page)
 
         context = {
-            "users": records,
+            "records": finance_df_pivot,
             "report_type": report_type,
             "error_message": error_message,
         }
