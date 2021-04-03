@@ -9,19 +9,23 @@
 <table class="table table-bordered">
   <tbody>
 
-	<tr>
-		{% for data in records %}
-			<th>{{ data }}</th>
-		{% endfor %}
 
-		{% for _, record in records.iterrows %}
+    {% for record in records %}
+	<tr>
+      {% for value in record.values %}
+        <th>{{ value }}</th>
+      {% endfor %}
+  </tr>
+    {% endfor %}
+
+		{% comment %} {% for _, record in records.iterrows %}
 			<tr>
 				{% for value in data %}
 					<td>{{ value }}</td>
 				{% endfor %}
 			</tr>
 		{% endfor %}
-	</tr>
+	</tr> {% endcomment %}
 
 
     {% comment %} {% for record in records %}
