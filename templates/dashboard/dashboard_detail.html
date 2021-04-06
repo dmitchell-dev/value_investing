@@ -118,7 +118,7 @@
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Annual Yield (Return)</span>
-                    <span class="badge badge-primary badge-pill">{{company.annual_return|floatformat}}</span>
+                    <span class="badge badge-primary badge-pill">{{company.annual_return|floatformat:1}}%</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Free cash flow (FCF)</span>
@@ -126,7 +126,7 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Dividend Payment</span>
-                    <span class="badge badge-primary badge-pill">{{company.dividend_payment}}</span>
+                    <span class="badge {% if company.dividend_payment == 'yes' %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.dividend_payment }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Dividend Cover</span>
@@ -249,8 +249,8 @@
 
             var url = "chart/data/" + index[i];
             var div_id = div_index[i]
-            console.log(url)
-            console.log(div_id)
+            //console.log(url)
+            //console.log(div_id)
 
             xhr[i] = new XMLHttpRequest();
             xhr[i].open("GET", url, true);

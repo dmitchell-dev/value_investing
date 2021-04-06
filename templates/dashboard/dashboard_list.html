@@ -7,6 +7,7 @@
     <thead>
         <tr>
             <th scope="col">Name</th>
+            <th scope="col">Industry</th>
             <th scope="col">PE10</th>
             <th scope="col">DP10</th>
             <th scope="col">Growth Qual</th>
@@ -19,6 +20,7 @@
         {% for company in company_list %}
             <tr>
                 <td><a href="{{ company.get_absolute_url }}">{{company.company_name}}</a></td>
+                <td>{{company.industry_name}}</td>
                 <td>{{company.pe_10_rank}}</td>
                 <td>{{company.dp_10_rank}}</td>
                 <td>{{company.growth_quality_rank}}</td>

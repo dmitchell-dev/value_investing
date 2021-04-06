@@ -123,7 +123,7 @@ def annual_yield(df_pivot):
         drop=True
     )
     if not df_profit.empty and not df_mark_cap.empty:
-        df_a_return = df_profit.div(df_mark_cap)
+        df_a_return = df_profit.div(df_mark_cap) * 100
         df_a_return.index = ["Annual Yield (Return)"]
 
     return df_a_return

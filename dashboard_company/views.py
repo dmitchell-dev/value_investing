@@ -172,7 +172,7 @@ def _param_chart(company_id, DataSource, param_name):
         "y_data": y_data,
         "param_name": param_name,
     }
-    print(data)
+    # print(data)
     return data
 
 
