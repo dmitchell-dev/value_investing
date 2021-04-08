@@ -52,7 +52,7 @@ class Command(BaseCommand):
         )
 
         df_reporting = df_reporting.drop_duplicates(
-            subset=["time_stamp", "param_name"], keep="last"
+            subset=["time_stamp", "company_name", "param_name"], keep="last"
         )
 
         df_reporting_pivot = df_reporting.pivot(
@@ -168,6 +168,10 @@ class Command(BaseCommand):
                 dividends=float(row["Dividend (announced) ps"]),
                 total_borrowing=float(row["Total borrowing"]),
                 shareholder_equity=float(row["Shareholders funds (NAV)"]),
+                capital_expenditure=float(row["Capital expenditure"]),
+                depreciation_amortisation=float(row["Depreciation & amortisation"]),
+                acquisitions=float(row["Acquisitions"]),
+                avg_shares=float(row["Average shares (diluted)"]),
                 share_price=float(row["Share Price"]),
                 debt_to_equity=float(row["Debt to Equity (D/E)"]),
                 current_ratio=float(row["Current Ratio"]),
