@@ -86,6 +86,85 @@
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span>
+                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Turnover' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                        Turnover
+                    </span>
+                    <span class="badge badge-primary badge-pill">£{{ company.turnover|floatformat:2 }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'EPS rep. continuous' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                        Earnings
+                    </span>
+                    <span class="badge badge-primary badge-pill">£{{ company.earnings|floatformat:2 }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                        Dividends
+                    </span>
+                    <span class="badge badge-primary badge-pill">£{{ company.dividends|floatformat:2 }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                        Total Borrowings
+                    </span>
+                    <span class="badge badge-primary badge-pill">£{{ company.total_borrowing|floatformat:2 }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                        Shareholder Equity
+                    </span>
+                    <span class="badge badge-primary badge-pill">£{{ company.shareholder_equity|floatformat:2 }}</span>
+                </li>
+            </ul>
+        </div>
+        <div class="col">
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                        Capital Expenditure
+                    </span>
+                    <span class="badge badge-primary badge-pill">£{{ company.capital_expenditure|floatformat:2 }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                        Depreciation & Amortisation
+                    </span>
+                    <span class="badge badge-primary badge-pill">£{{ company.depreciation_amortisation|floatformat:2 }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                        Acquisitions
+                    </span>
+                    <span class="badge badge-primary badge-pill">£{{ company.acquisitions|floatformat:2 }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                        Average Shares Issued
+                    </span>
+                    <span class="badge badge-primary badge-pill">{{ company.avg_shares|floatformat }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center text-white">
+                        N/A
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col">
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
                     <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Debt to Equity (D/E)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
                     <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#sharePriceModal"></i>
                         Debt to Equity Ratio (<0.5)
