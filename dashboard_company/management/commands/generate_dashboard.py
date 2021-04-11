@@ -169,6 +169,7 @@ class Command(BaseCommand):
                 total_borrowing=float(row["Total borrowing"]),
                 shareholder_equity=float(row["Shareholders funds (NAV)"]),
                 capital_expenditure=float(row["Capital expenditure"]),
+                net_profit=float(row["Profit for financial year"]),
                 depreciation_amortisation=float(row["Depreciation & amortisation"]),
                 acquisitions=float(row["Acquisitions"]),
                 avg_shares=float(row["Average shares (diluted)"]),

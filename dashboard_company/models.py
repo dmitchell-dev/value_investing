@@ -15,6 +15,7 @@ class DashboardCompany(models.Model):
     total_borrowing = models.FloatField()
     shareholder_equity = models.FloatField()
     capital_expenditure = models.FloatField()
+    net_profit = models.FloatField()
     depreciation_amortisation = models.FloatField()
     acquisitions = models.FloatField()
     avg_shares = models.FloatField()
