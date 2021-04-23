@@ -83,6 +83,20 @@
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Turnover
+                        </span>
+                        <span class="badge badge-primary badge-pill">£{{ company.turnover|floatformat:2 }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Net Income (Profit)
+                        </span>
+                        <span class="badge badge-primary badge-pill">£{{ company.net_profit|floatformat:2 }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
                         <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Debt to Equity (D/E)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
                         <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#sharePriceModal"></i>
                             Debt to Equity Ratio (<0.5)
@@ -157,6 +171,13 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>
                         <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Dividend Payment
+                        </span>
+                        <span class="badge {% if company.dividend_payment == 'yes' %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.dividend_payment }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
                             Equity Per Share (Book Value)
                         </span>
                         <span class="badge badge-primary badge-pill">£{{ company.equity_per_share|floatformat:2 }}</span>
@@ -184,6 +205,13 @@
         <div class="row">
             <div class="col">
                 <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Annual Yield (Return)
+                        </span>
+                        <span class="badge badge-primary badge-pill">{{company.annual_return|floatformat:1}}%</span>
+                    </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>
                         <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
@@ -224,59 +252,6 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>
-                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
-                        Net Income (Profit)
-                    </span>
-                    <span class="badge badge-primary badge-pill">£{{ company.net_profit|floatformat:2 }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>
-                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
-                        Annual Yield (Return)
-                    </span>
-                    <span class="badge badge-primary badge-pill">{{company.annual_return|floatformat:1}}%</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                </li>
-            </ul>
-        </div>
-        <div class="col">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <hr>
-
-    <div class="row">
-        <div class="col">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>
-                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
-                        Turnover
-                    </span>
-                    <span class="badge badge-primary badge-pill">£{{ company.turnover|floatformat:2 }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>
-                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
-                        Shareholder Equity
-                    </span>
-                    <span class="badge badge-primary badge-pill">£{{ company.shareholder_equity|floatformat:2 }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                 </li>
@@ -308,55 +283,6 @@
                         Acquisitions
                     </span>
                     <span class="badge badge-primary badge-pill">£{{ company.acquisitions|floatformat:2 }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>
-                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
-                        Average Shares Issued
-                    </span>
-                    <span class="badge badge-primary badge-pill">{{ company.avg_shares|floatformat }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>
-                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
-                        Net Profit
-                    </span>
-                    <span class="badge badge-primary badge-pill">£{{ company.net_profit|floatformat:2 }}</span>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <hr>
-
-    <div class="row">
-        <div class="col">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                </li>
-            </ul>
-        </div>
-        <div class="col">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Annual Yield (Return)</span>
-                    <span class="badge badge-primary badge-pill">{{company.annual_return|floatformat:1}}%</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Free cash flow (FCF)</span>
-                    <span class="badge badge-primary badge-pill">£{{company.fcf_growth_rate|floatformat:2}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Dividend Payment</span>
-                    <span class="badge {% if company.dividend_payment == 'yes' %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.dividend_payment }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                 </li>
