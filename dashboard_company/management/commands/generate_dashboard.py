@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from ancillary_info.models import Companies
 from calculated_stats.models import CalculatedStats
 from ranking_stats.models import RankingStats
+from financial_reports.models import FinancialReports
 from dashboard_company.models import DashboardCompany
 import pandas as pd
 import numpy as np
@@ -19,6 +20,46 @@ class Command(BaseCommand):
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
         df_companies.index = df_companies["tidm"]
+
+        # Financial Data
+        reporting_qs = FinancialReports.objects.raw(
+            """SELECT reporting_data.id, tidm, company_name, param_name, time_stamp, value
+                FROM reporting_data
+                LEFT JOIN companies ON companies.id = reporting_data.company_id
+                LEFT JOIN parameters ON parameters.id = reporting_data.parameter_id
+                RIGHT JOIN (
+                    SELECT MAX(time_stamp) AS time_stamp, company_id, parameter_id
+                    FROM reporting_data
+                    GROUP BY company_id, parameter_id ORDER BY NULL)
+                    subTable USING (parameter_id, company_id, time_stamp);"""
+        )
+
+        qs_list = []
+        for row in reporting_qs:
+            qs_list.append(
+                [row.tidm, row.company_name, row.time_stamp, row.param_name, row.value]
+            )
+
+        df_reporting = pd.DataFrame(qs_list)
+        df_reporting = df_reporting.rename(
+            columns={
+                0: "tidm",
+                1: "company_name",
+                2: "time_stamp",
+                3: "param_name",
+                4: "value",
+            }
+        )
+
+        df_reporting = df_reporting.drop_duplicates(
+            subset=["time_stamp", "company_name", "param_name"], keep="last"
+        )
+
+        df_reporting_pivot = df_reporting.pivot(
+            columns="param_name",
+            index="tidm",
+            values="value",
+        )
 
         # Calculated Stats
         calc_stats_qs = CalculatedStats.objects.raw(
@@ -98,6 +139,10 @@ class Command(BaseCommand):
         )
 
         df_merged = pd.merge(
+            df_merged, df_reporting_pivot, left_index=True, right_index=True
+        )
+
+        df_merged = pd.merge(
             df_merged, df_rank_latest_pivot, left_index=True, right_index=True
         )
 
@@ -105,6 +150,9 @@ class Command(BaseCommand):
         df_merged = df_merged.replace([np.nan, "NaN", "nan", "None"], "-9999")
 
         df_merged = df_merged.drop("id", axis=1)
+
+        for col in df_merged.columns:
+            print(col)
 
         # Save to database
         reports = [
@@ -115,6 +163,17 @@ class Command(BaseCommand):
                 share_listing=row["market__share_listing"],
                 company_type=row["comp_type__company_type"],
                 industry_name=row["industry__industry_name"],
+                turnover=float(row["Turnover"]),
+                earnings=float(row["EPS rep. continuous"]),
+                dividends=float(row["Dividend (announced) ps"]),
+                total_borrowing=float(row["Total borrowing"]),
+                shareholder_equity=float(row["Shareholders funds (NAV)"]),
+                capital_expenditure=float(row["Capital expenditure"]),
+                net_profit=float(row["Profit for financial year"]),
+                total_equity=float(row["Total equity"]),
+                depreciation_amortisation=float(row["Depreciation & amortisation"]),
+                acquisitions=float(row["Acquisitions"]),
+                avg_shares=float(row["Average shares (diluted)"]),
                 share_price=float(row["Share Price"]),
                 debt_to_equity=float(row["Debt to Equity (D/E)"]),
                 current_ratio=float(row["Current Ratio"]),

@@ -147,7 +147,7 @@ def fcf_growth_rate(df_pivot):
     growth_rate.insert(0, None)
     df_fcf_gr = pd.DataFrame(growth_rate).transpose()
     df_fcf_gr.columns = list(df_fcf.columns)
-    df_fcf_gr.index = ["Free cash flow (FCF)"]
+    df_fcf_gr.index = ["FCF Growth Rate"]
 
     return (df_fcf_gr, df_fcf)
 

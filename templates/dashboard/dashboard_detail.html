@@ -20,11 +20,6 @@
             <p class="text-right"><h3 class="float-right {% if company.dcf_intrinsic_value > company.share_price %}bg-success{% else %}bg-danger{% endif %} text-white rounded mx-2 px-2 py-1">£{{company.dcf_intrinsic_value|floatformat:2}}</h3></p>
         </div>
     </div>
-    <div class="row">
-        <div class="col">
-            <p>{{company.company_summary}}</p>
-        </div>
-    </div>
 
     <div class="container border rounded py-2 mb-3">    
         <div class="row">
@@ -81,60 +76,217 @@
         </div>
     </div>
 
+    <!-- Warren's Rules -->
+    <h1>Rule 1 - Vigilant Leaders</h1>
+        <div class="row">
+            <div class="col">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Turnover
+                        </span>
+                        <span class="badge badge-primary badge-pill">£{{ company.turnover|floatformat:2 }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Net Income (Profit)
+                        </span>
+                        <span class="badge badge-primary badge-pill">£{{ company.net_profit|floatformat:2 }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Debt to Equity (D/E)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#sharePriceModal"></i>
+                            Debt to Equity Ratio (<0.5)
+                        </span>
+                        <span class="badge {% if company.debt_to_equity < 0.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill" data-toggle="modal" data-target="#exampleModal">{{ company.debt_to_equity|floatformat }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Current Ratio' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#epsNormModal"></i>
+                            Current Ratio (>1.5, <2.5)
+                        </span>
+                        <span class="badge {% if company.current_ratio > 1.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.current_ratio|floatformat }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Return on Equity (>8%)
+                        </span>
+                        <span class="badge {% if company.return_on_equity > 8 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.return_on_equity|floatformat:1}}%</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Total Equity
+                        </span>
+                        <span class="badge badge-primary badge-pill">£{{ company.total_equity|floatformat:2 }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Total Borrowings
+                        </span>
+                        <span class="badge badge-primary badge-pill">£{{ company.total_borrowing|floatformat:2 }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Dividend Cover
+                        </span>
+                        <span class="badge badge-primary badge-pill">{{company.dividend_cover|floatformat}}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    <h1>Rule 2 - Long Term Prospects</h1>
+        <div class="row">
+            <div class="col">
+                <p>{{company.company_summary}}</p>
+            </div>
+        </div>
+
+    <h1>Rule 3 - Stable & Understandable</h1>
+        <div class="row">
+            <div class="col">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Earnings Per Share
+                        </span>
+                        <span class="badge badge-primary badge-pill">{{ company.earnings|floatformat:2 }}p</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Dividends
+                        </span>
+                        <span class="badge badge-primary badge-pill">{{ company.dividends|floatformat:2 }}p</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Dividend Payment
+                        </span>
+                        <span class="badge {% if company.dividend_payment == 'yes' %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.dividend_payment }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Equity Per Share (Book Value)
+                        </span>
+                        <span class="badge badge-primary badge-pill">£{{ company.equity_per_share|floatformat:2 }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Return on Equity (>8%)
+                        </span>
+                        <span class="badge {% if company.return_on_equity > 8 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.return_on_equity|floatformat:1}}%</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Debt to Equity (D/E)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#sharePriceModal"></i>
+                            Debt to Equity Ratio (<0.5)
+                        </span>
+                        <span class="badge {% if company.debt_to_equity < 0.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill" data-toggle="modal" data-target="#exampleModal">{{ company.debt_to_equity|floatformat }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    <h1>Rule 4 - Undervalued</h1>
+        <div class="row">
+            <div class="col">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Annual Yield (Return)
+                        </span>
+                        <span class="badge badge-primary badge-pill">{{company.annual_return|floatformat:1}}%</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Intrinsic Value
+                        </span>
+                        <span class="badge badge-primary badge-pill">£{{company.dcf_intrinsic_value|floatformat:2}}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Share Price
+                        </span>
+                        <span class="badge badge-primary badge-pill">£{{company.share_price|floatformat:2}}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Price to Earnings (<15)
+                        </span>
+                        <span class="badge {% if company.price_to_earnings < 15 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.price_to_earnings|floatformat }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Price to Book Value (<1.5)
+                        </span>
+                        <span class="badge {% if company.price_to_equity < 1.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.price_to_equity|floatformat }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>    
+    
+    <hr>
+
     <div class="row">
         <div class="col">
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>
-                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Debt to Equity (D/E)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
-                    <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#sharePriceModal"></i>
-                        Debt to Equity Ratio (<0.5)
-                    </span>
-                    <span class="badge {% if company.debt_to_equity < 0.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill" data-toggle="modal" data-target="#exampleModal">{{ company.debt_to_equity|floatformat }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>
-                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Current Ratio' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
-                    <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#epsNormModal"></i>
-                        Current Ratio (>1.5, <2.5)
-                    </span>
-                    <span class="badge {% if company.current_ratio > 1.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.current_ratio|floatformat }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Return on Equity (>8%)</span>
-                    <span class="badge {% if company.return_on_equity > 8 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.return_on_equity|floatformat:1}}%</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Price to Earnings (<15)</span>
-                    <span class="badge {% if company.price_to_earnings < 15 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.price_to_earnings|floatformat }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Price to Book Value (<1.5)</span>
-                    <span class="badge {% if company.price_to_equity < 1.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.price_to_equity|floatformat }}</span>
                 </li>
             </ul>
         </div>
         <div class="col">
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Annual Yield (Return)</span>
-                    <span class="badge badge-primary badge-pill">{{company.annual_return|floatformat:1}}%</span>
+                    <span>
+                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                        Capital Expenditure
+                    </span>
+                    <span class="badge badge-primary badge-pill">£{{ company.capital_expenditure|floatformat:2 }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Free cash flow (FCF)</span>
-                    <span class="badge badge-primary badge-pill">£{{company.fcf_growth_rate|floatformat:2}}</span>
+                    <span>
+                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                        Depreciation & Amortisation
+                    </span>
+                    <span class="badge badge-primary badge-pill">£{{ company.depreciation_amortisation|floatformat:2 }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Dividend Payment</span>
-                    <span class="badge {% if company.dividend_payment == 'yes' %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.dividend_payment }}</span>
+                    <span>
+                    <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                        Acquisitions
+                    </span>
+                    <span class="badge badge-primary badge-pill">£{{ company.acquisitions|floatformat:2 }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Dividend Cover</span>
-                    <span class="badge badge-primary badge-pill">{{company.dividend_cover|floatformat}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Equity (Book Value) Per Share</span>
-                    <span class="badge badge-primary badge-pill">£{{company.equity_per_share|floatformat:2}}</span>
                 </li>
             </ul>
         </div>
