@@ -323,7 +323,7 @@ class RoeDataView(View):
         return JsonResponse(data)
 
 
-class EpsDataView(View):
+class BookValueDataView(View):
 
     def get(self, request, pk):
 
@@ -344,6 +344,83 @@ class RoceDataView(View):
 
         data = _param_chart(
             company_id, CalculatedStats, "ROCE"
+            )
+
+        return JsonResponse(data)
+
+
+class DebtToEquityDataView(View):
+
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(
+            company_id, CalculatedStats, "Debt to Equity (D/E)"
+            )
+
+        return JsonResponse(data)
+
+
+class DividendCoverDataView(View):
+
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(
+            company_id, CalculatedStats, "Dividend Cover"
+            )
+
+        return JsonResponse(data)
+
+class PriceToEarningsDataView(View):
+
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(
+            company_id, CalculatedStats, "Price to Earnings (P/E)"
+            )
+
+        return JsonResponse(data)
+
+
+class PriceToBookValueDataView(View):
+
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(
+            company_id, CalculatedStats, "Price to Book Value (Equity)"
+            )
+
+        return JsonResponse(data)
+
+
+class IntrinsicValueDataView(View):
+
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(
+            company_id, CalculatedStats, "DCF Intrinsic Value"
+            )
+
+        return JsonResponse(data)
+
+
+class AnnualYieldDataView(View):
+
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(
+            company_id, CalculatedStats, "Annual Yield (Return)"
             )
 
         return JsonResponse(data)
