@@ -6,61 +6,61 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard_company', '0001_initial'),
+        ("dashboard_company", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dashboardcompany',
-            name='acquisitions',
+            model_name="dashboardcompany",
+            name="acquisitions",
             field=models.FloatField(default=999),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='dashboardcompany',
-            name='avg_shares',
+            model_name="dashboardcompany",
+            name="avg_shares",
             field=models.FloatField(default=999),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='dashboardcompany',
-            name='capital_expenditure',
+            model_name="dashboardcompany",
+            name="capital_expenditure",
             field=models.FloatField(default=999),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='dashboardcompany',
-            name='depreciation_amortisation',
+            model_name="dashboardcompany",
+            name="depreciation_amortisation",
             field=models.FloatField(default=999),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='dashboardcompany',
-            name='dividends',
+            model_name="dashboardcompany",
+            name="dividends",
             field=models.FloatField(default=999),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='dashboardcompany',
-            name='earnings',
+            model_name="dashboardcompany",
+            name="earnings",
             field=models.FloatField(default=999),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='dashboardcompany',
-            name='shareholder_equity',
+            model_name="dashboardcompany",
+            name="shareholder_equity",
             field=models.FloatField(default=999),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='dashboardcompany',
-            name='total_borrowing',
+            model_name="dashboardcompany",
+            name="total_borrowing",
             field=models.FloatField(default=999),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='dashboardcompany',
-            name='turnover',
+            model_name="dashboardcompany",
+            name="turnover",
             field=models.FloatField(default=999),
             preserve_default=False,
         ),

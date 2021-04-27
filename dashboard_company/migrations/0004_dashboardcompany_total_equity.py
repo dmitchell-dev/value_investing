@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard_company', '0003_dashboardcompany_net_profit'),
+        ("dashboard_company", "0003_dashboardcompany_net_profit"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dashboardcompany',
-            name='total_equity',
+            model_name="dashboardcompany",
+            name="total_equity",
             field=models.FloatField(default=-9999),
             preserve_default=False,
         ),
