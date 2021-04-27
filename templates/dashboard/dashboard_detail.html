@@ -164,6 +164,14 @@
         </div>
     </div>
 
+    <div class="modal fade" id="currentRatioModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div id="currentRatioDiv" class="responsive-plot"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Warren's Rules -->
     <h1>Rule 1 - Vigilant Leaders</h1>
         <div class="row">
@@ -180,7 +188,7 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>
                         <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in parameters %}{% if param.param_name == 'Current Ratio' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
-                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#epsNormModal"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#currentRatioModal"></i>
                             Current Ratio (>1.5, <2.5)
                         </span>
                         <span class="badge {% if company.current_ratio > 1.5 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.current_ratio|floatformat }}</span>
@@ -405,8 +413,8 @@
         $('[data-toggle="tooltip"]').tooltip()
     });
 
-    var index = ["share-price/", "eps-norm/", "dividend/", "roe/", "book-value/", "roce/", "debt-to-equity/", "dividend-cover/", "price-to-earnings/", "price-to-bookvalue/", "intrinsic-value/","annual-yield/", "fcf-ps/"];
-    var div_index = ["sharePriceDiv", "epsNormDiv", "dividendDiv", "roeDiv", "bookValueDiv", "roceDiv", "debtToEquityDiv", "dividendCoverDiv", "priceToEaringsDiv", "priceToBookDiv", "intrinsicValueDiv", "annualYieldDiv", "fdfpsDiv"];
+    var index = ["share-price/", "eps-norm/", "dividend/", "roe/", "book-value/", "roce/", "debt-to-equity/", "dividend-cover/", "price-to-earnings/", "price-to-bookvalue/", "intrinsic-value/","annual-yield/", "fcf-ps/", "current-ratio/"];
+    var div_index = ["sharePriceDiv", "epsNormDiv", "dividendDiv", "roeDiv", "bookValueDiv", "roceDiv", "debtToEquityDiv", "dividendCoverDiv", "priceToEaringsDiv", "priceToBookDiv", "intrinsicValueDiv", "annualYieldDiv", "fdfpsDiv", "currentRatioDiv"];
     var index_size = index.length;
 
     var f = (function(){
