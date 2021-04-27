@@ -183,6 +183,7 @@ class Command(BaseCommand):
                 price_to_equity=float(row["Price to Book Value (Equity)"]),
                 annual_return=float(row["Annual Yield (Return)"]),
                 fcf_growth_rate=float(row["Free cash flow (FCF)"]),
+                fcf_ps=float(row["FCF ps"]),
                 dividend_payment=row["Dividend Payment"],
                 dividend_cover=float(row["Dividend Cover"]),
                 revenue_growth=row["Revenue Growth"],

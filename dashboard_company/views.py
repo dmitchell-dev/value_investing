@@ -426,6 +426,19 @@ class AnnualYieldDataView(View):
         return JsonResponse(data)
 
 
+class FcfPsDataView(View):
+
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(
+            company_id, FinancialReports, "FCF ps"
+            )
+
+        return JsonResponse(data)
+
+
 class TotalMultiDataView(View):
 
     def get(self, request, pk):
