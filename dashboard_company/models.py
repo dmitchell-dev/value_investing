@@ -29,6 +29,7 @@ class DashboardCompany(models.Model):
     price_to_equity = models.FloatField()
     annual_return = models.FloatField()
     fcf_growth_rate = models.FloatField()
+    fcf_ps = models.FloatField()
     dividend_payment = models.CharField(max_length=10, null=True)
     dividend_cover = models.FloatField()
     revenue_growth = models.CharField(max_length=10, null=True)

@@ -37,7 +37,7 @@ class DashboardDetailView(DetailView):
         context = super().get_context_data(**kwargs)
 
         # context['share_chart'] = _share_chart(self.kwargs['pk'])
-        context['parameters'] = Parameters.objects.all()
+        context["parameters"] = Parameters.objects.all()
 
         return context
 
@@ -49,17 +49,21 @@ class DashboardTableView(TemplateView):
     def get_context_data(self, pk, **kwargs):
         error_message = None
         # Get correct company id
-        company_name = DashboardCompany.objects.filter(
-            id=pk
-            ).values()[0]["company_name"]
+        company_name = DashboardCompany.objects.filter(id=pk).values()[0][
+            "company_name"
+        ]
         company_id = Companies.objects.filter(
             company_name=company_name
-            ).values()[0]["id"]
+            ).values()[0][
+            "id"
+        ]
 
         report_type = "Income Statement"
 
         # Get financial data
-        finance_qs = FinancialReports.objects.select_related("parameter_id").filter(
+        finance_qs = FinancialReports.objects.select_related(
+            "parameter_id"
+            ).filter(
             company_id=company_id,
             parameter_id__report_section_id__report_type_id__report_name=report_type,
         )
@@ -80,10 +84,10 @@ class DashboardTableView(TemplateView):
             values="value",
         )
 
-        records = finance_df_pivot.to_dict(orient='records')
+        records = finance_df_pivot.to_dict(orient="records")
 
         paginator = Paginator(records, 10)
-        page = self.request.GET.get('page')
+        page = self.request.GET.get("page")
         records = paginator.get_page(page)
         print(records)
         context = {
@@ -106,7 +110,9 @@ def dashboard_table(request, pk, report_type):
         ).values()[0]["id"]
 
     # Get financial data
-    finance_qs = FinancialReports.objects.select_related("parameter_id").filter(
+    finance_qs = FinancialReports.objects.select_related(
+        "parameter_id"
+        ).filter(
         company_id=company_id,
         parameter_id__report_section_id__report_type_id__report_name=report_type,
     )
@@ -156,7 +162,7 @@ def _param_chart(company_id, DataSource, param_name):
     df = pd.DataFrame(
         DataSource.objects.filter(
             company_id=company_id, parameter_id=param_id
-        ).values()
+            ).values()
     )
     df["value"] = df["value"].astype(float)
 
@@ -164,8 +170,8 @@ def _param_chart(company_id, DataSource, param_name):
     x_data = []
 
     for index, row in df.iterrows():
-        y_data.append(row['value'])
-        x_data.append(row['time_stamp'])
+        y_data.append(row["value"])
+        x_data.append(row["time_stamp"])
 
     data = {
         "x_data": x_data,
@@ -220,14 +226,14 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
     df3_x_data = []
 
     for index, row in df_1.iterrows():
-        df1_y_data.append(row['value'])
-        df1_x_data.append(row['time_stamp'])
+        df1_y_data.append(row["value"])
+        df1_x_data.append(row["time_stamp"])
     for index, row in df_2.iterrows():
-        df2_y_data.append(row['value'])
-        df2_x_data.append(row['time_stamp'])
+        df2_y_data.append(row["value"])
+        df2_x_data.append(row["time_stamp"])
     for index, row in df_3.iterrows():
-        df3_y_data.append(row['value'])
-        df3_x_data.append(row['time_stamp'])
+        df3_y_data.append(row["value"])
+        df3_x_data.append(row["time_stamp"])
 
     data = {
         "df1_x_data": df1_x_data,
@@ -257,14 +263,11 @@ def _pk_to_comp_id(pk):
 
 
 class ShareChartDataView(View):
-
     def get(self, request, pk):
 
         company_id = _pk_to_comp_id(pk)
 
-        share_qs = SharePrices.objects.filter(
-            company_id=company_id
-            ).values()
+        share_qs = SharePrices.objects.filter(company_id=company_id).values()
 
         y_data = []
         x_data = []
@@ -285,7 +288,6 @@ class ShareChartDataView(View):
 
 
 class EpsNormDataView(View):
-
     def get(self, request, pk):
 
         company_id = _pk_to_comp_id(pk)
@@ -298,7 +300,6 @@ class EpsNormDataView(View):
 
 
 class DividendDataView(View):
-
     def get(self, request, pk):
 
         company_id = _pk_to_comp_id(pk)
@@ -311,7 +312,6 @@ class DividendDataView(View):
 
 
 class RoeDataView(View):
-
     def get(self, request, pk):
 
         company_id = _pk_to_comp_id(pk)
@@ -323,34 +323,119 @@ class RoeDataView(View):
         return JsonResponse(data)
 
 
-class EpsDataView(View):
-
+class BookValueDataView(View):
     def get(self, request, pk):
 
         company_id = _pk_to_comp_id(pk)
 
         data = _param_chart(
             company_id, CalculatedStats, "Equity (Book Value) Per Share"
-            )
+        )
 
         return JsonResponse(data)
 
 
 class RoceDataView(View):
+    def get(self, request, pk):
 
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(company_id, CalculatedStats, "ROCE")
+
+        return JsonResponse(data)
+
+
+class DebtToEquityDataView(View):
     def get(self, request, pk):
 
         company_id = _pk_to_comp_id(pk)
 
         data = _param_chart(
-            company_id, CalculatedStats, "ROCE"
+            company_id, CalculatedStats, "Debt to Equity (D/E)"
             )
 
         return JsonResponse(data)
 
 
-class TotalMultiDataView(View):
+class DividendCoverDataView(View):
+    def get(self, request, pk):
 
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(
+            company_id, CalculatedStats, "Dividend Cover"
+            )
+
+        return JsonResponse(data)
+
+
+class PriceToEarningsDataView(View):
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(
+            company_id, CalculatedStats, "Price to Earnings (P/E)"
+            )
+
+        return JsonResponse(data)
+
+
+class PriceToBookValueDataView(View):
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(
+            company_id, CalculatedStats, "Price to Book Value (Equity)"
+            )
+
+        return JsonResponse(data)
+
+
+class IntrinsicValueDataView(View):
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(company_id, CalculatedStats, "DCF Intrinsic Value")
+
+        return JsonResponse(data)
+
+
+class AnnualYieldDataView(View):
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(
+            company_id, CalculatedStats, "Annual Yield (Return)"
+            )
+
+        return JsonResponse(data)
+
+
+class FcfPsDataView(View):
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(company_id, FinancialReports, "FCF ps")
+
+        return JsonResponse(data)
+
+
+class CurrentRatioDataView(View):
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(company_id, CalculatedStats, "Current Ratio")
+
+        return JsonResponse(data)
+
+
+class TotalMultiDataView(View):
     def get(self, request, pk):
 
         company_id = _pk_to_comp_id(pk)
@@ -368,7 +453,6 @@ class TotalMultiDataView(View):
 
 
 class CurrentMultiDataView(View):
-
     def get(self, request, pk):
 
         company_id = _pk_to_comp_id(pk)

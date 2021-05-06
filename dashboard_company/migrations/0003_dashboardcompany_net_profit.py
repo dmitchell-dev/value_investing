@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard_company', '0002_auto_20210408_2056'),
+        ("dashboard_company", "0002_auto_20210408_2056"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dashboardcompany',
-            name='net_profit',
+            model_name="dashboardcompany",
+            name="net_profit",
             field=models.FloatField(default=-9999),
             preserve_default=False,
         ),
