@@ -52,14 +52,18 @@ class DashboardTableView(TemplateView):
         company_name = DashboardCompany.objects.filter(id=pk).values()[0][
             "company_name"
         ]
-        company_id = Companies.objects.filter(company_name=company_name).values()[0][
+        company_id = Companies.objects.filter(
+            company_name=company_name
+            ).values()[0][
             "id"
         ]
 
         report_type = "Income Statement"
 
         # Get financial data
-        finance_qs = FinancialReports.objects.select_related("parameter_id").filter(
+        finance_qs = FinancialReports.objects.select_related(
+            "parameter_id"
+            ).filter(
             company_id=company_id,
             parameter_id__report_section_id__report_type_id__report_name=report_type,
         )
@@ -98,11 +102,17 @@ def dashboard_table(request, pk, report_type):
 
     error_message = None
     # Get correct company id
-    company_name = DashboardCompany.objects.filter(id=pk).values()[0]["company_name"]
-    company_id = Companies.objects.filter(company_name=company_name).values()[0]["id"]
+    company_name = DashboardCompany.objects.filter(
+        id=pk
+        ).values()[0]["company_name"]
+    company_id = Companies.objects.filter(
+        company_name=company_name
+        ).values()[0]["id"]
 
     # Get financial data
-    finance_qs = FinancialReports.objects.select_related("parameter_id").filter(
+    finance_qs = FinancialReports.objects.select_related(
+        "parameter_id"
+        ).filter(
         company_id=company_id,
         parameter_id__report_section_id__report_type_id__report_name=report_type,
     )
@@ -145,10 +155,14 @@ def dashboard_chart(request, pk):
 
 def _param_chart(company_id, DataSource, param_name):
 
-    param_id = Parameters.objects.filter(param_name=param_name).values()[0]["id"]
+    param_id = Parameters.objects.filter(
+        param_name=param_name
+        ).values()[0]["id"]
 
     df = pd.DataFrame(
-        DataSource.objects.filter(company_id=company_id, parameter_id=param_id).values()
+        DataSource.objects.filter(
+            company_id=company_id, parameter_id=param_id
+            ).values()
     )
     df["value"] = df["value"].astype(float)
 
@@ -174,9 +188,15 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
     param_name_3 = kwargs["chart_name_3"]
     chart_title = kwargs["chart_title"]
 
-    param_id_1 = Parameters.objects.filter(param_name=param_name_1).values()[0]["id"]
-    param_id_2 = Parameters.objects.filter(param_name=param_name_2).values()[0]["id"]
-    param_id_3 = Parameters.objects.filter(param_name=param_name_3).values()[0]["id"]
+    param_id_1 = Parameters.objects.filter(
+        param_name=param_name_1
+        ).values()[0]["id"]
+    param_id_2 = Parameters.objects.filter(
+        param_name=param_name_2
+        ).values()[0]["id"]
+    param_id_3 = Parameters.objects.filter(
+        param_name=param_name_3
+        ).values()[0]["id"]
 
     df_1 = pd.DataFrame(
         DataSource.objects.filter(
@@ -232,8 +252,12 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
 
 
 def _pk_to_comp_id(pk):
-    company_name = DashboardCompany.objects.filter(id=pk).values()[0]["company_name"]
-    company_id = Companies.objects.filter(company_name=company_name).values()[0]["id"]
+    company_name = DashboardCompany.objects.filter(
+        id=pk
+        ).values()[0]["company_name"]
+    company_id = Companies.objects.filter(
+        company_name=company_name
+        ).values()[0]["id"]
 
     return company_id
 
@@ -268,7 +292,9 @@ class EpsNormDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, FinancialReports, "EPS norm. continuous")
+        data = _param_chart(
+            company_id, FinancialReports, "EPS norm. continuous"
+            )
 
         return JsonResponse(data)
 
@@ -278,7 +304,9 @@ class DividendDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, FinancialReports, "Dividend (adjusted) ps")
+        data = _param_chart(
+            company_id, FinancialReports, "Dividend (adjusted) ps"
+            )
 
         return JsonResponse(data)
 
@@ -288,7 +316,9 @@ class RoeDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, CalculatedStats, "Return on Equity (ROE)")
+        data = _param_chart(
+            company_id, CalculatedStats, "Return on Equity (ROE)"
+            )
 
         return JsonResponse(data)
 
@@ -320,7 +350,9 @@ class DebtToEquityDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, CalculatedStats, "Debt to Equity (D/E)")
+        data = _param_chart(
+            company_id, CalculatedStats, "Debt to Equity (D/E)"
+            )
 
         return JsonResponse(data)
 
@@ -330,7 +362,9 @@ class DividendCoverDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, CalculatedStats, "Dividend Cover")
+        data = _param_chart(
+            company_id, CalculatedStats, "Dividend Cover"
+            )
 
         return JsonResponse(data)
 
@@ -340,7 +374,9 @@ class PriceToEarningsDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, CalculatedStats, "Price to Earnings (P/E)")
+        data = _param_chart(
+            company_id, CalculatedStats, "Price to Earnings (P/E)"
+            )
 
         return JsonResponse(data)
 
@@ -350,7 +386,9 @@ class PriceToBookValueDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, CalculatedStats, "Price to Book Value (Equity)")
+        data = _param_chart(
+            company_id, CalculatedStats, "Price to Book Value (Equity)"
+            )
 
         return JsonResponse(data)
 
@@ -370,7 +408,9 @@ class AnnualYieldDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, CalculatedStats, "Annual Yield (Return)")
+        data = _param_chart(
+            company_id, CalculatedStats, "Annual Yield (Return)"
+            )
 
         return JsonResponse(data)
 
