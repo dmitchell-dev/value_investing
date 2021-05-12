@@ -1,0 +1,96 @@
+{% extends '_base.html' %}
+
+{% block title %}CAPE Data{% endblock title %}
+
+{% block content %}
+
+    <h1>CAPE Chart</h1>
+
+    <div id="capeDiv" class="responsive-plot"></div>
+
+{% endblock content %}
+
+<script>
+    // API Data
+    {% block jquery %}
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+
+    var index = ["cape/"];
+    var div_index = ["capeDiv"];
+    var index_size = index.length;
+
+    var f = (function(){
+    var xhr = [], i;
+    for(i = 0; i < index_size; i++){ //for loop
+        (function(i){
+
+            var url = "data/" + index[i];
+            var div_id = div_index[i]
+            // console.log(url)
+            // console.log(div_id)
+
+            xhr[i] = new XMLHttpRequest();
+            xhr[i].open("GET", url, true);
+            xhr[i].onreadystatechange = function(){
+                if (xhr[i].readyState === 4 && xhr[i].status === 200){
+                    var data = JSON.parse(xhr[i].responseText.replace(/\bNaN\b/g, "null"));
+                    // console.log(data)
+                    var trace1 = {
+                        x: data.x_data,
+                        y: data.y_data,
+                        type: 'scatter'
+                    };
+                    // console.log(trace1)
+                    var layout = {
+                        title: data.param_name,
+                        plot_bgcolor: "#ebedeb",
+                        paper_bgcolor: "#fff",
+                        "xaxis": {
+                            gridcolor: "#fff"
+                        },
+                        "yaxis": {
+                            gridcolor: "#fff"
+                        }
+                    };
+                    var data = [trace1];
+                    Plotly.newPlot(div_id, data, layout);
+                    }
+                };
+                xhr[i].send();
+            })(i);
+        }
+    })();
+
+
+    // MAKE THE PLOTS RESPONSIVE
+    (function() {
+    var d3 = Plotly.d3;
+    var WIDTH_IN_PERCENT_OF_PARENT = 100,
+        HEIGHT_IN_PERCENT_OF_PARENT = 90;
+    
+    var gd3 = d3.selectAll(".responsive-plot")
+        .style({
+            width: WIDTH_IN_PERCENT_OF_PARENT + '%',
+            //'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
+            'margin-left': '2px',
+            
+            //height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',
+            height: '300px',
+            //'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'
+            'margin-top': '2px'
+        });
+
+    var nodes_to_resize = gd3[0]; //not sure why but the goods are within a nested array
+    window.onresize = function() {
+        for (var i = 0; i < nodes_to_resize.length; i++) {
+        Plotly.Plots.resize(nodes_to_resize[i]);
+        }
+    };
+    
+    })();
+
+    {% endblock jquery %}
+</script>

@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "share_prices.apps.SharePricesConfig",
     "ranking_stats.apps.RankingStatsConfig",
     "dashboard_company.apps.DashboardCompanyConfig",
+    "economic.apps.EconomicConfig",
 ]
 
 MIDDLEWARE = [

@@ -29,7 +29,8 @@
       <a href="{% url 'home' %}" class="navbar-brand my-0 mr-md-auto
       font-weight-normal">Value Investing</a>
       <nav class="my-2 my-md-0 mr-md-3">
-        <a class="p-2 text-dark" href="{% url 'dashboard_company:dashboard_list' %}">Dashboards</a>
+      <a class="p-2 text-dark" href="{% url 'economic_data:cape_home' %}">Economic Data</a>
+        <a class="p-2 text-dark" href="{% url 'dashboard_company:dashboard_list' %}">Companies</a>
         <a class="p-2 text-dark" href="{% url 'about' %}">About</a>
         {% if user.is_authenticated %}
           <a class="p-2 text-dark" href="{% url 'account_logout' %}">Log Out</a>

@@ -403,6 +403,16 @@
             </ul>
         </div>
     </div>
+
+
+    <form action="/your-name/" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
+
+
+
 {% endblock content %}
 
 <script>
@@ -453,6 +463,7 @@
                     Plotly.newPlot(div_id, data, layout);
                     }
                 };
+                console.log('Error')
                 xhr[i].send();
             })(i);
         }
