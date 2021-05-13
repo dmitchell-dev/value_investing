@@ -1,5 +1,7 @@
 from django.views.generic.base import TemplateView
 
+from django.http import JsonResponse
+
 from django.views import View
 
 
@@ -26,4 +28,4 @@ class CapeChartDataView(View):
             "param_name": param_name,
         }
 
-        return data
+        return JsonResponse(data)
