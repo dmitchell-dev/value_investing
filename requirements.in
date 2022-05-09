@@ -4,6 +4,7 @@ django-mysql
 mysqlclient
 SQLAlchemy
 mysql-connector-python
+Psycopg2
 
 # Analysis
 pandas

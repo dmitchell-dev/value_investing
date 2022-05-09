@@ -174,7 +174,7 @@ elif ENVIRONMENT == "development":
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
     dev_db = {
-        "ENGINE": "django.db.backends.mysql",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": env.str("DB_NAME"),
         "USER": env.str("DB_USERNAME"),
         "PASSWORD": env.str("DB_PASSWORD"),
