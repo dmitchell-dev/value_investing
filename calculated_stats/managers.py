@@ -25,10 +25,12 @@ class CalculatedStatsQueryset(QuerySet):
 
 
 def debt_to_ratio(df_pivot):
-    df_tl = _dataframe_slice(df_pivot, "Total liabilities_Liabilities").reset_index(
-        drop=True
-    )
-    df_te = _dataframe_slice(df_pivot, "Total equity_Equity").reset_index(drop=True)
+    df_tl = _dataframe_slice(
+        df_pivot, "Total liabilities_Liabilities"
+        ).reset_index(drop=True)
+    df_te = _dataframe_slice(
+        df_pivot, "Total equity_Equity"
+        ).reset_index(drop=True)
     df_d_e = df_tl.div(df_te)
     df_d_e.index = ["Debt to Equity (D/E)"]
 
@@ -36,10 +38,12 @@ def debt_to_ratio(df_pivot):
 
 
 def current_ratio(df_pivot):
-    df_ca = _dataframe_slice(df_pivot, "Current assets_Assets").reset_index(drop=True)
-    df_cl = _dataframe_slice(df_pivot, "Current liabilities_Liabilities").reset_index(
-        drop=True
-    )
+    df_ca = _dataframe_slice(
+        df_pivot, "Current assets_Assets"
+        ).reset_index(drop=True)
+    df_cl = _dataframe_slice(
+        df_pivot, "Current liabilities_Liabilities"
+        ).reset_index(drop=True)
     if not df_ca.empty and not df_cl.empty:
         df_cr = df_ca.div(df_cl)
         df_cr.index = ["Current Ratio"]
@@ -53,9 +57,9 @@ def return_on_equity(df_pivot):
     df_profit = _dataframe_slice(
         df_pivot, "Profit for financial year_Continuous Operatings"
     ).reset_index(drop=True)
-    df_nav = _dataframe_slice(df_pivot, "Shareholders funds (NAV)_Equity").reset_index(
-        drop=True
-    )
+    df_nav = _dataframe_slice(
+        df_pivot, "Shareholders funds (NAV)_Equity"
+        ).reset_index(drop=True)
     if not df_profit.empty and not df_nav.empty:
         df_roe = df_profit.div(df_nav) * 100
         df_roe.index = ["Return on Equity (ROE)"]
@@ -64,9 +68,9 @@ def return_on_equity(df_pivot):
 
 
 def equity_per_share(df_pivot):
-    df_nav = _dataframe_slice(df_pivot, "Shareholders funds (NAV)_Equity").reset_index(
-        drop=True
-    )
+    df_nav = _dataframe_slice(
+        df_pivot, "Shareholders funds (NAV)_Equity"
+        ).reset_index(drop=True)
     df_shares = _dataframe_slice(
         df_pivot, "Average shares (diluted)_Other"
     ).reset_index(drop=True)
@@ -78,9 +82,9 @@ def equity_per_share(df_pivot):
 
 
 def price_per_earnings(df_pivot):
-    df_mark_cap = _dataframe_slice(df_pivot, "Market capitalisation_Other").reset_index(
-        drop=True
-    )
+    df_mark_cap = _dataframe_slice(
+        df_pivot, "Market capitalisation_Other"
+        ).reset_index(drop=True)
     df_profit = _dataframe_slice(
         df_pivot, "Profit for financial year_Continuous Operatings"
     ).reset_index(drop=True)
@@ -92,22 +96,22 @@ def price_per_earnings(df_pivot):
 
 
 def price_book_value(df_pivot, df_eps):
-    df_mark_cap = _dataframe_slice(df_pivot, "Market capitalisation_Other").reset_index(
-        drop=True
-    )
+    df_mark_cap = _dataframe_slice(
+        df_pivot, "Market capitalisation_Other"
+        ).reset_index(drop=True)
     df_shares = _dataframe_slice(
         df_pivot, "Average shares (diluted)_Other"
-    ).reset_index(drop=True)
+        ).reset_index(drop=True)
     if not df_mark_cap.empty and not df_shares.empty:
         df_pbv = df_mark_cap.div(df_shares)
         df_pbv.index = ["Price to Book Value (Equity)"]
 
-    df_equity = _dataframe_slice(df_pbv, "Price to Book Value (Equity)").reset_index(
-        drop=True
-    )
-    df_eps = _dataframe_slice(df_eps, "Equity (Book Value) Per Share").reset_index(
-        drop=True
-    )
+    df_equity = _dataframe_slice(
+        df_pbv, "Price to Book Value (Equity)"
+        ).reset_index(drop=True)
+    df_eps = _dataframe_slice(
+        df_eps, "Equity (Book Value) Per Share"
+        ).reset_index(drop=True)
     if not df_equity.empty and not df_eps.empty:
         df_pbv = df_equity.div(df_eps)
         df_pbv.index = ["Price to Book Value (Equity)"]
@@ -119,9 +123,9 @@ def annual_yield(df_pivot):
     df_profit = _dataframe_slice(
         df_pivot, "Profit for financial year_Continuous Operatings"
     ).reset_index(drop=True)
-    df_mark_cap = _dataframe_slice(df_pivot, "Market capitalisation_Other").reset_index(
-        drop=True
-    )
+    df_mark_cap = _dataframe_slice(
+        df_pivot, "Market capitalisation_Other"
+        ).reset_index(drop=True)
     if not df_profit.empty and not df_mark_cap.empty:
         df_a_return = df_profit.div(df_mark_cap) * 100
         df_a_return.index = ["Annual Yield (Return)"]
@@ -187,8 +191,12 @@ def div_cover(df_pivot):
 
 def dcf_intrinsic_value(df_pivot, df_dcf_variables):
     intrinsic_value_list = []
-    base_year_fcf = _dataframe_slice(df_pivot, "Free cash flow (FCF)_Free Cash Flow")
-    shares_outstanding = _dataframe_slice(df_pivot, "Average shares (diluted)_Other")
+    base_year_fcf = _dataframe_slice(
+        df_pivot, "Free cash flow (FCF)_Free Cash Flow"
+        )
+    shares_outstanding = _dataframe_slice(
+        df_pivot, "Average shares (diluted)_Other"
+        )
     growth_rate = df_dcf_variables[
         df_dcf_variables.parameter__param_name == ("Estimated Growth Rate")
     ]
