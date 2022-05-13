@@ -4,27 +4,27 @@ from django.core.management.base import BaseCommand
 from django.db.models import AutoField
 
 from ancillary_info.models import (
-    Markets,
-    CompanyType,
-    IndustryRisk,
-    ReportType,
-    Industries,
-    ReportSection,
-    Parameters,
-    CalcVariables,
-    Companies,
+    Exchanges,
+    # CompanyType,
+    # IndustryRisk,
+    # ReportType,
+    # Industries,
+    # ReportSection,
+    # Parameters,
+    # CalcVariables,
+    # Companies,
 )
 
 object_list = [
-    Markets,
-    CompanyType,
-    IndustryRisk,
-    ReportType,
-    Industries,
-    ReportSection,
-    Parameters,
-    CalcVariables,
-    Companies,
+    Exchanges,
+    # CompanyType,
+    # IndustryRisk,
+    # ReportType,
+    # Industries,
+    # ReportSection,
+    # Parameters,
+    # CalcVariables,
+    # Companies,
 ]
 
 BASE_DIR_LOCAL = settings.BASE_DIR

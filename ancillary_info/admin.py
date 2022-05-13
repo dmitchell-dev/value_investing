@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (
-    Markets,
+    Exchanges,
     CompanyType,
     IndustryRisk,
     ReportType,
@@ -13,8 +13,8 @@ from .models import (
 )
 
 
-class MarketsAdmin(admin.ModelAdmin):
-    fields = ["share_listing"]
+class ExchangesAdmin(admin.ModelAdmin):
+    fields = ["value"]
 
 
 class CompanyTypeAdmin(admin.ModelAdmin):
@@ -71,7 +71,7 @@ class CompaniesAdmin(admin.ModelAdmin):
     fields = [
         "comp_type",
         "industry",
-        "market",
+        "exchange",
         "tidm",
         "company_name",
         "company_summary",
@@ -81,12 +81,12 @@ class CompaniesAdmin(admin.ModelAdmin):
         "tidm",
         "comp_type",
         "industry",
-        "market",
+        "exchange",
         "company_summary",
     )
 
 
-admin.site.register(Markets, MarketsAdmin)
+admin.site.register(Exchanges, ExchangesAdmin)
 admin.site.register(CompanyType, CompanyTypeAdmin)
 admin.site.register(IndustryRisk, IndustryRiskAdmin)
 admin.site.register(ReportType, ReportTypeAdmin)

@@ -6,12 +6,12 @@ from .managers import (
 )
 
 
-class Markets(models.Model):
-    share_listing = models.CharField(max_length=255)
+class Exchanges(models.Model):
+    value = models.CharField(max_length=255)
 
     class Meta:
-        db_table = "markets"
-        verbose_name_plural = "Markets"
+        db_table = "exchanges"
+        verbose_name_plural = "Exchanges"
 
     def __str__(self):
         return self.share_listing
@@ -109,7 +109,7 @@ class CalcVariables(models.Model):
 class Companies(models.Model):
     comp_type = models.ForeignKey(CompanyType, on_delete=models.CASCADE)
     industry = models.ForeignKey(Industries, on_delete=models.CASCADE)
-    market = models.ForeignKey(Markets, on_delete=models.CASCADE)
+    exchange = models.ForeignKey(Exchanges, on_delete=models.CASCADE)
     tidm = models.CharField(max_length=10)
     company_name = models.CharField(max_length=255)
     company_summary = models.TextField()
