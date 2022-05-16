@@ -47,8 +47,8 @@ class ReportSection(Base):
     report_section_last = Column(String(255))
 
 
-class Parameters(Base):
-    __tablename__ = "parameters"
+class Params(Base):
+    __tablename__ = "params"
 
     id = Column(Integer, primary_key=True)
     report_section_id = Column(Integer, ForeignKey("report_section.id"), nullable=False)
@@ -62,7 +62,7 @@ class CalcVariables(Base):
     __tablename__ = "calc_variables"
 
     id = Column(Integer, primary_key=True)
-    parameter_id = Column(Integer, ForeignKey("parameters.id"), nullable=False)
+    parameter_id = Column(Integer, ForeignKey("params.id"), nullable=False)
     value = Column(Float)
 
 

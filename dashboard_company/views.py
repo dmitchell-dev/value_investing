@@ -10,7 +10,7 @@ from django.http import JsonResponse
 from django.views import View
 
 from .models import DashboardCompany
-from ancillary_info.models import Parameters, Companies
+from ancillary_info.models import Params, Companies
 from share_prices.models import SharePrices
 from financial_reports.models import FinancialReports
 from calculated_stats.models import CalculatedStats
@@ -37,7 +37,7 @@ class DashboardDetailView(DetailView):
         context = super().get_context_data(**kwargs)
 
         # context['share_chart'] = _share_chart(self.kwargs['pk'])
-        context["parameters"] = Parameters.objects.all()
+        context["params"] = Params.objects.all()
 
         return context
 
@@ -155,7 +155,7 @@ def dashboard_chart(request, pk):
 
 def _param_chart(company_id, DataSource, param_name):
 
-    param_id = Parameters.objects.filter(
+    param_id = Params.objects.filter(
         param_name=param_name
         ).values()[0]["id"]
 
@@ -188,13 +188,13 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
     param_name_3 = kwargs["chart_name_3"]
     chart_title = kwargs["chart_title"]
 
-    param_id_1 = Parameters.objects.filter(
+    param_id_1 = Params.objects.filter(
         param_name=param_name_1
         ).values()[0]["id"]
-    param_id_2 = Parameters.objects.filter(
+    param_id_2 = Params.objects.filter(
         param_name=param_name_2
         ).values()[0]["id"]
-    param_id_3 = Parameters.objects.filter(
+    param_id_3 = Params.objects.filter(
         param_name=param_name_3
         ).values()[0]["id"]
 

@@ -8,7 +8,7 @@ from .ancillary_objects import (
     ReportType,
     Industries,
     ReportSection,
-    Parameters,
+    Params,
     CalcVariables,
     Companies,
 )
@@ -28,7 +28,7 @@ class AncillaryInfo:
             ReportType,
             Industries,
             ReportSection,
-            Parameters,
+            Params,
             CalcVariables,
             Companies,
         ]
@@ -68,22 +68,22 @@ class AncillaryInfo:
         table_df = pd.read_sql_table(ReportSection.__tablename__, con=engine)
         return table_df
 
-    def get_parameters(self):
-        table_df = pd.read_sql_table(Parameters.__tablename__, con=engine)
+    def get_params(self):
+        table_df = pd.read_sql_table(Params.__tablename__, con=engine)
         return table_df
 
-    def get_parameters_joined(self):
+    def get_params_joined(self):
         session = session_factory()
         query = (
-            session.query(Parameters)
+            session.query(Params)
             .join(ReportSection)
             .join(ReportType)
             .with_entities(
-                Parameters.id,
-                Parameters.param_name,
-                Parameters.limit_logic,
-                Parameters.limit_value,
-                Parameters.param_description,
+                Params.id,
+                Params.param_name,
+                Params.limit_logic,
+                Params.limit_value,
+                Params.param_description,
                 ReportSection.report_section,
                 ReportSection.report_section_last,
                 ReportType.report_name,
@@ -102,9 +102,9 @@ class AncillaryInfo:
         session = session_factory()
         query = (
             session.query(CalcVariables)
-            .join(Parameters)
+            .join(Params)
             .with_entities(
-                Parameters.param_name,
+                Params.param_name,
                 CalcVariables.value,
             )
         )

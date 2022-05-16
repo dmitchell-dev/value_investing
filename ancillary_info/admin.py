@@ -3,12 +3,12 @@ from django.contrib import admin
 from .models import (
     Exchanges,
     CompanyType,
-    IndustryRisk,
+    Sectors,
     ReportType,
     Industries,
-    ReportSection,
-    Parameters,
-    CalcVariables,
+    Currencies,
+    Countries,
+    Params,
     Companies,
 )
 
@@ -18,37 +18,31 @@ class ExchangesAdmin(admin.ModelAdmin):
 
 
 class CompanyTypeAdmin(admin.ModelAdmin):
-    fields = ["company_type"]
-
-
-class IndustryRiskAdmin(admin.ModelAdmin):
-    fields = ["industry_type"]
-
-
-class ReportTypeAdmin(admin.ModelAdmin):
-    fields = ["report_name"]
+    fields = ["value"]
 
 
 class IndustriesAdmin(admin.ModelAdmin):
-    fields = ["industry_risk", "industry_name"]
-    list_display = (
-        "industry_name",
-        "industry_risk",
-    )
+    fields = ["value"]
 
 
-class ReportSectionAdmin(admin.ModelAdmin):
-    fields = ["report_type", "report_section", "report_section_last"]
-    list_display = (
-        "report_section",
-        "report_type",
-        "report_section_last",
-    )
+class SectorsAdmin(admin.ModelAdmin):
+    fields = ["value"]
 
 
-class ParametersAdmin(admin.ModelAdmin):
+class CurrenciesAdmin(admin.ModelAdmin):
+    fields = ["value"]
+
+
+class CountriesAdmin(admin.ModelAdmin):
+    fields = ["value"]
+
+
+class ReportTypeAdmin(admin.ModelAdmin):
+    fields = ["value"]
+
+
+class ParamsAdmin(admin.ModelAdmin):
     fields = [
-        "report_section",
         "param_name",
         "limit_logic",
         "limit_value",
@@ -56,15 +50,10 @@ class ParametersAdmin(admin.ModelAdmin):
     ]
     list_display = (
         "param_name",
-        "report_section",
         "limit_logic",
         "limit_value",
         "param_description",
     )
-
-
-class CalcVariablesAdmin(admin.ModelAdmin):
-    fields = ["parameter", "value"]
 
 
 class CompaniesAdmin(admin.ModelAdmin):
@@ -88,10 +77,10 @@ class CompaniesAdmin(admin.ModelAdmin):
 
 admin.site.register(Exchanges, ExchangesAdmin)
 admin.site.register(CompanyType, CompanyTypeAdmin)
-admin.site.register(IndustryRisk, IndustryRiskAdmin)
+admin.site.register(Sectors, SectorsAdmin)
 admin.site.register(ReportType, ReportTypeAdmin)
 admin.site.register(Industries, IndustriesAdmin)
-admin.site.register(ReportSection, ReportSectionAdmin)
-admin.site.register(Parameters, ParametersAdmin)
-admin.site.register(CalcVariables, CalcVariablesAdmin)
+admin.site.register(Currencies, CurrenciesAdmin)
+admin.site.register(Countries, CountriesAdmin)
+admin.site.register(Params, ParamsAdmin)
 admin.site.register(Companies, CompaniesAdmin)

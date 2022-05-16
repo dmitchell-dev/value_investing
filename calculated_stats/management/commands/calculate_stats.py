@@ -1,9 +1,8 @@
 import pandas as pd
 from django.core.management.base import BaseCommand
 from ancillary_info.models import (
-    Parameters,
+    Params,
     Companies,
-    CalcVariables,
 )
 from share_prices.models import SharePrices
 from financial_reports.models import FinancialReports
@@ -44,7 +43,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Get ancillary data
-        df_params = pd.DataFrame(list(Parameters.objects.get_parameters_joined()))
+        df_params = pd.DataFrame(list(Params.objects.get_params_joined()))
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
         df_dcf_variables = pd.DataFrame(
             list(CalcVariables.objects.get_calc_vars_joined())
@@ -240,7 +239,7 @@ class Command(BaseCommand):
             reports = [
                 CalculatedStats(
                     company=Companies.objects.get(id=row["company_id"]),
-                    parameter=Parameters.objects.get(id=row["parameter_id"]),
+                    parameter=Params.objects.get(id=row["parameter_id"]),
                     time_stamp=row["time_stamp"],
                     value=row["value"],
                 )

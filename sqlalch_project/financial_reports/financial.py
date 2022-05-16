@@ -6,7 +6,7 @@ from .financial_objects import FinancialObjects
 
 from ..common.mysql_base import session_factory, engine
 
-from ..ancillary_info.ancillary_objects import Companies, Parameters, ReportSection
+from ..ancillary_info.ancillary_objects import Companies, Params, ReportSection
 
 
 class Financial:
@@ -15,7 +15,7 @@ class Financial:
 
     def populate_tables(self):
         # Import anciliary tables
-        df_params = AncillaryInfo().get_parameters_joined()
+        df_params = AncillaryInfo().get_params_joined()
         df_companies = AncillaryInfo().get_companies_joined()
 
         file_list = get_report_list()
@@ -84,10 +84,10 @@ class Financial:
         query = (
             session.query(FinancialObjects)
             .join(Companies)
-            .join(Parameters)
+            .join(Params)
             .join(ReportSection)
             .with_entities(
-                Parameters.param_name,
+                Params.param_name,
                 ReportSection.report_section,
                 FinancialObjects.time_stamp,
                 FinancialObjects.value,

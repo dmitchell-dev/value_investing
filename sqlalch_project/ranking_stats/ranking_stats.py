@@ -18,7 +18,7 @@ class RankingStats:
     def populate_tables(self):
         # Get ancillary data
         df_companies = AncillaryInfo().get_companies_joined()
-        df_params = AncillaryInfo().get_parameters_joined()
+        df_params = AncillaryInfo().get_params_joined()
 
         # Calculate rank for each type
         ranktype_list = [

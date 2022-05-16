@@ -6,7 +6,7 @@ from ranking_stats.models import RankingStats
 from ranking_stats.managers import create_growth_list
 
 from ancillary_info.models import (
-    Parameters,
+    Params,
     Companies,
 )
 
@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Get ancillary data
-        df_params = pd.DataFrame(list(Parameters.objects.get_parameters_joined()))
+        df_params = pd.DataFrame(list(Params.objects.get_params_joined()))
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
         # Calculate rank for each type
@@ -83,7 +83,7 @@ class Command(BaseCommand):
         reports = [
             RankingStats(
                 company=Companies.objects.get(id=row["company_id"]),
-                parameter=Parameters.objects.get(id=row["parameter_id"]),
+                parameter=Params.objects.get(id=row["parameter_id"]),
                 time_stamp=row["time_stamp"],
                 value=row["value"],
             )

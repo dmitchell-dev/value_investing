@@ -14,8 +14,8 @@ class CompaniesQueryset(QuerySet):
         )
 
 
-class ParametersQueryset(QuerySet):
-    def get_parameters_joined(self):
+class ParamsQueryset(QuerySet):
+    def get_params_joined(self):
         return self.values(
             "id",
             "param_name",

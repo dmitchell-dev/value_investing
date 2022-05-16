@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from financial_reports.models import FinancialReports
-from ancillary_info.models import Parameters, Companies
+from ancillary_info.models import Params, Companies
 import pandas as pd
 import os
 
@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         print("Import Reports")
-        df_params = pd.DataFrame(list(Parameters.objects.get_parameters_joined()))
+        df_params = pd.DataFrame(list(Params.objects.get_params_joined()))
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
         file_list = self._get_report_list()
@@ -66,7 +66,7 @@ class Command(BaseCommand):
             reports = [
                 FinancialReports(
                     company=Companies.objects.get(id=row["company_id"]),
-                    parameter=Parameters.objects.get(id=row["parameter_id"]),
+                    parameter=Params.objects.get(id=row["parameter_id"]),
                     time_stamp=row["time_stamp"],
                     value=row["value"],
                 )

@@ -10,7 +10,7 @@ from ancillary_info.models import (
     # ReportType,
     # Industries,
     # ReportSection,
-    # Parameters,
+    # Params,
     # CalcVariables,
     # Companies,
 )
@@ -22,7 +22,7 @@ object_list = [
     # ReportType,
     # Industries,
     # ReportSection,
-    # Parameters,
+    # Params,
     # CalcVariables,
     # Companies,
 ]

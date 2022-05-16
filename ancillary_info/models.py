@@ -1,8 +1,7 @@
 from django.db import models
 from .managers import (
     CompaniesQueryset,
-    ParametersQueryset,
-    CalcVariablesQueryset,
+    ParamsQueryset,
 )
 
 
@@ -18,7 +17,7 @@ class Exchanges(models.Model):
 
 
 class CompanyType(models.Model):
-    company_type = models.CharField(max_length=255)
+    value = models.CharField(max_length=255)
 
     class Meta:
         db_table = "company_type"
@@ -28,31 +27,8 @@ class CompanyType(models.Model):
         return self.company_type
 
 
-class IndustryRisk(models.Model):
-    industry_type = models.CharField(max_length=255)
-
-    class Meta:
-        db_table = "industry_risk"
-        verbose_name_plural = "Industry Risks"
-
-    def __str__(self):
-        return self.industry_type
-
-
-class ReportType(models.Model):
-    report_name = models.CharField(max_length=255)
-
-    class Meta:
-        db_table = "report_type"
-        verbose_name_plural = "Report Types"
-
-    def __str__(self):
-        return self.report_name
-
-
 class Industries(models.Model):
-    industry_risk = models.ForeignKey(IndustryRisk, on_delete=models.CASCADE)
-    industry_name = models.CharField(max_length=255)
+    value = models.CharField(max_length=255)
 
     class Meta:
         db_table = "industries"
@@ -62,48 +38,64 @@ class Industries(models.Model):
         return self.industry_name
 
 
-class ReportSection(models.Model):
-    report_type = models.ForeignKey(ReportType, on_delete=models.CASCADE)
-    report_section = models.CharField(max_length=255)
-    report_section_last = models.CharField(max_length=255)
+class Sectors(models.Model):
+    value = models.CharField(max_length=255)
 
     class Meta:
-        db_table = "report_section"
-        verbose_name_plural = "Report Sections"
+        db_table = "sectors"
+        verbose_name_plural = "Sectors"
 
     def __str__(self):
-        return self.report_section
+        return self.industry_type
 
 
-class Parameters(models.Model):
-    report_section = models.ForeignKey(ReportSection, on_delete=models.CASCADE)
+class Currencies(models.Model):
+    value = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "currencies"
+        verbose_name_plural = "Currencies"
+
+    def __str__(self):
+        return self.industry_type
+
+
+class Countries(models.Model):
+    value = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "countries"
+        verbose_name_plural = "Countries"
+
+    def __str__(self):
+        return self.industry_type
+
+
+class ReportType(models.Model):
+    value = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "report_type"
+        verbose_name_plural = "Report Types"
+
+    def __str__(self):
+        return self.report_name
+
+
+class Params(models.Model):
     param_name = models.CharField(max_length=255)
     limit_logic = models.CharField(max_length=255)
     limit_value = models.CharField(max_length=255)
     param_description = models.CharField(max_length=255)
 
-    objects = ParametersQueryset.as_manager()
+    objects = ParamsQueryset.as_manager()
 
     class Meta:
-        db_table = "parameters"
+        db_table = "params"
         verbose_name_plural = "Parameters"
 
     def __str__(self):
         return self.param_name
-
-
-class CalcVariables(models.Model):
-    parameter = models.ForeignKey(Parameters, on_delete=models.CASCADE)
-    value = models.FloatField()
-
-    objects = CalcVariablesQueryset.as_manager()
-
-    class Meta:
-        db_table = "calc_variables"
-        verbose_name_plural = "Calculation Variables"
-
-    def __str__(self):
-        return self.parameter.param_name
 
 
 class Companies(models.Model):

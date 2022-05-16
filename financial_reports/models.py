@@ -1,11 +1,11 @@
 from django.db import models
-from ancillary_info.models import Companies, Parameters
+from ancillary_info.models import Companies, Params
 from .managers import FinancialReportsQueryset
 
 
 class FinancialReports(models.Model):
     company = models.ForeignKey(Companies, on_delete=models.CASCADE)
-    parameter = models.ForeignKey(Parameters, on_delete=models.CASCADE)
+    parameter = models.ForeignKey(Params, on_delete=models.CASCADE)
     time_stamp = models.DateField()
     value = models.FloatField(null=True)
 

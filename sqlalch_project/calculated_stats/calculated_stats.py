@@ -6,7 +6,7 @@ from ..share_prices.share_price import SharePrice
 from ..financial_reports.financial import Financial
 from ..common.mysql_base import session_factory, engine
 
-from ..ancillary_info.ancillary_objects import Companies, Parameters
+from ..ancillary_info.ancillary_objects import Companies, Params
 
 from .manager import (
     debt_to_ratio,
@@ -44,7 +44,7 @@ class CalculatedStats:
     def populate_tables(self):
         # Get ancillary data
         df_companies = AncillaryInfo().get_companies_joined()
-        df_params = AncillaryInfo().get_parameters_joined()
+        df_params = AncillaryInfo().get_params_joined()
         df_dcf_variables = AncillaryInfo().get_calc_vars_joined()
 
         # Calculate values for each company
@@ -237,14 +237,14 @@ class CalculatedStats:
         query = (
             session.query(CalculatedStatsObjects)
             .join(Companies)
-            .join(Parameters)
+            .join(Params)
             .with_entities(
                 CalculatedStatsObjects.time_stamp,
                 CalculatedStatsObjects.value,
                 Companies.tidm,
-                Parameters.param_name,
+                Params.param_name,
             )
-            .filter(Parameters.param_name == rank_type)
+            .filter(Params.param_name == rank_type)
         )
 
         table_df = pd.read_sql(query.statement, query.session.bind)

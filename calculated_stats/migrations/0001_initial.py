@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('time_stamp', models.DateField()),
                 ('value', models.CharField(max_length=255, null=True)),
                 ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.companies')),
-                ('parameter', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.parameters')),
+                ('parameter', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.params')),
             ],
             options={
                 'verbose_name_plural': 'Calculated Data',
