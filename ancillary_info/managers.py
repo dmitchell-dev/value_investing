@@ -19,8 +19,10 @@ class ParamsQueryset(QuerySet):
         return self.values(
             "id",
             "param_name",
+            "param_name_col",
             "limit_logic",
             "limit_value",
+            "data_type",
             "param_description",
             "report_section__report_section",
             "report_section__report_section_last",

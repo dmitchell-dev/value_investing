@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from .managers import (
     CompaniesQueryset,
     ParamsQueryset,
@@ -83,10 +84,15 @@ class ReportType(models.Model):
 
 
 class Params(models.Model):
+    report_type = models.ForeignKey(ReportType, on_delete=models.CASCADE)
     param_name = models.CharField(max_length=255)
+    param_name_col = models.CharField(max_length=255)
     limit_logic = models.CharField(max_length=255)
     limit_value = models.CharField(max_length=255)
+    data_type = models.CharField(max_length=255)
     param_description = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = ParamsQueryset.as_manager()
 

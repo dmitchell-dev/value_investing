@@ -44,8 +44,10 @@ class ReportTypeAdmin(admin.ModelAdmin):
 class ParamsAdmin(admin.ModelAdmin):
     fields = [
         "param_name",
+        "param_name_col",
         "limit_logic",
         "limit_value",
+        "data_type",
         "param_description",
     ]
     list_display = (
