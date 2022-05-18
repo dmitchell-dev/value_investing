@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 from .managers import (
     CompaniesQueryset,
     ParamsQueryset,
@@ -99,6 +98,32 @@ class Params(models.Model):
     class Meta:
         db_table = "params"
         verbose_name_plural = "Parameters"
+
+    def __str__(self):
+        return self.param_name
+
+
+class Datasource(models.Model):
+    source_name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "datasource"
+        verbose_name_plural = "Datasources"
+
+    def __str__(self):
+        return self.param_name
+
+
+class ParamsApi(models.Model):
+    datasource = models.ForeignKey(Datasource, on_delete=models.CASCADE)
+    param = models.ForeignKey(Params, on_delete=models.CASCADE)
+    param_name_api = models.CharField(max_length=255)
+
+    objects = ParamsQueryset.as_manager()
+
+    class Meta:
+        db_table = "params_api"
+        verbose_name_plural = "API Parameters"
 
     def __str__(self):
         return self.param_name

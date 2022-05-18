@@ -41,6 +41,18 @@ class ReportTypeAdmin(admin.ModelAdmin):
     fields = ["value"]
 
 
+class DatasourceAdmin(admin.ModelAdmin):
+    fields = ["source_name"]
+
+
+class ParamsApiAdmin(admin.ModelAdmin):
+    fields = [
+        "param_name_api",
+        "datasource_id",
+        "param_id",
+    ]
+
+
 class ParamsAdmin(admin.ModelAdmin):
     fields = [
         "param_name",
