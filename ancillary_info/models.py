@@ -133,9 +133,15 @@ class Companies(models.Model):
     comp_type = models.ForeignKey(CompanyType, on_delete=models.CASCADE)
     industry = models.ForeignKey(Industries, on_delete=models.CASCADE)
     exchange = models.ForeignKey(Exchanges, on_delete=models.CASCADE)
+    sector = models.ForeignKey(Sectors, on_delete=models.CASCADE)
+    country = models.ForeignKey(Countries, on_delete=models.CASCADE)
+    currency = models.ForeignKey(Currencies, on_delete=models.CASCADE)
     tidm = models.CharField(max_length=10)
     company_name = models.CharField(max_length=255)
+    company_source = models.CharField(max_length=255)
     company_summary = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = CompaniesQueryset.as_manager()
 

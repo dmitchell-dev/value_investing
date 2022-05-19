@@ -5,26 +5,30 @@ from django.db.models import AutoField
 
 from ancillary_info.models import (
     Exchanges,
-    # CompanyType,
-    # IndustryRisk,
-    # ReportType,
-    # Industries,
-    # ReportSection,
-    # Params,
-    # CalcVariables,
-    # Companies,
+    CompanyType,
+    Industries,
+    Sectors,
+    Currencies,
+    Countries,
+    ReportType,
+    Params,
+    Datasource,
+    ParamsApi,
+    Companies,
 )
 
 object_list = [
     Exchanges,
-    # CompanyType,
-    # IndustryRisk,
-    # ReportType,
-    # Industries,
-    # ReportSection,
-    # Params,
-    # CalcVariables,
-    # Companies,
+    CompanyType,
+    Industries,
+    Sectors,
+    Currencies,
+    Countries,
+    ReportType,
+    Params,
+    Datasource,
+    ParamsApi,
+    Companies,
 ]
 
 BASE_DIR_LOCAL = settings.BASE_DIR
