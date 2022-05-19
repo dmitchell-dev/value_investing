@@ -107,7 +107,7 @@ class Datasource(models.Model):
     source_name = models.CharField(max_length=255)
 
     class Meta:
-        db_table = "datasource"
+        db_table = "datasources"
         verbose_name_plural = "Datasources"
 
     def __str__(self):
