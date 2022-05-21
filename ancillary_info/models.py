@@ -13,7 +13,7 @@ class Exchanges(models.Model):
         verbose_name_plural = "Exchanges"
 
     def __str__(self):
-        return self.share_listing
+        return self.value
 
 
 class CompanyType(models.Model):
@@ -24,7 +24,7 @@ class CompanyType(models.Model):
         verbose_name_plural = "Company Types"
 
     def __str__(self):
-        return self.company_type
+        return self.value
 
 
 class Industries(models.Model):
@@ -35,7 +35,7 @@ class Industries(models.Model):
         verbose_name_plural = "Industries"
 
     def __str__(self):
-        return self.industry_name
+        return self.value
 
 
 class Sectors(models.Model):
@@ -46,7 +46,7 @@ class Sectors(models.Model):
         verbose_name_plural = "Sectors"
 
     def __str__(self):
-        return self.industry_type
+        return self.value
 
 
 class Currencies(models.Model):
@@ -57,7 +57,7 @@ class Currencies(models.Model):
         verbose_name_plural = "Currencies"
 
     def __str__(self):
-        return self.industry_type
+        return self.value
 
 
 class Countries(models.Model):
@@ -68,7 +68,7 @@ class Countries(models.Model):
         verbose_name_plural = "Countries"
 
     def __str__(self):
-        return self.industry_type
+        return self.value
 
 
 class ReportType(models.Model):
@@ -79,7 +79,7 @@ class ReportType(models.Model):
         verbose_name_plural = "Report Types"
 
     def __str__(self):
-        return self.report_name
+        return self.value
 
 
 class Params(models.Model):
@@ -111,7 +111,7 @@ class Datasource(models.Model):
         verbose_name_plural = "Datasources"
 
     def __str__(self):
-        return self.param_name
+        return self.source_name
 
 
 class CompSource(models.Model):
@@ -122,7 +122,7 @@ class CompSource(models.Model):
         verbose_name_plural = "Company Sources"
 
     def __str__(self):
-        return self.param_name
+        return self.value
 
 
 class ParamsApi(models.Model):
@@ -137,7 +137,7 @@ class ParamsApi(models.Model):
         verbose_name_plural = "API Parameters"
 
     def __str__(self):
-        return self.param_name
+        return self.param_name_api
 
 
 class Companies(models.Model):
