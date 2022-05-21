@@ -106,6 +106,8 @@ flake8==4.0.1
     # via -r requirements.in
 fonttools==4.33.3
     # via matplotlib
+fsspec==2022.5.0
+    # via -r requirements.in
 funcy==1.17
     # via django-cacheops
 greenlet==1.1.2
