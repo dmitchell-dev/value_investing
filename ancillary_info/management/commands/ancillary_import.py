@@ -65,4 +65,4 @@ class Command(BaseCommand):
                         if field != "created_at" and field != "updated_at":
                             insert_dict[field] = row[row_num]
 
-                    _, created = table_object.objects.update_or_create(**insert_dict)
+                    _, created = table_object.objects.get_or_create(**insert_dict)
