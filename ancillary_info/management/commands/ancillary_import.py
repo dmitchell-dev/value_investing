@@ -13,6 +13,7 @@ from ancillary_info.models import (
     ReportType,
     Params,
     Datasource,
+    CompSource,
     ParamsApi,
     Companies,
 )
@@ -27,6 +28,7 @@ object_list = [
     ReportType,
     Params,
     Datasource,
+    CompSource,
     ParamsApi,
     Companies,
 ]

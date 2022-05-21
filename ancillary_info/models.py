@@ -114,6 +114,17 @@ class Datasource(models.Model):
         return self.param_name
 
 
+class CompSource(models.Model):
+    value = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "comp_sources"
+        verbose_name_plural = "Company Sources"
+
+    def __str__(self):
+        return self.param_name
+
+
 class ParamsApi(models.Model):
     datasource = models.ForeignKey(Datasource, on_delete=models.CASCADE)
     param = models.ForeignKey(Params, on_delete=models.CASCADE)
@@ -136,9 +147,9 @@ class Companies(models.Model):
     sector = models.ForeignKey(Sectors, on_delete=models.CASCADE)
     country = models.ForeignKey(Countries, on_delete=models.CASCADE)
     currency = models.ForeignKey(Currencies, on_delete=models.CASCADE)
+    company_source = models.ForeignKey(CompSource, on_delete=models.CASCADE)
     tidm = models.CharField(max_length=10)
     company_name = models.CharField(max_length=255)
-    company_source = models.CharField(max_length=255)
     company_summary = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

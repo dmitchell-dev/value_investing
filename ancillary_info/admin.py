@@ -9,6 +9,7 @@ from .models import (
     Currencies,
     Countries,
     Params,
+    CompSource,
     Companies,
 )
 
@@ -43,6 +44,10 @@ class ReportTypeAdmin(admin.ModelAdmin):
 
 class DatasourceAdmin(admin.ModelAdmin):
     fields = ["source_name"]
+
+
+class CompSourceAdmin(admin.ModelAdmin):
+    fields = ["value"]
 
 
 class ParamsApiAdmin(admin.ModelAdmin):
@@ -97,4 +102,5 @@ admin.site.register(Industries, IndustriesAdmin)
 admin.site.register(Currencies, CurrenciesAdmin)
 admin.site.register(Countries, CountriesAdmin)
 admin.site.register(Params, ParamsAdmin)
+admin.site.register(CompSource, CompSourceAdmin)
 admin.site.register(Companies, CompaniesAdmin)
