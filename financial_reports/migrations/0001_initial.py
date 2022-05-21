@@ -9,22 +9,42 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('ancillary_info', '0001_initial'),
+        ("ancillary_info", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='FinancialReports',
+            name="FinancialReports",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('time_stamp', models.DateField()),
-                ('value', models.FloatField(null=True)),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.companies')),
-                ('parameter', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.params')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("time_stamp", models.DateField()),
+                ("value", models.FloatField(null=True)),
+                (
+                    "company",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ancillary_info.companies",
+                    ),
+                ),
+                (
+                    "parameter",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ancillary_info.params",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Financial Reports',
-                'db_table': 'reporting_data',
+                "verbose_name_plural": "Financial Reports",
+                "db_table": "reporting_data",
             },
         ),
     ]

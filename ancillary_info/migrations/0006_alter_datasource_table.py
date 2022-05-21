@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ancillary_info', '0005_alter_companies_updated_at'),
+        ("ancillary_info", "0005_alter_companies_updated_at"),
     ]
 
     operations = [
         migrations.AlterModelTable(
-            name='datasource',
-            table='datasources',
+            name="datasource",
+            table="datasources",
         ),
     ]

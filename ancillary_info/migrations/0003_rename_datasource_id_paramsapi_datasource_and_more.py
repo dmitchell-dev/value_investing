@@ -6,18 +6,18 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ancillary_info', '0002_datasource_paramsapi'),
+        ("ancillary_info", "0002_datasource_paramsapi"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='paramsapi',
-            old_name='datasource_id',
-            new_name='datasource',
+            model_name="paramsapi",
+            old_name="datasource_id",
+            new_name="datasource",
         ),
         migrations.RenameField(
-            model_name='paramsapi',
-            old_name='param_id',
-            new_name='param',
+            model_name="paramsapi",
+            old_name="param_id",
+            new_name="param",
         ),
     ]

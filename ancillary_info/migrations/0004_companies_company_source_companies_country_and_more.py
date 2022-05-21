@@ -8,43 +8,55 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ancillary_info', '0003_rename_datasource_id_paramsapi_datasource_and_more'),
+        ("ancillary_info", "0003_rename_datasource_id_paramsapi_datasource_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='companies',
-            name='company_source',
+            model_name="companies",
+            name="company_source",
             field=models.CharField(max_length=255),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='companies',
-            name='country',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.countries'),
+            model_name="companies",
+            name="country",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="ancillary_info.countries",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='companies',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="companies",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='companies',
-            name='currency',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.currencies'),
+            model_name="companies",
+            name="currency",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="ancillary_info.currencies",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='companies',
-            name='sector',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.sectors'),
+            model_name="companies",
+            name="sector",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="ancillary_info.sectors"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='companies',
-            name='updated_at',
-            field=models.DateTimeField(default=django.utils.timezone.now, auto_now=True),
+            model_name="companies",
+            name="updated_at",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, auto_now=True
+            ),
         ),
     ]

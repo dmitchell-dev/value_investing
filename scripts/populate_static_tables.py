@@ -1,15 +1,17 @@
 from database_interaction import DatabaseInteraction
 
 # Populate Static tables
-table_name_list = ["markets",
-                   "company_type",
-                   "industry_risk",
-                   "report_type",
-                   "calc_variables",
-                   "industries",
-                   "report_section",
-                   "parameters",
-                   "companies"]
+table_name_list = [
+    "markets",
+    "company_type",
+    "industry_risk",
+    "report_type",
+    "calc_variables",
+    "industries",
+    "report_section",
+    "parameters",
+    "companies",
+]
 
 for table in table_name_list:
     table_object = DatabaseInteraction(table)

@@ -8,120 +8,215 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='CompanyType',
+            name="CompanyType",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('value', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("value", models.CharField(max_length=255)),
             ],
             options={
-                'verbose_name_plural': 'Company Types',
-                'db_table': 'company_type',
+                "verbose_name_plural": "Company Types",
+                "db_table": "company_type",
             },
         ),
         migrations.CreateModel(
-            name='Countries',
+            name="Countries",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('value', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("value", models.CharField(max_length=255)),
             ],
             options={
-                'verbose_name_plural': 'Countries',
-                'db_table': 'countries',
+                "verbose_name_plural": "Countries",
+                "db_table": "countries",
             },
         ),
         migrations.CreateModel(
-            name='Currencies',
+            name="Currencies",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('value', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("value", models.CharField(max_length=255)),
             ],
             options={
-                'verbose_name_plural': 'Currencies',
-                'db_table': 'currencies',
+                "verbose_name_plural": "Currencies",
+                "db_table": "currencies",
             },
         ),
         migrations.CreateModel(
-            name='Exchanges',
+            name="Exchanges",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('value', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("value", models.CharField(max_length=255)),
             ],
             options={
-                'verbose_name_plural': 'Exchanges',
-                'db_table': 'exchanges',
+                "verbose_name_plural": "Exchanges",
+                "db_table": "exchanges",
             },
         ),
         migrations.CreateModel(
-            name='Industries',
+            name="Industries",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('value', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("value", models.CharField(max_length=255)),
             ],
             options={
-                'verbose_name_plural': 'Industries',
-                'db_table': 'industries',
+                "verbose_name_plural": "Industries",
+                "db_table": "industries",
             },
         ),
         migrations.CreateModel(
-            name='ReportType',
+            name="ReportType",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('value', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("value", models.CharField(max_length=255)),
             ],
             options={
-                'verbose_name_plural': 'Report Types',
-                'db_table': 'report_type',
+                "verbose_name_plural": "Report Types",
+                "db_table": "report_type",
             },
         ),
         migrations.CreateModel(
-            name='Sectors',
+            name="Sectors",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('value', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("value", models.CharField(max_length=255)),
             ],
             options={
-                'verbose_name_plural': 'Sectors',
-                'db_table': 'sectors',
+                "verbose_name_plural": "Sectors",
+                "db_table": "sectors",
             },
         ),
         migrations.CreateModel(
-            name='Params',
+            name="Params",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('param_name', models.CharField(max_length=255)),
-                ('param_name_col', models.CharField(max_length=255)),
-                ('limit_logic', models.CharField(max_length=255)),
-                ('limit_value', models.CharField(max_length=255)),
-                ('data_type', models.CharField(max_length=255)),
-                ('param_description', models.CharField(max_length=255)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('report_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.reporttype')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("param_name", models.CharField(max_length=255)),
+                ("param_name_col", models.CharField(max_length=255)),
+                ("limit_logic", models.CharField(max_length=255)),
+                ("limit_value", models.CharField(max_length=255)),
+                ("data_type", models.CharField(max_length=255)),
+                ("param_description", models.CharField(max_length=255)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "report_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ancillary_info.reporttype",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Parameters',
-                'db_table': 'params',
+                "verbose_name_plural": "Parameters",
+                "db_table": "params",
             },
         ),
         migrations.CreateModel(
-            name='Companies',
+            name="Companies",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('tidm', models.CharField(max_length=10)),
-                ('company_name', models.CharField(max_length=255)),
-                ('company_summary', models.TextField()),
-                ('comp_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.companytype')),
-                ('exchange', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.exchanges')),
-                ('industry', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ancillary_info.industries')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("tidm", models.CharField(max_length=10)),
+                ("company_name", models.CharField(max_length=255)),
+                ("company_summary", models.TextField()),
+                (
+                    "comp_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ancillary_info.companytype",
+                    ),
+                ),
+                (
+                    "exchange",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ancillary_info.exchanges",
+                    ),
+                ),
+                (
+                    "industry",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ancillary_info.industries",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Companies',
-                'db_table': 'companies',
+                "verbose_name_plural": "Companies",
+                "db_table": "companies",
             },
         ),
     ]

@@ -41,7 +41,7 @@ class CapeChartDataView(View):
             index="company_id",
             values="value",
         )
-        
+
         df_pivot = df_pivot.astype(float)
 
         print(df_pivot)

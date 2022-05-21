@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ancillary_info', '0004_companies_company_source_companies_country_and_more'),
+        ("ancillary_info", "0004_companies_company_source_companies_country_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='companies',
-            name='updated_at',
+            model_name="companies",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
     ]
