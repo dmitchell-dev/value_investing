@@ -8,9 +8,9 @@ class CompaniesQueryset(QuerySet):
             "tidm",
             "company_name",
             "company_summary",
-            "industry__industry_name",
-            "comp_type__company_type",
-            "market__share_listing",
+            "industry__value",
+            "comp_type__value",
+            "exchange__value",
         )
 
 
@@ -24,9 +24,20 @@ class ParamsQueryset(QuerySet):
             "limit_value",
             "data_type",
             "param_description",
-            "report_section__report_section",
-            "report_section__report_section_last",
-            "report_section__report_type__report_name",
+        )
+
+
+class ParamsApiQueryset(QuerySet):
+    def get_params_api_joined(self):
+        return self.values(
+            "id",
+            "param_name_api",
+            "datasource__source_name",
+            "param__param_name_col",
+            "param__limit_logic",
+            "param__limit_value",
+            "param__data_type",
+            "param__param_description",
         )
 
 

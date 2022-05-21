@@ -2,6 +2,7 @@ from django.db import models
 from .managers import (
     CompaniesQueryset,
     ParamsQueryset,
+    ParamsApiQueryset,
 )
 
 
@@ -130,7 +131,7 @@ class ParamsApi(models.Model):
     param = models.ForeignKey(Params, on_delete=models.CASCADE)
     param_name_api = models.CharField(max_length=255)
 
-    objects = ParamsQueryset.as_manager()
+    objects = ParamsApiQueryset.as_manager()
 
     class Meta:
         db_table = "params_api"

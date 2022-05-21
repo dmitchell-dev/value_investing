@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from financial_reports.models import FinancialReports
-from ancillary_info.models import Params, Companies
+from ancillary_info.models import Params, Companies, ParamsApi
 import pandas as pd
 import os
 
@@ -11,6 +11,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         print("Import Reports")
         df_params = pd.DataFrame(list(Params.objects.get_params_joined()))
+        df_params_api = pd.DataFrame(list(ParamsApi.objects.get_params_api_joined()))
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
         file_list = self._get_report_list()
