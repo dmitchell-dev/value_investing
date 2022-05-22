@@ -12,6 +12,7 @@ ipykernel
 plotly
 seaborn
 fsspec
+openpyxl
 
 # Testing
 pytest

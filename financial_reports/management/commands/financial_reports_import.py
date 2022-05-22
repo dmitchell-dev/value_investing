@@ -10,9 +10,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         print("Import Reports")
-        df_params = pd.DataFrame(list(Params.objects.get_params_joined()))
-        df_params_api = pd.DataFrame(list(ParamsApi.objects.get_params_api_joined()))
-        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
+        df_params_api = pd.DataFrame(list(
+            ParamsApi.objects.get_params_api_joined())
+            )
+        df_companies = pd.DataFrame(list(
+            Companies.objects.get_companies_joined())
+            )
 
         file_list = self._get_report_list()
         num_files = len(file_list)
@@ -25,16 +28,16 @@ class Command(BaseCommand):
             print(s)
 
             # Process filename
-            current_company_tidm, report_section_last_list = self._process_filename(
-                current_company_filename, df_params
+            current_company_tidm = self._process_filename(
+                current_company_filename
             )
 
             # Get company report data
-            df_data = self._import_financial_csv(current_company_filename)
+            df_data = self._import_reporting_data(current_company_filename)
 
             # Generate parameter_id and replace index
             df_data = self._generate_param_id(
-                df_params, df_data, report_section_last_list
+                df_params_api, df_data
             )
 
             # company id
@@ -50,7 +53,10 @@ class Command(BaseCommand):
 
             # Format dataframe ready to import into database
             df_unpivot = pd.melt(
-                df_data, var_name="time_stamp", value_name="value", ignore_index=False
+                df_data,
+                var_name="time_stamp",
+                value_name="value",
+                ignore_index=False
             )
             df_unpivot["company_id"] = company_id
             df_unpivot["parameter_id"] = df_unpivot.index
@@ -76,17 +82,43 @@ class Command(BaseCommand):
             FinancialReports.objects.bulk_create(reports)
 
     @staticmethod
-    def _import_financial_csv(current_company_filename):
-        df = pd.read_csv(
+    def _import_reporting_data(current_company_filename):
+        df_income = pd.read_excel(
             f"data/company_reports/{current_company_filename}",
-            index_col="Period Ending",
+            sheet_name="income_statement",
+            index_col="Income Statement",
             skiprows=1,
         )
 
+        df_balance = pd.read_excel(
+            f"data/company_reports/{current_company_filename}",
+            sheet_name="balance_sheet",
+            index_col="Balance Sheet",
+            skiprows=1,
+        )
+
+        df_cash = pd.read_excel(
+            f"data/company_reports/{current_company_filename}",
+            sheet_name="cash_flow_statement",
+            index_col="Cash Flow Statement",
+            skiprows=1,
+        )
+
+        # Stack dataframes
+        df = pd.concat([df_income, df_balance, df_cash], axis=0)
+
+        # Drop empty rows with empty index
+        df.drop(df[df.index.isnull()].index, inplace=True)
+
+        # Drop last LTM Column if exists
+        if 'LTM' in df.columns:
+            df.drop(['LTM'], axis=1, inplace=True)
+
+        # Drop leading spaces in index names
+        df.index = df.index.str.strip()
+
+        # TODO does this do anything??
         df = df.where((pd.notnull(df)), None)
-        df = df.drop("Result Type", axis=0)
-        if " " in df.index:
-            df = df.drop(" ")
 
         return df
 
@@ -102,55 +134,30 @@ class Command(BaseCommand):
         return file_list
 
     @staticmethod
-    def _process_filename(current_company_filename, df_params):
-        # Get current report type
-        filename_first = current_company_filename.split("_")[2]
-        filename_second = current_company_filename.replace(".csv", "").split("_")[3]
-        current_report_type = f"{filename_first} {filename_second}"
+    def _process_filename(current_company_filename):
 
         # Get company tidm for associated id
-        current_company_tidm = current_company_filename.split("_")[1]
+        current_company_tidm = current_company_filename.split("_")[0]
 
-        # Get last param name in section
-        report_section_last_df = df_params[
-            df_params.report_section__report_type__report_name
-            == current_report_type.title()
-        ]
-        report_section_last_df = report_section_last_df[
-            "report_section__report_section_last"
-        ].unique()
-        report_section_last_list = report_section_last_df.tolist()
-
-        return (current_company_tidm, report_section_last_list)
+        return current_company_tidm
 
     @staticmethod
-    def _generate_param_id(df_params, df_data, report_section_last_list):
-        i_section = 0
-        i_param = 0
+    def _generate_param_id(df_params_api, df_data):
+
         param_id_list = []
 
-        param_list = df_data.index
+        param_name_list = df_params_api['param_name_api'].tolist()
+        param_id_list = df_params_api['id'].tolist()
 
-        for section in report_section_last_list:
+        df_data = df_data.reset_index()
+        df_data['index_id'] = df_data['index'].replace(
+            param_name_list,
+            param_id_list
+            )
 
-            param_section_filter_list_df = df_params[
-                df_params.report_section__report_section_last == section
-            ]
-
-            while True:
-
-                param_id = param_section_filter_list_df[
-                    (param_section_filter_list_df.param_name == param_list[i_param])
-                ]
-                param_id = param_id.iloc[0]["id"]
-                param_id_list.append(param_id)
-
-                if param_list[i_param] == section:
-                    i_section = i_section + 1
-                    i_param = i_param + 1
-                    break
-
-                i_param = i_param + 1
+        # Filter out rows not in params list
+        df_index = df_data['index'].isin(param_name_list)
+        df_data = df_data[df_data['index'].isin(param_name_list)]
 
         df_data.index = param_id_list
 

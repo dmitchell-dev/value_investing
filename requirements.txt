@@ -100,6 +100,8 @@ entrypoints==0.4
     # via jupyter-client
 envdir==1.0.1
     # via -r requirements.in
+et-xmlfile==1.1.0
+    # via openpyxl
 executing==0.8.3
     # via stack-data
 flake8==4.0.1
@@ -158,6 +160,8 @@ numpy==1.22.3
     #   seaborn
 oauthlib==3.2.0
     # via requests-oauthlib
+openpyxl==3.0.10
+    # via -r requirements.in
 packaging==21.3
     # via
     #   ipykernel
