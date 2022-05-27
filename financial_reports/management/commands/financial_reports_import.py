@@ -147,8 +147,9 @@ class Command(BaseCommand):
         param_id_list = []
 
         param_name_list = df_params_api['param_name_api'].tolist()
-        param_id_list = df_params_api['id'].tolist()
+        param_id_list = df_params_api['param__id'].tolist()
 
+        # Replace index with id
         df_data = df_data.reset_index()
         df_data['index_id'] = df_data['index'].replace(
             param_name_list,
@@ -156,16 +157,23 @@ class Command(BaseCommand):
             )
 
         # Filter out rows not in params list
-        df_index = df_data['index'].isin(param_name_list)
         df_data = df_data[df_data['index'].isin(param_name_list)]
 
-        df_data.index = param_id_list
+        # Replace index
+        df_data.drop(['index'], axis=1, inplace=True)
+        df_data.set_index('index_id', inplace=True)
 
         return df_data
 
     @staticmethod
     def _datetime_format(df):
-        date_fmts = ("%d/%m/%y", "%d/%m/%Y")
+        date_fmts = ("%m/%d/%y", "%d/%m/%y", "%d/%m/%Y")
+
+        # Add leading zeros to dates
+        split_dates = df["time_stamp"].str.split('/', expand=True)
+        df["time_stamp"] = split_dates.iloc[:, 0:3].apply(lambda x: "/".join(x.astype(str)), axis=1)
+
+        # Convert to datetime
         for fmt in date_fmts:
             try:
                 df["time_stamp"] = pd.to_datetime(df["time_stamp"], format=fmt)

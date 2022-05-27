@@ -33,6 +33,7 @@ class ParamsApiQueryset(QuerySet):
             "id",
             "param_name_api",
             "datasource__source_name",
+            "param__id",
             "param__param_name_col",
             "param__limit_logic",
             "param__limit_value",
