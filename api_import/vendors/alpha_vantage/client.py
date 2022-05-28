@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 class AlphaVantageClient(VendorClient):
     NAME = "ALPHAVANTAGE"
-    BASE_URL = "www.alphavantage.co/query?function="
+    BASE_URL = "https://www.alphavantage.co/query"
     API_KEY = settings.ALPHA_VANTAGE_API_KEY
     API_KEY_AS_PARAM = "apikey"
     TIMEOUT = 10.0
@@ -28,7 +28,7 @@ class AlphaVantageClient(VendorClient):
             }
         )
 
-        if isinstance(response, list):
+        if isinstance(response, dict):
             return response
 
         log.warning(f"Data not returned for symbol {symbol} processing")

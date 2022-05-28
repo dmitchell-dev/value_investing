@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
         # Testing of AV API Import
         av_import = AlphaVantageClient()
-        test_data = av_import.get_share_price(symbol='APPL')
+        test_data = av_import.get_share_price(symbol='AAPL')
 
         file_list = self.get_share_list()
         num_files = len(file_list)
