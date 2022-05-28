@@ -61,6 +61,14 @@ class Command(BaseCommand):
             df_unpivot["company_id"] = company_id
             df_unpivot["parameter_id"] = df_unpivot.index
 
+            # Format value column
+            df_unpivot['value'] = (
+                df_unpivot['value']
+                .replace(',', '', regex=True)
+                .str.strip(')')
+                .str.replace('\(', '-')
+            )
+
             # Replace infinity values
             df_unpivot["value"] = df_unpivot["value"].replace(
                 ["Infinity", "-Infinity"], None
