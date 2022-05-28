@@ -8,7 +8,6 @@ class SharePricesQueryset(QuerySet):
             "time_stamp",
             "value",
             "volume",
-            "adjustment",
             "company__company_name",
             "company__tidm",
         )
@@ -19,7 +18,6 @@ class SharePricesQueryset(QuerySet):
             "time_stamp",
             "value",
             "volume",
-            "adjustment",
             "company__company_name",
             "company__tidm",
         ).filter(company__tidm=tidm)

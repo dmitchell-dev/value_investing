@@ -21,7 +21,7 @@ class AlphaVantageClient(VendorClient):
         """
         Note - api call for share price
         """
-        response = self._handle_call(
+        header, response = self._handle_call(
             params={
                 "function": "TIME_SERIES_WEEKLY",
                 "symbol": symbol,
@@ -29,7 +29,7 @@ class AlphaVantageClient(VendorClient):
         )
 
         if isinstance(response, dict):
-            return response
+            return (header, response)
 
         log.warning(f"Data not returned for symbol {symbol} processing")
         return []
@@ -38,7 +38,7 @@ class AlphaVantageClient(VendorClient):
         """
         Note - api call for share price
         """
-        response = self._handle_call(
+        header, response = self._handle_call(
             params={
                 "function": "INCOME_STATEMENT",
                 "symbol": symbol,
@@ -46,7 +46,7 @@ class AlphaVantageClient(VendorClient):
         )
 
         if isinstance(response, list):
-            return response
+            return (header, response)
 
         log.warning(f"Data not returned for symbol {symbol} processing")
         return []
@@ -55,7 +55,7 @@ class AlphaVantageClient(VendorClient):
         """
         Note - api call for share price
         """
-        response = self._handle_call(
+        header, response = self._handle_call(
             params={
                 "function": "BALANCE_SHEET",
                 "symbol": symbol,
@@ -63,7 +63,7 @@ class AlphaVantageClient(VendorClient):
         )
 
         if isinstance(response, list):
-            return response
+            return (header, response)
 
         log.warning(f"Data not returned for symbol {symbol} processing")
         return []
@@ -72,7 +72,7 @@ class AlphaVantageClient(VendorClient):
         """
         Note - api call for share price
         """
-        response = self._handle_call(
+        header, response = self._handle_call(
             params={
                 "function": "CASH_FLOW",
                 "symbol": symbol,
@@ -80,7 +80,7 @@ class AlphaVantageClient(VendorClient):
         )
 
         if isinstance(response, list):
-            return response
+            return (header, response)
 
         log.warning(f"Data not returned for symbol {symbol} processing")
         return []

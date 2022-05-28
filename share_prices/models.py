@@ -8,7 +8,6 @@ class SharePrices(models.Model):
     time_stamp = models.DateField()
     value = models.FloatField(null=True)
     volume = models.IntegerField(null=True)
-    adjustment = models.SmallIntegerField(null=True)
 
     objects = SharePricesQueryset.as_manager()
 

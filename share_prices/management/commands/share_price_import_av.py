@@ -4,6 +4,7 @@ from share_prices.models import SharePrices
 from api_import.vendors.alpha_vantage.client import AlphaVantageClient
 import pandas as pd
 import os
+from time import sleep
 
 
 class Command(BaseCommand):
@@ -14,33 +15,35 @@ class Command(BaseCommand):
             list(Companies.objects.get_companies_joined())
         )
 
-        # Testing of AV API Import
-        av_import = AlphaVantageClient()
-        test_data = av_import.get_share_price(symbol='AAPL')
-
-        file_list = self.get_share_list()
-        num_files = len(file_list)
-        file_num = 0
+        comp_list = df_companies['tidm'].to_list()
+        num_comps = len(comp_list)
+        comp_num = 0
 
         # For each report import data
-        for current_company_filename in file_list:
-            file_num = file_num + 1
-            s = f"file {file_num} of {num_files}, {current_company_filename}"
-            print(s)
+        for current_company in comp_list:
+            comp_num = comp_num + 1
 
-            # Get company tidm for associated id
-            current_company_tidm = current_company_filename.split("_")[1]
+            # Alpha Vantage limits requests to 5 every minute
+            if comp_num % 5 == 0:
+                print('60 second delay')
+                sleep(60)
 
-            # company id
-            company_id = df_companies[
-                df_companies["tidm"] == current_company_tidm
-            ].id.values[0]
+            print(f"file {comp_num} of {num_comps}, {current_company}")
 
-            # Get company report data
-            df_data = self.import_share_price_csv(current_company_filename)
+            # AV API Share Import
+            av_import = AlphaVantageClient()
+            header, json_data = av_import.get_share_price(
+                symbol=current_company
+            )
+
+            # Convert to dataframe
+            df_data = pd.DataFrame.from_dict(
+                json_data[header], orient='index'
+            )
 
             # Format dataframe to database schema
-            df_data = self._format_dataframe(df_data, company_id)
+            curr_comp_id = df_companies.iat[comp_num-1, 0]
+            df_data = self._format_dataframe(df_data, curr_comp_id)
 
             # Check datetime format
             df_data = self._datetime_format(df_data)
@@ -52,7 +55,6 @@ class Command(BaseCommand):
                     time_stamp=row["time_stamp"],
                     value=row["value"],
                     volume=row["volume"],
-                    adjustment=row["adjustment"],
                 )
                 for i, row in df_data.iterrows()
             ]
@@ -77,13 +79,13 @@ class Command(BaseCommand):
 
     def _format_dataframe(self, df, company_id):
         df.insert(0, "company_id", [company_id] * df.shape[0])
-        df = df.drop(["Open", "High", "Low"], axis=1)
+        df = df.drop(["1. open", "2. high", "3. low"], axis=1)
+        df['time_stamp'] = df.index
+        df.reset_index(drop=True, inplace=True)
         df.rename(
             columns={
-                "Date": "time_stamp",
-                "Close": "value",
-                "Volume": "volume",
-                "Adjustment": "adjustment",
+                "4. close": "value",
+                "5. volume": "volume",
             },
             inplace=True,
         )
@@ -91,12 +93,15 @@ class Command(BaseCommand):
         return df
 
     def _datetime_format(self, df):
-        date_fmts = ("%d/%m/%y", "%d/%m/%Y")
+        date_fmts = ("%Y-%m-%d", "%d/%m/%y", "%d/%m/%Y")
         for fmt in date_fmts:
             try:
                 df["time_stamp"] = pd.to_datetime(df["time_stamp"], format=fmt)
                 break
             except ValueError:
                 pass
+
+        # Order datetimes
+        df.sort_values(by='time_stamp', inplace=True)
 
         return df
