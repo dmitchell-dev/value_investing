@@ -167,6 +167,9 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 LOGIN_REDIRECT_URL = "home"
 ACCOUNT_LOGOUT_REDIRECT = "home"
 
+# API Keys
+ALPHA_VANTAGE_API_KEY = env.str("ALPHA_VANTAGE_API_KEY")
+
 # Security
 if ENVIRONMENT == "production":
     pass

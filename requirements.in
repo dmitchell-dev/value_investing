@@ -6,6 +6,9 @@ SQLAlchemy
 mysql-connector-python
 Psycopg2
 
+# API Import
+httpx
+
 # Analysis
 pandas
 ipykernel

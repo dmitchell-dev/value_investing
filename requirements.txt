@@ -6,6 +6,8 @@
 #
 amqp==5.1.1
     # via kombu
+anyio==3.6.1
+    # via httpcore
 asgiref==3.5.1
     # via django
 asttokens==2.0.5
@@ -29,7 +31,10 @@ black==22.3.0
 celery==5.2.6
     # via django-google-analytics-app
 certifi==2021.10.8
-    # via requests
+    # via
+    #   httpcore
+    #   httpx
+    #   requests
 cffi==1.15.0
     # via cryptography
 charset-normalizer==2.0.12
@@ -114,8 +119,17 @@ funcy==1.17
     # via django-cacheops
 greenlet==1.1.2
     # via sqlalchemy
+h11==0.12.0
+    # via httpcore
+httpcore==0.15.0
+    # via httpx
+httpx==0.23.0
+    # via -r requirements.in
 idna==3.3
-    # via requests
+    # via
+    #   anyio
+    #   requests
+    #   rfc3986
 iniconfig==1.1.1
     # via pytest
 ipykernel==6.13.0
@@ -253,6 +267,8 @@ requests==2.27.1
     #   requests-oauthlib
 requests-oauthlib==1.3.1
     # via django-allauth
+rfc3986[idna2008]==1.5.0
+    # via httpx
 scipy==1.8.0
     # via seaborn
 seaborn==0.11.2
@@ -265,6 +281,11 @@ six==1.16.0
     #   django-google-analytics-app
     #   plotly
     #   python-dateutil
+sniffio==1.2.0
+    # via
+    #   anyio
+    #   httpcore
+    #   httpx
 soupsieve==2.3.2.post1
     # via beautifulsoup4
 sqlalchemy==1.4.36
