@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from ancillary_info.models import Companies
 from share_prices.models import SharePrices
-from share_prices.vendors.alpha_vantage.client import AlphaVantageClient
+from api_import.vendors.alpha_vantage.client import AlphaVantageClient
 import pandas as pd
 import os
 

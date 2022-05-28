@@ -2,8 +2,8 @@ import logging
 
 from django.conf import settings
 
-from share_prices.logger import log
-from share_prices.vendors.base import VendorClient
+from api_import.logger import log
+from api_import.vendors.base import VendorClient
 
 
 logger = logging.getLogger(__name__)

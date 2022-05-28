@@ -2,7 +2,7 @@ from urllib.parse import urlencode
 
 import httpx
 
-from share_prices.logger import log
+from api_import.logger import log
 
 
 class VendorClient:

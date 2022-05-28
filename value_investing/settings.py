@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "ranking_stats.apps.RankingStatsConfig",
     "dashboard_company.apps.DashboardCompanyConfig",
     "economic.apps.EconomicConfig",
+    "api_import.apps.ApiImportConfig",
 ]
 
 MIDDLEWARE = [
