@@ -7,7 +7,7 @@ class SharePrices(models.Model):
     company = models.ForeignKey(Companies, on_delete=models.CASCADE)
     time_stamp = models.DateField()
     value = models.FloatField(null=True)
-    volume = models.IntegerField(null=True)
+    volume = models.BigIntegerField(null=True)
 
     objects = SharePricesQueryset.as_manager()
 

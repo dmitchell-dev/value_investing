@@ -3,7 +3,6 @@ from ancillary_info.models import Companies
 from share_prices.models import SharePrices
 from api_import.vendors.alpha_vantage.client import AlphaVantageClient
 import pandas as pd
-import os
 from time import sleep
 
 
@@ -25,14 +24,19 @@ class Command(BaseCommand):
 
             # Alpha Vantage limits requests to 5 every minute
             if comp_num % 5 == 0:
-                print('60 second delay')
-                sleep(60)
+                print('90 second delay')
+                sleep(90)
 
-            print(f"file {comp_num} of {num_comps}, {current_company}")
+            print(f"API Import {comp_num} of {num_comps}: {current_company}")
+
+            # Get info oncurrent company
+            curr_comp_id = df_companies['id'].iat[comp_num-1]
+            curr_comp_loc = df_companies['country__value'].iat[comp_num-1]
 
             # AV API Share Import
             av_import = AlphaVantageClient()
             header, json_data = av_import.get_share_price(
+                location=curr_comp_loc,
                 symbol=current_company
             )
 
@@ -42,7 +46,6 @@ class Command(BaseCommand):
             )
 
             # Format dataframe to database schema
-            curr_comp_id = df_companies.iat[comp_num-1, 0]
             df_data = self._format_dataframe(df_data, curr_comp_id)
 
             # Check datetime format
@@ -59,23 +62,6 @@ class Command(BaseCommand):
                 for i, row in df_data.iterrows()
             ]
             SharePrices.objects.bulk_create(reports)
-
-    def import_share_price_csv(self, current_company_filename):
-        # Get company report data
-        df = pd.read_csv(f"data/share_prices/{current_company_filename}")
-        df = df.where((pd.notnull(df)), None)
-
-        return df
-
-    def get_share_list(self):
-        # Import each file, process and save to database
-        # Get list of reports
-        path = "data/share_prices"
-        file_list = []
-        for files in os.listdir(path):
-            file_list.append(files)
-
-        return file_list
 
     def _format_dataframe(self, df, company_id):
         df.insert(0, "company_id", [company_id] * df.shape[0])
