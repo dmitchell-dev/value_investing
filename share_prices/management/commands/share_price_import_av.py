@@ -4,6 +4,7 @@ from share_prices.models import SharePrices
 from api_import.vendors.alpha_vantage.client import AlphaVantageClient
 import pandas as pd
 from time import sleep
+import datetime
 
 
 class Command(BaseCommand):
@@ -50,6 +51,14 @@ class Command(BaseCommand):
 
             # Check datetime format
             df_data = self._datetime_format(df_data)
+
+            # Filter out prices already in DB
+            latest_share_data = SharePrices.objects.get_latest_date(
+                current_company
+            )
+            latest_date = latest_share_data.time_stamp
+            mask = df_data['time_stamp'] > pd.Timestamp(latest_date)
+            df_data = df_data.loc[mask]
 
             # Save to database
             reports = [
