@@ -83,6 +83,14 @@ class Command(BaseCommand):
             # Check datetime format
             df_unpivot = self._datetime_format(df_unpivot)
 
+            # Filter out prices already in DB
+            latest_share_data = FinancialReports.objects.get_latest_date(
+                current_company_tidm
+            )
+            latest_date = latest_share_data.time_stamp
+            mask = df_unpivot['time_stamp'] > pd.Timestamp(latest_date)
+            df_unpivot = df_unpivot.loc[mask]
+
             # Populate database
             reports = [
                 FinancialReports(

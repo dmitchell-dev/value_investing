@@ -18,3 +18,8 @@ class FinancialReportsQueryset(QuerySet):
             "time_stamp",
             "value",
         )
+
+    def get_latest_date(self, tidm):
+        return self.filter(
+            company__tidm=tidm
+            ).latest("time_stamp")
