@@ -8,8 +8,10 @@ import os
 class Command(BaseCommand):
     help = "Populates Static tables from csv files"
 
-    def handle(self, *args, **kwargs):
-        print("Import Reports")
+    def add_arguments(self, parser):
+        parser.add_argument('--symbol', nargs='+', type=str)
+
+    def handle(self, *args, **options):
         df_params_api = pd.DataFrame(list(
             ParamsApi.objects.get_params_api_joined())
             )
@@ -17,7 +19,11 @@ class Command(BaseCommand):
             Companies.objects.get_companies_joined())
             )
 
-        file_list = self._get_report_list()
+        if options['symbol'] is None:
+            file_list = self._get_report_list()
+        else:
+            file_list = options['symbol']
+
         num_files = len(file_list)
         file_num = 0
 
