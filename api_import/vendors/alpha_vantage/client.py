@@ -23,13 +23,13 @@ class AlphaVantageClient(VendorClient):
         """
 
         # Format symbol for UK API calls
-        if location == 'UK':
-            symbol = symbol + '.LON'
+        if location == "UK":
+            symbol = symbol + ".LON"
 
         # AV API does not seems to take into account
         # the . in some symbols with the API call
-        if '..' in symbol:
-            symbol = symbol.replace('..', '.')
+        if ".." in symbol:
+            symbol = symbol.replace("..", ".")
 
         # Call API
         header, response = self._handle_call(

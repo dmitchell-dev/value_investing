@@ -20,6 +20,4 @@ class FinancialReportsQueryset(QuerySet):
         )
 
     def get_latest_date(self, tidm):
-        return self.filter(
-            company__tidm=tidm
-            ).latest("time_stamp")
+        return self.filter(company__tidm=tidm).latest("time_stamp")

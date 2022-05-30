@@ -9,20 +9,20 @@ class Command(BaseCommand):
     help = "Populates Static tables from csv files"
 
     def add_arguments(self, parser):
-        parser.add_argument('--symbol', nargs='+', type=str)
+        parser.add_argument("--symbol", nargs="+", type=str)
 
     def handle(self, *args, **options):
         df_params_api = pd.DataFrame(list(
-            ParamsApi.objects.get_params_api_joined())
-            )
+            ParamsApi.objects.get_params_api_joined()
+            ))
         df_companies = pd.DataFrame(list(
-            Companies.objects.get_companies_joined())
-            )
+            Companies.objects.get_companies_joined()
+            ))
 
-        if options['symbol'] is None:
+        if options["symbol"] is None:
             file_list = self._get_report_list()
         else:
-            file_list = options['symbol']
+            file_list = options["symbol"]
 
         num_files = len(file_list)
         file_num = 0
@@ -42,9 +42,7 @@ class Command(BaseCommand):
             df_data = self._import_reporting_data(current_company_filename)
 
             # Generate parameter_id and replace index
-            df_data = self._generate_param_id(
-                df_params_api, df_data
-            )
+            df_data = self._generate_param_id(df_params_api, df_data)
 
             # company id
             company_id = df_companies[
@@ -68,11 +66,11 @@ class Command(BaseCommand):
             df_unpivot["parameter_id"] = df_unpivot.index
 
             # Format value column
-            df_unpivot['value'] = (
-                df_unpivot['value']
-                .replace(',', '', regex=True)
-                .str.strip(')')
-                .str.replace('\(', '-')
+            df_unpivot["value"] = (
+                df_unpivot["value"]
+                .replace(",", "", regex=True)
+                .str.strip(")")
+                .str.replace("\(", "-")
             )
 
             # Replace infinity values
@@ -88,7 +86,7 @@ class Command(BaseCommand):
                 current_company_tidm
             )
             latest_date = latest_share_data.time_stamp
-            mask = df_unpivot['time_stamp'] > pd.Timestamp(latest_date)
+            mask = df_unpivot["time_stamp"] > pd.Timestamp(latest_date)
             df_unpivot = df_unpivot.loc[mask]
 
             # Populate database
@@ -133,8 +131,8 @@ class Command(BaseCommand):
         df.drop(df[df.index.isnull()].index, inplace=True)
 
         # Drop last LTM Column if exists
-        if 'LTM' in df.columns:
-            df.drop(['LTM'], axis=1, inplace=True)
+        if "LTM" in df.columns:
+            df.drop(["LTM"], axis=1, inplace=True)
 
         # Drop leading spaces in index names
         df.index = df.index.str.strip()
@@ -168,22 +166,22 @@ class Command(BaseCommand):
 
         param_id_list = []
 
-        param_name_list = df_params_api['param_name_api'].tolist()
-        param_id_list = df_params_api['param__id'].tolist()
+        param_name_list = df_params_api["param_name_api"].tolist()
+        param_id_list = df_params_api["param__id"].tolist()
 
         # Replace index with id
         df_data = df_data.reset_index()
-        df_data['index_id'] = df_data['index'].replace(
+        df_data["index_id"] = df_data["index"].replace(
             param_name_list,
             param_id_list
-            )
+        )
 
         # Filter out rows not in params list
-        df_data = df_data[df_data['index'].isin(param_name_list)]
+        df_data = df_data[df_data["index"].isin(param_name_list)]
 
         # Replace index
-        df_data.drop(['index'], axis=1, inplace=True)
-        df_data.set_index('index_id', inplace=True)
+        df_data.drop(["index"], axis=1, inplace=True)
+        df_data.set_index("index_id", inplace=True)
 
         return df_data
 
@@ -192,8 +190,10 @@ class Command(BaseCommand):
         date_fmts = ("%m/%d/%y", "%d/%m/%y", "%d/%m/%Y")
 
         # Add leading zeros to dates
-        split_dates = df["time_stamp"].str.split('/', expand=True)
-        df["time_stamp"] = split_dates.iloc[:, 0:3].apply(lambda x: "/".join(x.astype(str)), axis=1)
+        split_dates = df["time_stamp"].str.split("/", expand=True)
+        df["time_stamp"] = split_dates.iloc[:, 0:3].apply(
+            lambda x: "/".join(x.astype(str)), axis=1
+        )
 
         # Convert to datetime
         for fmt in date_fmts:

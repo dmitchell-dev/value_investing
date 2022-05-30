@@ -7,22 +7,29 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='ImportRecord',
+            name="ImportRecord",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('symbol', models.CharField(max_length=255)),
-                ('import_type', models.CharField(max_length=255)),
-                ('fetchtime', models.DateTimeField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("symbol", models.CharField(max_length=255)),
+                ("import_type", models.CharField(max_length=255)),
+                ("fetchtime", models.DateTimeField(blank=True, null=True)),
             ],
             options={
-                'verbose_name': 'Import Record',
-                'verbose_name_plural': 'Import Records',
-                'db_table': 'import_record',
+                "verbose_name": "Import Record",
+                "verbose_name_plural": "Import Records",
+                "db_table": "import_record",
             },
         ),
     ]
