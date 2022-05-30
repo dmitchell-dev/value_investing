@@ -4,18 +4,32 @@ from share_prices.models import SharePrices
 from api_import.vendors.alpha_vantage.client import AlphaVantageClient
 import pandas as pd
 from time import sleep
-import datetime
 
 
 class Command(BaseCommand):
     help = "Calculates Stats from Financial Reports"
 
-    def handle(self, *args, **kwargs):
+    def add_arguments(self, parser):
+        parser.add_argument('--symbol', nargs='+', type=str)
+
+    def handle(self, *args, **options):
+
+        # for poll_id in options['symbol']:
+        #     try:
+        #         print(poll_id)
+        #         # poll = Poll.objects.get(pk=poll_id)
+        #     except Poll.DoesNotExist:
+        #         raise CommandError('Poll "%s" does not exist' % poll_id)
+
         df_companies = pd.DataFrame(
             list(Companies.objects.get_companies_joined())
         )
 
-        comp_list = df_companies['tidm'].to_list()
+        if options['symbol'] is None:
+            comp_list = df_companies['tidm'].to_list()
+        else:
+            comp_list = options['symbol']
+
         num_comps = len(comp_list)
         comp_num = 0
 
