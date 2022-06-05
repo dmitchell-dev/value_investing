@@ -7,7 +7,7 @@ from time import sleep
 
 
 class Command(BaseCommand):
-    help = "Calculates Stats from Financial Reports"
+    help = "Imports Financial Data From Alpha Vantage API"
 
     def add_arguments(self, parser):
         parser.add_argument("--symbol", nargs="+", type=str)
@@ -15,6 +15,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
+        # Specific symbols or all
         if options["symbol"] is None:
             comp_list = df_companies["tidm"].to_list()
         else:
@@ -38,14 +39,22 @@ class Command(BaseCommand):
             curr_comp_id = df_companies["id"].iat[comp_num - 1]
             curr_comp_loc = df_companies["country__value"].iat[comp_num - 1]
 
+            # TODO For each type
+            # "INCOME_STATEMENT"
+            # "BALANCE_SHEET"
+            # "CASH_FLOW"
+
             # AV API Share Import
             av_import = AlphaVantageClient()
-            header, json_data = av_import.get_share_price(
-                location=curr_comp_loc, symbol=current_company
+            header, json_data = av_import.get_financial_data(
+                location=curr_comp_loc,
+                symbol=current_company,
+                type="INCOME_STATEMENT"
             )
 
             # Convert to dataframe
-            df_data = pd.DataFrame.from_dict(json_data[header], orient="index")
+            df_data = pd.DataFrame(json_data[header])
+            #df_data = pd.DataFrame.from_dict(json_data[header], orient="index")
 
             # Format dataframe to database schema
             df_data = self._format_dataframe(df_data, curr_comp_id)

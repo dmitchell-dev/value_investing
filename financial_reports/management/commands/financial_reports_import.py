@@ -19,6 +19,7 @@ class Command(BaseCommand):
             Companies.objects.get_companies_joined()
             ))
 
+        # Specific symbols or all
         if options["symbol"] is None:
             file_list = self._get_report_list()
         else:

@@ -22,6 +22,8 @@ The aim of this site is to not only help with value investing, it will also impr
 * python manage.py ancillary_import
 * python manage.py financial_reports_import
     * --symbol AAPL_Apple.xlsx (Example)
+* python manage.py financial_reports_import_av
+
 * python manage.py share_price_import
 * python manage.py share_price_import_av
     * --symbol AAPL ABBV (Example)

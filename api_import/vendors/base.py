@@ -29,8 +29,12 @@ class VendorClient:
             response = client.get(url)
 
             if response.status_code == 200:
-                _, header = response.json()
-                return (header, response.json())
+                header_list = []
+                for key, value in response.json().items():
+                    header_list.append(key)
+
+                # _, header = response.json()
+                return (header_list, response.json())
             else:
                 log.error(
                     f"Unexpected response accessing {self.NAME} data",

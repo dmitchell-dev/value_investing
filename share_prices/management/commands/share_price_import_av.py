@@ -7,7 +7,7 @@ from time import sleep
 
 
 class Command(BaseCommand):
-    help = "Calculates Stats from Financial Reports"
+    help = "Imports Share Prices From Alpha Vantage API"
 
     def add_arguments(self, parser):
         parser.add_argument("--symbol", nargs="+", type=str)
@@ -15,6 +15,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
+        # Specific symbols or all
         if options["symbol"] is None:
             comp_list = df_companies["tidm"].to_list()
         else:
@@ -40,8 +41,10 @@ class Command(BaseCommand):
 
             # AV API Share Import
             av_import = AlphaVantageClient()
-            header, json_data = av_import.get_share_price(
-                location=curr_comp_loc, symbol=current_company
+            header, json_data = av_import.get_share_data(
+                location=curr_comp_loc,
+                symbol=current_company,
+                type="TIME_SERIES_WEEKLY",
             )
 
             # Convert to dataframe
