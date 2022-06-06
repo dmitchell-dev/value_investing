@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
-from ancillary_info.models import Companies
-from share_prices.models import SharePrices
+from ancillary_info.models import Companies, Params, ParamsApi
+from financial_reports.models import FinancialReports
 from api_import.vendors.alpha_vantage.client import AlphaVantageClient
 import pandas as pd
 from time import sleep
@@ -13,7 +13,12 @@ class Command(BaseCommand):
         parser.add_argument("--symbol", nargs="+", type=str)
 
     def handle(self, *args, **options):
-        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
+        df_params_api = pd.DataFrame(list(
+            ParamsApi.objects.get_params_api_joined()
+            ))
+        df_companies = pd.DataFrame(list(
+            Companies.objects.get_companies_joined()
+            ))
 
         # Specific symbols or all
         if options["symbol"] is None:
@@ -39,56 +44,74 @@ class Command(BaseCommand):
             curr_comp_id = df_companies["id"].iat[comp_num - 1]
             curr_comp_loc = df_companies["country__value"].iat[comp_num - 1]
 
-            # TODO For each type
-            # "INCOME_STATEMENT"
-            # "BALANCE_SHEET"
-            # "CASH_FLOW"
-
-            # AV API Share Import
-            av_import = AlphaVantageClient()
-            header, json_data = av_import.get_financial_data(
-                location=curr_comp_loc,
-                symbol=current_company,
-                type="INCOME_STATEMENT"
-            )
-
-            # Convert to dataframe
-            df_data = pd.DataFrame(json_data[header])
-            #df_data = pd.DataFrame.from_dict(json_data[header], orient="index")
-
-            # Format dataframe to database schema
-            df_data = self._format_dataframe(df_data, curr_comp_id)
-
-            # Check datetime format
-            df_data = self._datetime_format(df_data)
-
-            # Filter out prices already in DB
-            latest_share_data = SharePrices.objects.get_latest_date(current_company)
-            latest_date = latest_share_data.time_stamp
-            mask = df_data["time_stamp"] > pd.Timestamp(latest_date)
-            df_data = df_data.loc[mask]
-
-            # Save to database
-            reports = [
-                SharePrices(
-                    company=Companies.objects.get(id=row["company_id"]),
-                    time_stamp=row["time_stamp"],
-                    value=row["value"],
-                    volume=row["volume"],
-                )
-                for i, row in df_data.iterrows()
+            # For each statement type
+            statement_list = [
+                "INCOME_STATEMENT",
+                "BALANCE_SHEET",
+                "CASH_FLOW"
             ]
-            SharePrices.objects.bulk_create(reports)
+
+            if curr_comp_loc == "US":
+
+                for statement in statement_list:
+
+                    print(statement)
+                    # AV API Share Import
+                    av_import = AlphaVantageClient()
+                    header, json_data = av_import.get_financial_data(
+                        symbol=current_company,
+                        type=statement
+                    )
+
+                    # Convert to dataframe and unpivot
+                    df_data = pd.DataFrame(json_data[header])
+                    df_data = df_data.melt("fiscalDateEnding")
+
+                    # Format dataframe to database schema
+                    df_data = self._format_dataframe(df_data, curr_comp_id)
+
+                    # Generate parameter_id and replace index
+                    df_data = self._generate_param_id(df_params_api, df_data)
+
+                    # Check datetime format
+                    df_data = self._datetime_format(df_data)
+
+                    # Filter out prices already in DB
+                    latest_share_data = FinancialReports.objects.get_latest_date(
+                        current_company
+                        )
+                    latest_date = latest_share_data.time_stamp
+                    latest_date_first = latest_date.replace(day=1)
+                    dates_first = df_data["time_stamp"].dt.to_period(
+                        'M'
+                        ).dt.to_timestamp()
+
+                    mask = dates_first > pd.Timestamp(latest_date_first)
+
+                    df_data = df_data.loc[mask]
+
+                    # Save to database
+                    reports = [
+                        FinancialReports(
+                            company=Companies.objects.get(
+                                id=row["company_id"]
+                            ),
+                            parameter=Params.objects.get(
+                                id=row["parameter_id"]
+                            ),
+                            time_stamp=row["time_stamp"],
+                            value=row["value"],
+                        )
+                        for i, row in df_data.iterrows()
+                    ]
+                    FinancialReports.objects.bulk_create(reports)
 
     def _format_dataframe(self, df, company_id):
         df.insert(0, "company_id", [company_id] * df.shape[0])
-        df = df.drop(["1. open", "2. high", "3. low"], axis=1)
-        df["time_stamp"] = df.index
         df.reset_index(drop=True, inplace=True)
         df.rename(
             columns={
-                "4. close": "value",
-                "5. volume": "volume",
+                "fiscalDateEnding": "time_stamp",
             },
             inplace=True,
         )
@@ -108,3 +131,25 @@ class Command(BaseCommand):
         df.sort_values(by="time_stamp", inplace=True)
 
         return df
+
+    @staticmethod
+    def _generate_param_id(df_params_api, df_data):
+
+        param_id_list = []
+
+        param_name_list = df_params_api["param_name_api"].tolist()
+        param_id_list = df_params_api["param__id"].tolist()
+
+        # Replace index with id
+        df_data = df_data.reset_index()
+        df_data["index_id"] = df_data["variable"].replace(
+            param_name_list,
+            param_id_list
+        )
+
+        # Filter out rows not in params list
+        df_data = df_data[df_data["variable"].isin(param_name_list)]
+        df_data = df_data.rename(columns={"index_id": "parameter_id"})
+        df_data.drop(["variable"], axis=1, inplace=True)
+
+        return df_data

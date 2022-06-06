@@ -48,19 +48,10 @@ class AlphaVantageClient(VendorClient):
         log.warning(f"Data not returned for symbol {symbol} processing")
         return []
 
-    def get_financial_data(self, location, symbol, type):
+    def get_financial_data(self, symbol, type):
         """
         Note - api call for share price
         """
-
-        # Format symbol for UK API calls
-        if location == "UK":
-            symbol = symbol + ".LON"
-
-        # AV API does not seems to take into account
-        # the . in some symbols with the API call
-        if ".." in symbol:
-            symbol = symbol.replace("..", ".")
 
         # Call API
         header, response = self._handle_call(
