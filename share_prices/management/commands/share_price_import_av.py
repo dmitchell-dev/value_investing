@@ -62,6 +62,8 @@ class Command(BaseCommand):
             mask = df_data["time_stamp"] > pd.Timestamp(latest_date)
             df_data = df_data.loc[mask]
 
+            num_rows = df_data.shape[0]
+
             # Save to database
             reports = [
                 SharePrices(
@@ -73,6 +75,8 @@ class Command(BaseCommand):
                 for i, row in df_data.iterrows()
             ]
             SharePrices.objects.bulk_create(reports)
+
+            print(f"Rows saved to database: {num_rows}")
 
     def _format_dataframe(self, df, company_id):
         df.insert(0, "company_id", [company_id] * df.shape[0])

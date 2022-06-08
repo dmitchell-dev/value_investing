@@ -38,6 +38,8 @@ class Command(BaseCommand):
             # Check datetime format
             df_data = self._datetime_format(df_data)
 
+            num_rows = df_data.shape[0]
+
             # Save to database
             reports = [
                 SharePrices(
@@ -50,6 +52,8 @@ class Command(BaseCommand):
                 for i, row in df_data.iterrows()
             ]
             SharePrices.objects.bulk_create(reports)
+
+            print(f"Rows saved to database: {num_rows}")
 
     def import_share_price_csv(self, current_company_filename):
         # Get company report data

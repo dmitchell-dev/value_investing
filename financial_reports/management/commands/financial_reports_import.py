@@ -90,6 +90,8 @@ class Command(BaseCommand):
             mask = df_unpivot["time_stamp"] > pd.Timestamp(latest_date)
             df_unpivot = df_unpivot.loc[mask]
 
+            num_rows = df_unpivot.shape[0]
+
             # Populate database
             reports = [
                 FinancialReports(
@@ -101,6 +103,8 @@ class Command(BaseCommand):
                 for i, row in df_unpivot.iterrows()
             ]
             FinancialReports.objects.bulk_create(reports)
+
+            print(f"Rows saved to database: {num_rows}")
 
     @staticmethod
     def _import_reporting_data(current_company_filename):
