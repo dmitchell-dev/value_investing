@@ -23,6 +23,7 @@ class Command(BaseCommand):
 
         num_comps = len(comp_list)
         comp_num = 0
+        total_rows_added = 0
 
         # For each report import data
         for current_company in comp_list:
@@ -30,8 +31,8 @@ class Command(BaseCommand):
 
             # Alpha Vantage limits requests to 5 every minute
             if comp_num % 5 == 0:
-                print("90 second delay")
-                sleep(90)
+                print("60 second delay")
+                sleep(65)
 
             print(f"API Import {comp_num} of {num_comps}: {current_company}")
 
@@ -77,6 +78,10 @@ class Command(BaseCommand):
             SharePrices.objects.bulk_create(reports)
 
             print(f"Rows saved to database: {num_rows}")
+
+            total_rows_added = total_rows_added + num_rows
+
+        print(f"{total_rows_added} saved to database")
 
     def _format_dataframe(self, df, company_id):
         df.insert(0, "company_id", [company_id] * df.shape[0])

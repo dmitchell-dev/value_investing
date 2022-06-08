@@ -171,6 +171,40 @@ ACCOUNT_LOGOUT_REDIRECT = "home"
 # API Keys
 ALPHA_VANTAGE_API_KEY = env.str("ALPHA_VANTAGE_API_KEY")
 
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+#     "formatters": {
+#         "verbose": {"format": "%(levelname)s %(asctime)s %(module)s: %(message)s"}
+#     },
+#     "handlers": {
+#         "console": {
+#             "class": "logging.StreamHandler",
+#             "formatter": "verbose",
+#         },
+#         "processing": {
+#             "level": "INFO",
+#             "class": "logging.FileHandler",
+#             "filename": "/tmp/processing.log",
+#             "formatter": "verbose",
+#         },
+#     },
+#     "loggers": {
+#         "django": {
+#             "handlers": ["console"],
+#             "level": "INFO",
+#         },
+#         "watchman": {
+#             "handlers": ["console"],
+#             "level": "INFO",
+#         },
+#         "processing": {
+#             "handlers": ["console", "processing"],
+#             "level": "INFO",
+#         },
+#     },
+# }
+
 # Security
 if ENVIRONMENT == "production":
     pass

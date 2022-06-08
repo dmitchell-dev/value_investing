@@ -14,6 +14,7 @@ class Command(BaseCommand):
         file_list = self.get_share_list()
         num_files = len(file_list)
         file_num = 0
+        total_rows_added = 0
 
         # For each report import data
         for current_company_filename in file_list:
@@ -54,6 +55,10 @@ class Command(BaseCommand):
             SharePrices.objects.bulk_create(reports)
 
             print(f"Rows saved to database: {num_rows}")
+
+            total_rows_added = total_rows_added + num_rows
+
+        print(f"{total_rows_added} saved to database")
 
     def import_share_price_csv(self, current_company_filename):
         # Get company report data

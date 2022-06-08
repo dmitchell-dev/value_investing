@@ -28,10 +28,12 @@ class Command(BaseCommand):
 
         num_comps = len(comp_list)
         comp_num = 0
+        api_call_num = 0
+        total_rows_added = 0
 
         # For each report import data
         for current_company in comp_list:
-
+            comp_num = comp_num + 1
             print(f"API Import {comp_num} of {num_comps}: {current_company}")
 
             # Get info oncurrent company
@@ -48,10 +50,10 @@ class Command(BaseCommand):
             if curr_comp_loc == "US":
 
                 for statement in statement_list:
-                    comp_num = comp_num + 1
+                    api_call_num = api_call_num + 1
 
                     # Alpha Vantage limits requests to 5 every minute
-                    if comp_num % 5 == 0:
+                    if api_call_num % 5 == 0:
                         print("60 second delay")
                         sleep(65)
 
@@ -88,6 +90,9 @@ class Command(BaseCommand):
                     mask = dates_first > pd.Timestamp(latest_date_first)
 
                     df_data = df_data.loc[mask]
+
+                    df_data["value"] = df_data["value"].replace("None", None)
+
                     num_rows = df_data.shape[0]
 
                     # Save to database
@@ -107,6 +112,10 @@ class Command(BaseCommand):
                     FinancialReports.objects.bulk_create(reports)
 
                     print(f"Rows saved to database: {num_rows} for {statement}")
+
+                total_rows_added = total_rows_added + num_rows
+
+        print(f"{total_rows_added} saved to database")
 
     def _format_dataframe(self, df, company_id):
         df.insert(0, "company_id", [company_id] * df.shape[0])

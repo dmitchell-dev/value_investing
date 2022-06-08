@@ -27,12 +27,12 @@ class Command(BaseCommand):
 
         num_files = len(file_list)
         file_num = 0
+        total_rows_added = 0
 
         # For each report import data
         for current_company_filename in file_list:
             file_num = file_num + 1
-            s = f"file {file_num} of {num_files}, {current_company_filename}"
-            print(s)
+            print(f"file {file_num} of {num_files}, {current_company_filename}")
 
             # Process filename
             current_company_tidm = self._process_filename(
@@ -105,6 +105,10 @@ class Command(BaseCommand):
             FinancialReports.objects.bulk_create(reports)
 
             print(f"Rows saved to database: {num_rows}")
+
+            total_rows_added = total_rows_added + num_rows
+
+        print(f"{total_rows_added} saved to database")
 
     @staticmethod
     def _import_reporting_data(current_company_filename):
