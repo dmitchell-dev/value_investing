@@ -45,9 +45,9 @@ class Command(BaseCommand):
         # Get ancillary data
         df_params = pd.DataFrame(list(Params.objects.get_params_joined()))
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
-        df_dcf_variables = pd.DataFrame(
-            list(CalcVariables.objects.get_calc_vars_joined())
-        )
+        #df_dcf_variables = pd.DataFrame(
+        #    list(CalcVariables.objects.get_calc_vars_joined())
+        #)
 
         # Calculate values for each company
         # Get list of companies
