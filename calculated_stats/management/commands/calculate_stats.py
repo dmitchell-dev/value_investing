@@ -72,14 +72,18 @@ class Command(BaseCommand):
                     )
                 )
             )
-            df["param_name_report_section"] = (
-                df["parameter__param_name"]
-                + "_"
-                + df["parameter__report_section__report_section"]
-            )
+
+            df_dup = df[df.duplicated(subset=['parameter__param_name', 'time_stamp'], keep=False)]
+
+            # df["param_name_report_section"] = (
+            #     df["parameter__param_name"]
+            #     + "_"
+            #     + df["parameter__report_section__report_section"]
+            # )
+
             df_pivot = df.pivot(
                 columns="time_stamp",
-                index="param_name_report_section",
+                index="parameter__param_name",
                 values="value",
             )
             df_pivot = df_pivot.astype(float)

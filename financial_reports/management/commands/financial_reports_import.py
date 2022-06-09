@@ -86,9 +86,10 @@ class Command(BaseCommand):
             latest_share_data = FinancialReports.objects.get_latest_date(
                 current_company_tidm
             )
-            latest_date = latest_share_data.time_stamp
-            mask = df_unpivot["time_stamp"] > pd.Timestamp(latest_date)
-            df_unpivot = df_unpivot.loc[mask]
+            if latest_share_data:
+                latest_date = latest_share_data.time_stamp
+                mask = df_unpivot["time_stamp"] > pd.Timestamp(latest_date)
+                df_unpivot = df_unpivot.loc[mask]
 
             num_rows = df_unpivot.shape[0]
 

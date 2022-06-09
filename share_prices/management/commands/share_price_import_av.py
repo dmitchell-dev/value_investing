@@ -59,9 +59,11 @@ class Command(BaseCommand):
 
             # Filter out prices already in DB
             latest_share_data = SharePrices.objects.get_latest_date(current_company)
-            latest_date = latest_share_data.time_stamp
-            mask = df_data["time_stamp"] > pd.Timestamp(latest_date)
-            df_data = df_data.loc[mask]
+
+            if latest_share_data:
+                latest_date = latest_share_data.time_stamp
+                mask = df_data["time_stamp"] > pd.Timestamp(latest_date)
+                df_data = df_data.loc[mask]
 
             num_rows = df_data.shape[0]
 
