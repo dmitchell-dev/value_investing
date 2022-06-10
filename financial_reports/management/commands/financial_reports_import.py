@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from financial_reports.models import FinancialReports
 from ancillary_info.models import Params, Companies, ParamsApi
 import pandas as pd
+import numpy as np
 import os
 
 
@@ -32,7 +33,9 @@ class Command(BaseCommand):
         # For each report import data
         for current_company_filename in file_list:
             file_num = file_num + 1
-            print(f"file {file_num} of {num_files}, {current_company_filename}")
+            print(
+                f"file {file_num} of {num_files}, {current_company_filename}"
+                )
 
             # Process filename
             current_company_tidm = self._process_filename(
@@ -133,6 +136,19 @@ class Command(BaseCommand):
             index_col="Cash Flow Statement",
             skiprows=1,
         )
+
+        # TIKR sometimes has duplicate Operating Expenses in Income Statement
+        income_index = np.where(
+            df_income.index == 'Other Operating Expenses'
+            )[0]
+        if income_index.size == 2:
+            df_income.drop(
+                df_income.index[income_index[0]], inplace=True
+                )
+        # TIKR has duplicate Net Income in Cash Flow Statement
+        df_cash.drop(
+            df_cash[df_cash.index == "Net Income"].index, inplace=True
+            )
 
         # Stack dataframes
         df = pd.concat([df_income, df_balance, df_cash], axis=0)
