@@ -9,7 +9,8 @@ from financial_reports.models import FinancialReports
 from calculated_stats.models import CalculatedStats
 
 from calculated_stats.managers import (
-    debt_to_ratio,
+    total_equity,
+    debt_to_eq_ratio,
     current_ratio,
     return_on_equity,
     equity_per_share,
@@ -83,28 +84,34 @@ class Command(BaseCommand):
             # Calculations
             calc_list = []
 
+            # Total Equity =
+            # Balance Sheet Total Assets
+            # - Total Liabilities
+            df_t_e = total_equity(df_pivot)
+            calc_list.append(df_t_e)
+
             # Debt to Equity (D/E) =
-            # Balance Sheet Total liabilities_Liabilities
-            # / Total equity_Equity
-            df_d_e = debt_to_ratio(df_pivot)
+            # Balance Sheet Total Liabilities
+            # / Total Equity
+            df_d_e = debt_to_eq_ratio(df_pivot, df_t_e)
             calc_list.append(df_d_e)
 
             # Current Ratio =
-            # Current assets_Assets
-            # / Current liabilities_Liabilities
+            # Total Current Assets
+            # / Total Current Liabilities
             df_cr = current_ratio(df_pivot)
             calc_list.append(df_cr)
 
             # Return on Equity (ROE) =
-            # Profit for financial year_Continuous Operatings
-            # / Shareholders funds (NAV)_Equity
-            df_roe = return_on_equity(df_pivot)
+            # Net Income
+            # / Total Equity
+            df_roe = return_on_equity(df_pivot, df_t_e)
             calc_list.append(df_roe)
 
             # Equity (Book Value) Per Share =
-            # Shareholders funds (NAV)_Equity
-            # / Average shares (diluted)_Other
-            df_eps = equity_per_share(df_pivot)
+            # Total Equity
+            # / Shares Outstanding
+            df_eps = equity_per_share(df_pivot, df_t_e)
             calc_list.append(df_eps)
 
             # Price to Earnings (P/E) =
