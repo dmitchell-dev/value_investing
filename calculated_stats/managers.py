@@ -316,7 +316,7 @@ def price_book_value(df_m_c, df_s_o, df_eps):
     return df_pbv
 
 
-def annual_yield(df_pivot, df_e_v):
+def earnings_yield(df_pivot, df_e_v):
     """
     Earnings Yield (Return) =
     Net Income
@@ -339,10 +339,6 @@ def div_payment(df_dps):
     Dividend Payment =
     if there has been dividend payment
     """
-
-    for col_name in df_dps.columns:
-        print(df_dps[col_name].iloc[0])
-        print(type(df_dps[col_name].iloc[0]))
 
     df_div_payment = np.where(
         (np.isnan(df_dps)),
@@ -376,27 +372,29 @@ def div_cover(df_pivot):
     return df_div_cover
 
 
-def dcf_intrinsic_value(df_pivot, df_dcf_variables):
+def dcf_intrinsic_value(df_pivot, df_dcf_variables, df_s_o, df_fcf):
     """
     Function(Free Cash Flow, Shares Outstanding)
     """
 
     intrinsic_value_list = []
-    base_year_fcf = _dataframe_slice(
-        df_pivot, "Free cash flow (FCF)_Free Cash Flow"
-        )
-    shares_outstanding = _dataframe_slice(
-        df_pivot, "Average shares (diluted)_Other"
-        )
+    base_year_fcf = df_fcf.reset_index(drop=True)
+    shares_outstanding = df_s_o.reset_index(drop=True)
+
     growth_rate = df_dcf_variables[
-        df_dcf_variables.parameter__param_name == ("Estimated Growth Rate")
-    ]
+        df_dcf_variables.parameter__param_name == "Estimated Growth Rate"
+    ]["value"].iloc[0]
+    growth_rate_value = pd.to_numeric(growth_rate)
+
     longterm_growth_rate = df_dcf_variables[
-        df_dcf_variables.parameter__param_name == ("Estimated Long Term Growth Rate")
-    ]
+        df_dcf_variables.parameter__param_name == "Estimated Long Term Growth Rate"
+    ]["value"].iloc[0]
+    longterm_growth_rate_value = pd.to_numeric(longterm_growth_rate)
+
     discount_rate = df_dcf_variables[
         df_dcf_variables.parameter__param_name == "Estimated Discount Rate"
-    ]
+    ]["value"].iloc[0]
+    discount_rate_value = pd.to_numeric(discount_rate)
 
     for col in range(0, df_pivot.shape[1]):
         # Company report values
@@ -404,9 +402,6 @@ def dcf_intrinsic_value(df_pivot, df_dcf_variables):
         shares_outstanding_value = shares_outstanding.values[0][col]
 
         # Input Variables
-        growth_rate_value = growth_rate.values[0][1]
-        longterm_growth_rate_value = longterm_growth_rate.values[0][1]
-        discount_rate_value = discount_rate.values[0][1]
         ten_year_list = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
         # Caclulation
@@ -428,7 +423,7 @@ def dcf_intrinsic_value(df_pivot, df_dcf_variables):
     # Create Dataframe
     df_dcf_intrinsic_value = pd.DataFrame(intrinsic_value_list).transpose()
     df_dcf_intrinsic_value.columns = list(df_pivot.columns)
-    df_dcf_intrinsic_value.index = ["DCF Intrinsic Value"]
+    df_dcf_intrinsic_value.index = ["Intrinsic Value"]
 
     # Record input variables used in cals
     # Estimated Growth Rate
@@ -466,83 +461,37 @@ def dcf_intrinsic_value(df_pivot, df_dcf_variables):
 
 def roce(df_pivot, df_c_e):
     """
-    TODO Notes Here
+    Return on Capital Employed (ROCE) =
+    Net Income /
+    Capital Employed
     """
 
-    row_title = "Profit for financial year_Continuous Operatings"
-    if not _dataframe_slice(df_pivot, row_title).empty:
-        df_profit = _dataframe_slice(df_pivot, row_title).reset_index(drop=True)
-        df_roce = df_profit.div(df_c_e.reset_index(drop=True)) * 100
-    else:
-        roce_list = [None] * df_pivot.shape[1]
-        df_roce = pd.DataFrame(data=roce_list).transpose()
-        df_roce.columns = list(df_pivot.columns)
+    df_n_i = _dataframe_slice(
+        df_pivot, "Net Income"
+    ).reset_index(drop=True)
 
-    if not df_roce.empty:
-        df_roce.index = ["ROCE"]
+    df_roce = df_n_i.div(df_c_e.reset_index(drop=True)) * 100
+
+    df_roce.index = ["Return on Capital Employed (ROCE)"]
 
     return df_roce
 
 
-def debt_ratio(df_pivot):
+def margin_of_safety(df_share_price_reduced, df_dcf_intrinsic_value):
     """
-    TODO Notes Here
+    Margin of Safety =
+    Share Price / Intrinsic Value
     """
 
-    profit_list = []
-    debt_ratio_list = []
-    year_count = 0
-    row_title = "Short term borrowing_Liabilities"
-    if not _dataframe_slice(df_pivot, row_title).empty:
-        df_short_borrowing = _dataframe_slice(df_pivot, row_title)
+    df_dcf_intrinsic_value = _dataframe_slice(
+        df_dcf_intrinsic_value, "Intrinsic Value"
+    ).reset_index(drop=True)
 
-        row_title = "Profit for financial year_Continuous Operatings"
-        df_profit = _dataframe_slice(df_pivot, row_title)
-        row_title = "Short term borrowing_Liabilities"
-        df_short_borrowing = (
-            _dataframe_slice(df_pivot, row_title).reset_index(drop=True).fillna(0)
-        )
-        row_title = "Long term borrowing_Liabilities"
-        df_long_borrowing = (
-            _dataframe_slice(df_pivot, row_title).reset_index(drop=True).fillna(0)
-        )
-        df_borrowing = df_short_borrowing.add(df_long_borrowing)
+    df_margin_of_safety = df_share_price_reduced.reset_index(drop=True).div(df_dcf_intrinsic_value)
 
-        for col in range(0, df_pivot.shape[1]):
-            year_count = year_count + 1
+    df_margin_of_safety.index = ["Margin of Safety"]
 
-            # Build first 5 years list
-            current_year_profit = df_profit.values[0][col]
-            if math.isnan(current_year_profit):
-                current_year_profit = 0
-            profit_list.append(current_year_profit)
-            current_year_borrowing = df_borrowing.values[0][col]
-            if math.isnan(current_year_borrowing):
-                current_year_borrowing = 0
-
-            # Start calculation after 5 years
-            if year_count < 5:
-                debt_ratio_list.append(None)
-            elif year_count >= 5:
-                if statistics.mean(profit_list) != 0:
-                    yearly_debt_ratio = current_year_borrowing / statistics.mean(
-                        profit_list
-                    )
-                else:
-                    yearly_debt_ratio = 0
-                debt_ratio_list.append(yearly_debt_ratio)
-
-                # Remove first
-                profit_list.pop(0)
-    else:
-        debt_ratio_list = [None] * df_pivot.shape[1]
-
-    df_debt_ratio = pd.DataFrame(data=debt_ratio_list).transpose()
-    df_debt_ratio.columns = list(df_pivot.columns)
-    if not df_debt_ratio.empty:
-        df_debt_ratio.index = ["Debt Ratio"]
-
-    return df_debt_ratio
+    return df_margin_of_safety
 
 
 def _dataframe_slice(df_input, row_title):

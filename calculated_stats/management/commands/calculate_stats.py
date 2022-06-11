@@ -6,7 +6,7 @@ from ancillary_info.models import (
 )
 from share_prices.models import SharePrices
 from financial_reports.models import FinancialReports
-from calculated_stats.models import CalculatedStats
+from calculated_stats.models import CalculatedStats, DcfVariables
 
 from calculated_stats.managers import (
     total_equity,
@@ -23,12 +23,12 @@ from calculated_stats.managers import (
     equity_per_share,
     price_per_earnings,
     price_book_value,
-    annual_yield,
+    earnings_yield,
     div_payment,
     div_cover,
     dcf_intrinsic_value,
     roce,
-    debt_ratio,
+    margin_of_safety,
 )
 
 
@@ -43,9 +43,6 @@ class Command(BaseCommand):
         df_companies = pd.DataFrame(
             list(Companies.objects.get_companies_joined())
             )
-        #df_dcf_variables = pd.DataFrame(
-        #    list(CalcVariables.objects.get_calc_vars_joined())
-        #)
 
         # Calculate values for each company
         # Get list of companies
@@ -57,9 +54,16 @@ class Command(BaseCommand):
             company_num = company_num + 1
             print(f"Company {company_num} of {num_companies}, {company_tidm}")
 
+            # Get DCF Variables
+            df_dcf_variables = pd.DataFrame(
+                list(DcfVariables.objects.get_table_joined_filtered(company_tidm))
+            )
+
             # Get Share Price
             df_share_price = pd.DataFrame(
-                list(SharePrices.objects.get_share_joined_filtered(company_tidm))
+                list(
+                    SharePrices.objects.get_share_joined_filtered(company_tidm)
+                )
             )
 
             # Get Financial Data
@@ -123,7 +127,7 @@ class Command(BaseCommand):
             df_pbv = price_book_value(df_m_c, df_s_o, df_eps)
             calc_list.append(df_pbv)
 
-            df_a_return = annual_yield(df_pivot, df_e_v)
+            df_a_return = earnings_yield(df_pivot, df_e_v)
             calc_list.append(df_a_return)
 
             df_div_payment = div_payment(df_dps)
@@ -132,7 +136,12 @@ class Command(BaseCommand):
             df_div_cover = div_cover(df_pivot)
             calc_list.append(df_div_cover)
 
-            df_dcf_intrinsic_value = dcf_intrinsic_value(df_pivot, df_dcf_variables)
+            df_dcf_intrinsic_value = dcf_intrinsic_value(
+                df_pivot,
+                df_dcf_variables,
+                df_s_o,
+                df_fcf
+                )
             calc_list.append(df_dcf_intrinsic_value)
 
             # ROCE
@@ -140,18 +149,11 @@ class Command(BaseCommand):
             calc_list.append(df_roce)
 
             # Debt Ratio
-            df_debt_ratio = debt_ratio(df_pivot)
-            calc_list.append(df_debt_ratio)
-
-            # Fill in the missing dates for share price
-            df_calculated = pd.concat(calc_list)
+            df_margin_of_safety = margin_of_safety(df_share_price_reduced, df_dcf_intrinsic_value)
+            calc_list.append(df_margin_of_safety)
 
             # Merge all dataframes
             df_calculated = pd.concat(calc_list)
-
-            # if company_tidm == 'BRBY':
-            #     print(df_calculated)
-            #     print('STOP')
 
             # Generate parameter_id and replace index
             df_unpivot = self._replace_with_id(
@@ -200,7 +202,7 @@ class Command(BaseCommand):
         return df_unpivot
 
     def _datetime_format(self, df):
-        date_fmts = ("%d/%m/%y", "%d/%m/%Y")
+        date_fmts = ("%Y-%m-%d", "%d/%m/%y", "%d/%m/%Y")
         for fmt in date_fmts:
             try:
                 df["time_stamp"] = pd.to_datetime(df["time_stamp"], format=fmt)
