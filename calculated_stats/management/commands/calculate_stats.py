@@ -24,7 +24,6 @@ from calculated_stats.managers import (
     price_per_earnings,
     price_book_value,
     earnings_yield,
-    div_payment,
     div_cover,
     dcf_intrinsic_value,
     roce,
@@ -130,9 +129,6 @@ class Command(BaseCommand):
             df_a_return = earnings_yield(df_pivot, df_e_v)
             calc_list.append(df_a_return)
 
-            df_div_payment = div_payment(df_dps)
-            calc_list.append(df_div_payment)
-
             df_div_cover = div_cover(df_pivot)
             calc_list.append(df_div_cover)
 
@@ -154,6 +150,8 @@ class Command(BaseCommand):
 
             # Merge all dataframes
             df_calculated = pd.concat(calc_list)
+
+            df_calculated = df_calculated.round(decimals=2)
 
             # Generate parameter_id and replace index
             df_unpivot = self._replace_with_id(

@@ -99,11 +99,11 @@ def share_price(df_pivot, df_share_price):
                 if share_price_slice.empty:
                     pass
                 else:
-                    price_list.append(share_price_slice.values[0][2] / 100)
+                    price_list.append(share_price_slice.values[0][2])
                     date_list.append(date)
                     break
         else:
-            price_list.append(share_price_slice.values[0][2] / 100)
+            price_list.append(share_price_slice.values[0][2])
             date_list.append(share_price_slice.values[0][1])
 
     df_share_price_reduced = pd.DataFrame(data=price_list).transpose()
@@ -186,7 +186,7 @@ def capital_employed(df_pivot):
         ).reset_index(drop=True)
 
     df_c_e = df_ta - df_tcl
-    df_c_e.index = ["Free Cash Flow"]
+    df_c_e.index = ["Capital Employed"]
 
     return df_c_e
 
@@ -202,8 +202,7 @@ def dividends_per_share(df_pivot, df_s_o):
         df_pivot, "Dividend Payout"
         ).reset_index(drop=True)
 
-    # CE Negative in DB
-    df_dps = df_dpo.div(df_s_o.reset_index(drop=True))
+    df_dps = df_dpo.div(df_s_o.reset_index(drop=True)) * -1
     df_dps.index = ["Dividends Per Share"]
 
     return df_dps
@@ -334,23 +333,6 @@ def earnings_yield(df_pivot, df_e_v):
     return df_a_return
 
 
-def div_payment(df_dps):
-    """
-    Dividend Payment =
-    if there has been dividend payment
-    """
-
-    df_div_payment = np.where(
-        (np.isnan(df_dps)),
-        "no",
-        "yes",
-    )
-    df_div_payment = pd.DataFrame(df_div_payment, columns=df_dps.columns)
-    df_div_payment.index = ["Dividend Payment"]
-
-    return df_div_payment
-
-
 def div_cover(df_pivot):
     """
     Dividend Cover =
@@ -365,7 +347,7 @@ def div_cover(df_pivot):
         df_pivot, "Dividend Payout"
     ).reset_index(drop=True)
 
-    df_div_cover = df_n_i.div(df_dpo)
+    df_div_cover = df_n_i.div(df_dpo) * -1
 
     df_div_cover.index = ["Dividend Cover"]
 
