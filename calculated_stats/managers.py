@@ -62,20 +62,135 @@ def shares_outstanding(df_pivot):
     return df_s_o
 
 
-def market_cap(df_pivot, df_s_o):
+def share_price(df_pivot, df_share_price):
+    """
+    Nearest share price to fundamental dates
+    """
+
+    price_list = []
+    date_list = []
+    for date in list(df_pivot.columns):
+        share_price_slice = df_share_price[df_share_price.time_stamp == date]
+        if share_price_slice.empty:
+            # If there is not an exact date for the share price
+            # from the report date, then increase 14 days until
+            # the clostest share price is found
+            for i in range(1, 15):
+                date_shifted = date + timedelta(days=i)
+                share_price_slice = df_share_price[
+                    df_share_price.time_stamp == date_shifted
+                ]
+                if share_price_slice.empty:
+                    pass
+                else:
+                    price_list.append(share_price_slice.values[0][2] / 100)
+                    date_list.append(date)
+                    break
+        else:
+            price_list.append(share_price_slice.values[0][2] / 100)
+            date_list.append(share_price_slice.values[0][1])
+
+    df_share_price_reduced = pd.DataFrame(data=price_list).transpose()
+    df_share_price_reduced.columns = date_list
+    if not df_share_price_reduced.empty:
+        df_share_price_reduced.index = ["Share Price"]
+
+    return df_share_price_reduced
+
+
+def market_cap(df_s_o, df_share_price_reduced):
     """
     Market Capitalisation =
     Shares Outstanding
-    / Share Price
+    * Share Price
     """
 
-    df_s_p = _dataframe_slice(
-        df_pivot, "Share Price"
-        ).reset_index(drop=True)
-    df_m_c = df_s_o.reset_index(drop=True).div(df_s_p)
+    df_m_c = df_s_o.reset_index(drop=True) * (
+        df_share_price_reduced.reset_index(drop=True)
+        )
     df_m_c.index = ["Market Capitalisation"]
 
     return df_m_c
+
+
+def enterprise_value(df_pivot, df_m_c):
+    """
+    Enterprise Value =
+    Market Capitalisation +
+    Total Liabilities -
+    Total Cash and Short Term
+    """
+
+    df_t_l = _dataframe_slice(
+        df_pivot, "Total Liabilities"
+        ).reset_index(drop=True)
+    df_t_c_st = _dataframe_slice(
+        df_pivot, "Total Cash and Short Term"
+        ).reset_index(drop=True)
+
+    df_e_v = df_m_c.reset_index(drop=True) + df_t_l - df_t_c_st
+    df_e_v.index = ["Enterprise Value"]
+
+    return df_e_v
+
+
+def free_cash_flow(df_pivot):
+    """
+    Free Cash Flow =
+    Operating Cash Flow -
+    Capital Expenditures
+    """
+
+    df_ocf = _dataframe_slice(
+        df_pivot, "Operating Cash Flow"
+        ).reset_index(drop=True)
+    df_ce = _dataframe_slice(
+        df_pivot, "Capital Expenditures"
+        ).reset_index(drop=True)
+
+    # CE Negative in DB
+    df_fcf = df_ocf + df_ce
+    df_fcf.index = ["Free Cash Flow"]
+
+    return df_fcf
+
+
+def capital_employed(df_pivot):
+    """
+    Capital Employed =
+    Total Assets -
+    Total Current Liabilities
+    """
+
+    df_ta = _dataframe_slice(
+        df_pivot, "Total Assets"
+        ).reset_index(drop=True)
+    df_tcl = _dataframe_slice(
+        df_pivot, "Total Current Liabilities"
+        ).reset_index(drop=True)
+
+    df_c_e = df_ta - df_tcl
+    df_c_e.index = ["Free Cash Flow"]
+
+    return df_c_e
+
+
+def dividends_per_share(df_pivot, df_s_o):
+    """
+    Dividends Per Share =
+    Dividend Payout /
+    Shares Outstanding
+    """
+
+    df_dpo = _dataframe_slice(
+        df_pivot, "Dividend Payout"
+        ).reset_index(drop=True)
+
+    # CE Negative in DB
+    df_dps = df_dpo.div(df_s_o.reset_index(drop=True))
+    df_dps.index = ["Dividends Per Share"]
+
+    return df_dps
 
 
 def debt_to_eq_ratio(df_pivot, df_t_e):
@@ -141,116 +256,84 @@ def equity_per_share(df_t_e, df_s_o):
     """
 
     if not df_t_e.empty and not df_s_o.empty:
-        df_eps = df_t_e.reset_index(drop=True).div(df_s_o.reset_index(drop=True))
+        df_eps = df_t_e.reset_index(drop=True).div(
+            df_s_o.reset_index(drop=True)
+            )
         df_eps.index = ["Equity (Book Value) Per Share"]
 
     return df_eps
 
 
-def price_per_earnings(df_pivot):
+def price_per_earnings(df_pivot, df_m_c):
     """
     Price to Earnings (P/E) =
-    Market capitalisation_Other
-    / Profit for financial year_Continuous Operatings
+    Market Capitalisation
+    / Net Income
     """
 
-    df_mark_cap = _dataframe_slice(
-        df_pivot, "Market capitalisation_Other"
+    df_n_i = _dataframe_slice(
+        df_pivot, "Net Income"
         ).reset_index(drop=True)
-    df_profit = _dataframe_slice(
-        df_pivot, "Profit for financial year_Continuous Operatings"
-        ).reset_index(drop=True)
-    if not df_mark_cap.empty and not df_profit.empty:
-        df_ppe = df_mark_cap.div(df_profit)
+    if not df_m_c.empty and not df_n_i.empty:
+        df_ppe = df_m_c.reset_index(drop=True).div(df_n_i)
         df_ppe.index = ["Price to Earnings (P/E)"]
 
     return df_ppe
 
 
-def price_book_value(df_pivot, df_eps):
+def price_book_value(df_m_c, df_s_o, df_eps):
     """
-    TODO Notes Here
+    Price to Book Value (Equity) =
+    (Market Capitalisation / Shares Outstanding)
+    / Equity (Book Value) Per Share
     """
 
-    df_mark_cap = _dataframe_slice(df_pivot, "Market capitalisation_Other").reset_index(
-        drop=True
-    )
-    df_shares = _dataframe_slice(
-        df_pivot, "Average shares (diluted)_Other"
-    ).reset_index(drop=True)
-    if not df_mark_cap.empty and not df_shares.empty:
-        df_pbv = df_mark_cap.div(df_shares)
-        df_pbv.index = ["Price to Book Value (Equity)"]
+    df_m_c = df_m_c.reset_index(drop=True)
+    df_s_o = df_s_o.reset_index(drop=True)
+    df_eps = df_eps.reset_index(drop=True)
 
-    df_equity = _dataframe_slice(df_pbv, "Price to Book Value (Equity)").reset_index(
-        drop=True
-    )
-    df_eps = _dataframe_slice(df_eps, "Equity (Book Value) Per Share").reset_index(
-        drop=True
-    )
-    if not df_equity.empty and not df_eps.empty:
-        df_pbv = df_equity.div(df_eps)
+    if not df_eps.empty:
+        df_interim = df_m_c.div(df_s_o)
+        df_pbv = df_interim.div(df_eps)
         df_pbv.index = ["Price to Book Value (Equity)"]
 
     return df_pbv
 
 
-def annual_yield(df_pivot):
+def annual_yield(df_pivot, df_e_v):
     """
-    TODO Notes Here
+    Earnings Yield (Return) =
+    Net Income
+    / Enterprise Value
     """
 
-    df_profit = _dataframe_slice(
-        df_pivot, "Profit for financial year_Continuous Operatings"
+    df_n_i = _dataframe_slice(
+        df_pivot, "Net Income"
     ).reset_index(drop=True)
-    df_mark_cap = _dataframe_slice(df_pivot, "Market capitalisation_Other").reset_index(
-        drop=True
-    )
-    if not df_profit.empty and not df_mark_cap.empty:
-        df_a_return = df_profit.div(df_mark_cap) * 100
-        df_a_return.index = ["Annual Yield (Return)"]
+
+    if not df_n_i.empty and not df_e_v.empty:
+        df_a_return = df_n_i.div(df_e_v.reset_index(drop=True)) * 100
+        df_a_return.index = ["Earnings Yield (Return)"]
 
     return df_a_return
 
 
-def fcf_growth_rate(df_pivot):
+def div_payment(df_dps):
     """
-    TODO Notes Here
+    Dividend Payment =
+    if there has been dividend payment
     """
 
-    df_fcf = _dataframe_slice(
-        df_pivot, "Free cash flow (FCF)_Free Cash Flow"
-    ).reset_index(drop=True)
-    fcf_gr_list = df_fcf.values.tolist()[0]
-
-    growth_rate = []
-    for gr in range(1, len(fcf_gr_list)):
-        if fcf_gr_list[gr - 1] != 0:
-            gnumbers = (
-                (fcf_gr_list[gr] - fcf_gr_list[gr - 1]) / fcf_gr_list[gr - 1] * 100
-            )
-        else:
-            gnumbers = None
-        growth_rate.append(gnumbers)
-    growth_rate.insert(0, None)
-    df_fcf_gr = pd.DataFrame(growth_rate).transpose()
-    df_fcf_gr.columns = list(df_fcf.columns)
-    df_fcf_gr.index = ["FCF Growth Rate"]
-
-    return (df_fcf_gr, df_fcf)
-
-
-def div_payment(df_pivot):
-    """
-    TODO Notes Here
-    """
+    for col_name in df_dps.columns:
+        print(df_dps[col_name].iloc[0])
+        print(type(df_dps[col_name].iloc[0]))
 
     df_div_payment = np.where(
-        (_dataframe_slice(df_pivot, "Dividend (adjusted) ps_Per Share Values") > 0),
-        "yes",
+        (np.isnan(df_dps)),
         "no",
+        "yes",
     )
-    df_div_payment = pd.DataFrame(df_div_payment, columns=df_pivot.columns)
+    df_div_payment = pd.DataFrame(df_div_payment, columns=df_dps.columns)
     df_div_payment.index = ["Dividend Payment"]
 
     return df_div_payment
@@ -258,23 +341,19 @@ def div_payment(df_pivot):
 
 def div_cover(df_pivot):
     """
-    TODO Notes Here
+    Dividend Cover =
+    Net Income /
+    Dividend Payout
     """
 
-    row_title = "Post-tax profit_Continuous Operatings"
-    df_profit = _dataframe_slice(df_pivot, row_title)
+    df_n_i = _dataframe_slice(
+        df_pivot, "Net Income"
+    ).reset_index(drop=True)
+    df_dpo = _dataframe_slice(
+        df_pivot, "Dividend Payout"
+    ).reset_index(drop=True)
 
-    row_title = "Dividend (adjusted) ps_Per Share Values"
-    df_div = _dataframe_slice(df_pivot, row_title)
-
-    row_title = "Number of shares_Other"
-    df_num_shares = _dataframe_slice(df_pivot, row_title)
-
-    df_total_div = (
-        df_div.reset_index(drop=True).mul(df_num_shares.reset_index(drop=True)) / 100
-    )
-
-    df_div_cover = df_profit.reset_index(drop=True).div(df_total_div)
+    df_div_cover = df_n_i.div(df_dpo)
 
     df_div_cover.index = ["Dividend Cover"]
 
@@ -283,7 +362,8 @@ def div_cover(df_pivot):
 
 def dcf_intrinsic_value(df_pivot, df_dcf_variables):
     """
-    TODO Notes Here
+    Function(dividends_per_share, shares_outstanding)
+    TODO REALLY, should be FCF??
     """
 
     intrinsic_value_list = []
@@ -365,366 +445,7 @@ def dcf_intrinsic_value(df_pivot, df_dcf_variables):
     return df_dcf_intrinsic_value
 
 
-def share_price(df_fcf, df_share_price):
-    """
-    TODO Notes Here
-    """
-
-    price_list = []
-    date_list = []
-    for date in list(df_fcf.columns):
-        share_price_slice = df_share_price[df_share_price.time_stamp == date]
-        if share_price_slice.empty:
-            # If there is not an exact date for the share price
-            # from the report date, then increase 3 days until
-            # the clostest share price is found
-            for i in range(1, 4):
-                date_shifted = date + timedelta(days=i)
-                share_price_slice = df_share_price[
-                    df_share_price.time_stamp == date_shifted
-                ]
-                if share_price_slice.empty:
-                    pass
-                else:
-                    price_list.append(share_price_slice.values[0][2] / 100)
-                    date_list.append(date)
-                    break
-        else:
-            price_list.append(share_price_slice.values[0][2] / 100)
-            date_list.append(share_price_slice.values[0][1])
-
-    df_share_price_reduced = pd.DataFrame(data=price_list).transpose()
-    df_share_price_reduced.columns = date_list
-    if not df_share_price_reduced.empty:
-        df_share_price_reduced.index = ["Share Price"]
-
-    return df_share_price_reduced
-
-
-def revenue_growth(df_pivot):
-    """
-    TODO Notes Here
-    """
-
-    revenue_growth_list = []
-    year_count = 0
-    row_title = "Turnover_Continuous Operatings"
-    # TODO add in banks and insurance companies
-    if not _dataframe_slice(df_pivot, row_title).empty:
-        df_turnover = _dataframe_slice(df_pivot, row_title)
-        for col in range(0, df_pivot.shape[1]):
-            year_count = year_count + 1
-
-            if year_count == 1:
-                revenue_growth_list.append(None)
-            else:
-                current_year_turnover = df_turnover.values[0][col]
-                previous_year_turnover = df_turnover.values[0][col - 1]
-
-                if current_year_turnover > previous_year_turnover:
-                    revenue_growth_list.append("yes")
-                else:
-                    revenue_growth_list.append("no")
-    else:
-        revenue_growth_list = [None] * df_pivot.shape[1]
-
-    df_revenue_growth = pd.DataFrame(data=revenue_growth_list).transpose()
-    df_revenue_growth.columns = list(df_pivot.columns)
-    if not df_revenue_growth.empty:
-        df_revenue_growth.index = ["Revenue Growth"]
-
-    return df_revenue_growth
-
-
-def eps_growth(df_pivot):
-    """
-    TODO Notes Here
-    """
-
-    eps_growth_list = []
-    year_count = 0
-    row_title = "EPS norm. continuous_Per Share Values"
-
-    df_eps = _dataframe_slice(df_pivot, row_title)
-    for col in range(0, df_pivot.shape[1]):
-        year_count = year_count + 1
-
-        if year_count == 1:
-            eps_growth_list.append(None)
-        else:
-            current_year_eps = df_eps.values[0][col]
-            previous_year_eps = df_eps.values[0][col - 1]
-
-            if current_year_eps > previous_year_eps:
-                eps_growth_list.append("yes")
-            else:
-                eps_growth_list.append("no")
-
-    df_eps_growth = pd.DataFrame(data=eps_growth_list).transpose()
-    df_eps_growth.columns = list(df_pivot.columns)
-    if not df_eps_growth.empty:
-        df_eps_growth.index = ["EPS Growth"]
-
-    return df_eps_growth
-
-
-def dividend_growth(df_pivot):
-    """
-    TODO Notes Here
-    """
-
-    div_growth_list = []
-    year_count = 0
-    row_title = "Dividend (adjusted) ps_Per Share Values"
-
-    df_div = _dataframe_slice(df_pivot, row_title)
-    for col in range(0, df_pivot.shape[1]):
-        year_count = year_count + 1
-
-        if year_count == 1:
-            div_growth_list.append(None)
-        else:
-            current_year_div = df_div.values[0][col]
-            if math.isnan(current_year_div):
-                current_year_div = 0
-            previous_year_div = df_div.values[0][col - 1]
-            if math.isnan(previous_year_div):
-                previous_year_div = 0
-
-            if current_year_div > previous_year_div:
-                div_growth_list.append("yes")
-            else:
-                div_growth_list.append("no")
-
-    df_div_growth = pd.DataFrame(data=div_growth_list).transpose()
-    df_div_growth.columns = list(df_pivot.columns)
-    if not df_div_growth.empty:
-        df_div_growth.index = ["Dividend Growth"]
-
-    return df_div_growth
-
-
-def growth_quality(df_pivot, df_revenue_growth, df_eps_growth, df_div_growth):
-    """
-    TODO Notes Here
-    """
-
-    growth_qual_list = []
-    year_count = 0
-    df_growth_all = pd.concat([df_revenue_growth, df_eps_growth, df_div_growth])
-    growth_count = df_growth_all[df_growth_all == "yes"].count()
-
-    for col in range(0, df_pivot.shape[1]):
-        df_growth_all[df_growth_all == "yes"].count()[year_count]
-
-        if year_count < 9:
-            growth_qual_list.append(None)
-        elif year_count >= 9:
-            growth_qual_list.append(
-                growth_count[year_count - 9 : year_count + 1].sum() / 30 * 100
-            )
-
-        year_count = year_count + 1
-
-    df_growth_quality = pd.DataFrame(data=growth_qual_list).transpose()
-    df_growth_quality.columns = list(df_pivot.columns)
-    if not df_growth_quality.empty:
-        df_growth_quality.index = ["Growth Quality"]
-
-    return df_growth_quality
-
-
-def revenue_growth_10_year(df_pivot):
-    """
-    TODO Notes Here
-    """
-
-    turnover_list = []
-    rev_growth_list = []
-    year_count = 0
-    row_title = "Turnover_Continuous Operatings"
-
-    # TODO add in banks and insurance companies
-    if not _dataframe_slice(df_pivot, row_title).empty:
-        df_turnover = _dataframe_slice(df_pivot, row_title)
-        for col in range(0, df_pivot.shape[1]):
-            year_count = year_count + 1
-
-            # Build first 10 years list
-            current_year_turnover = df_turnover.values[0][col]
-            turnover_list.append(current_year_turnover)
-
-            # Start calculation after 10 years
-            if year_count < 10:
-                rev_growth_list.append(None)
-            elif year_count >= 10:
-                first_three_years = sum(turnover_list[:3])
-                last_three_years = sum(turnover_list[7:])
-                rev_growth_year = ((last_three_years / first_three_years) - 1) * 100
-                rev_growth_list.append(rev_growth_year)
-
-                # Remove first
-                turnover_list.pop(0)
-    else:
-        rev_growth_list = [None] * df_pivot.shape[1]
-
-    df_rev_growth_10 = pd.DataFrame(data=rev_growth_list).transpose()
-    df_rev_growth_10.columns = list(df_pivot.columns)
-    if not df_rev_growth_10.empty:
-        df_rev_growth_10.index = ["Revenue Growth (10 year)"]
-
-    return df_rev_growth_10
-
-
-def earnings_growth_10_year(df_pivot):
-    """
-    TODO Notes Here
-    """
-
-    eps_list = []
-    eps_growth_list = []
-    year_count = 0
-    row_title = "EPS norm. continuous_Per Share Values"
-
-    df_eps = _dataframe_slice(df_pivot, row_title)
-    for col in range(0, df_pivot.shape[1]):
-        year_count = year_count + 1
-
-        # Build first 10 years list
-        current_year_eps = df_eps.values[0][col]
-        eps_list.append(current_year_eps)
-
-        # Start calculation after 10 years
-        if year_count < 10:
-            eps_growth_list.append(None)
-        elif year_count >= 10:
-            first_three_years = sum(eps_list[:3])
-            last_three_years = sum(eps_list[7:])
-            if first_three_years != 0:
-                eps_growth_year = ((last_three_years / first_three_years) - 1) * 100
-            else:
-                eps_growth_year = 0
-            eps_growth_list.append(eps_growth_year)
-
-            # Remove first
-            eps_list.pop(0)
-
-    df_eps_growth_10 = pd.DataFrame(data=eps_growth_list).transpose()
-    df_eps_growth_10.columns = list(df_pivot.columns)
-    if not df_eps_growth_10.empty:
-        df_eps_growth_10.index = ["Earnings Growth (10 year)"]
-
-    return df_eps_growth_10
-
-
-def dividend_growth_10_year(df_pivot):
-    """
-    TODO Notes Here
-    """
-
-    div_list = []
-    div_growth_list = []
-    year_count = 0
-    row_title = "Dividend (adjusted) ps_Per Share Values"
-
-    df_div = _dataframe_slice(df_pivot, row_title)
-    for col in range(0, df_pivot.shape[1]):
-        year_count = year_count + 1
-
-        # Build first 10 years list
-        current_year_div = df_div.values[0][col]
-        if math.isnan(current_year_div):
-            current_year_div = 0
-        div_list.append(current_year_div)
-
-        # Start calculation after 10 years
-        if year_count < 10:
-            div_growth_list.append(None)
-        elif year_count >= 10:
-            first_three_years = sum(div_list[:3])
-            last_three_years = sum(div_list[7:])
-            if first_three_years == 0:
-                div_growth_year = 0
-            else:
-                div_growth_year = ((last_three_years / first_three_years) - 1) * 100
-            div_growth_list.append(div_growth_year)
-
-            # Remove first
-            div_list.pop(0)
-
-    df_div_growth_10 = pd.DataFrame(data=div_growth_list).transpose()
-    df_div_growth_10.columns = list(df_pivot.columns)
-    if not df_div_growth_10.empty:
-        df_div_growth_10.index = ["Dividend Growth (10 year)"]
-
-    return df_div_growth_10
-
-
-def overall_growth_and_rate(
-    df_pivot, df_rev_growth_10, df_eps_growth_10, df_div_growth_10
-):
-    """
-    TODO Notes Here
-    """
-
-    df_growth_rates = pd.concat([df_rev_growth_10, df_eps_growth_10, df_div_growth_10])
-
-    df_overall_growth = pd.DataFrame(df_growth_rates.mean(axis=0)).transpose()
-    df_overall_growth.columns = list(df_pivot.columns)
-    if not df_overall_growth.empty:
-        df_overall_growth.index = ["Overall Growth (10 year)"]
-
-    # Replace any values over -100 with -100
-    # as this would produce imaginary numbers (NaN)
-    df_overall_growth[df_overall_growth < -100] = -100
-
-    # Calculate Rate
-    df_growth_rate = (pow((1 + (df_overall_growth / 100)), (1 / 7)) - 1) * 100
-    df_growth_rate.index = ["Growth Rate (10 year)"]
-
-    return (df_overall_growth, df_growth_rate)
-
-
-def capital_employed(df_pivot):
-    """
-    TODO Notes Here
-    """
-
-    ce_list = []
-    year_count = 0
-
-    row_title = "Total assets_Assets"
-    df_assets = _dataframe_slice(df_pivot, row_title)
-    row_title = "Current liabilities_Liabilities"
-
-    # TODO add in banks and insurance companies
-    if not _dataframe_slice(df_pivot, row_title).empty:
-        df_liabilities = _dataframe_slice(df_pivot, row_title)
-
-        for col in range(0, df_pivot.shape[1]):
-            year_count = year_count + 1
-
-            # Build first 10 years list
-            current_year_assets = df_assets.values[0][col]
-            if math.isnan(current_year_assets):
-                current_year_assets = 0
-            current_year_liabilities = df_liabilities.values[0][col]
-            if math.isnan(current_year_liabilities):
-                current_year_liabilities = 0
-
-            ce_list.append(current_year_assets - current_year_liabilities)
-    else:
-        ce_list = [None] * df_pivot.shape[1]
-
-    df_ce = pd.DataFrame(data=ce_list).transpose()
-    df_ce.columns = list(df_pivot.columns)
-    if not df_ce.empty:
-        df_ce.index = ["Capital Employed"]
-
-    return df_ce
-
-
-def roce(df_pivot, df_ce):
+def roce(df_pivot, df_c_e):
     """
     TODO Notes Here
     """
@@ -732,7 +453,7 @@ def roce(df_pivot, df_ce):
     row_title = "Profit for financial year_Continuous Operatings"
     if not _dataframe_slice(df_pivot, row_title).empty:
         df_profit = _dataframe_slice(df_pivot, row_title).reset_index(drop=True)
-        df_roce = df_profit.div(df_ce.reset_index(drop=True)) * 100
+        df_roce = df_profit.div(df_c_e.reset_index(drop=True)) * 100
     else:
         roce_list = [None] * df_pivot.shape[1]
         df_roce = pd.DataFrame(data=roce_list).transpose()
