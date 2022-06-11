@@ -28,10 +28,7 @@ from calculated_stats.managers import (
     div_cover,
     dcf_intrinsic_value,
     roce,
-    median_roce_10_year,
     debt_ratio,
-    pe_10_year,
-    dp_10_year,
 )
 
 
@@ -138,24 +135,12 @@ class Command(BaseCommand):
             df_roce = roce(df_pivot, df_c_e)
             calc_list.append(df_roce)
 
-            # Median ROCE (10 year)
-            df_roce_median = median_roce_10_year(df_pivot, df_roce)
-            calc_list.append(df_roce_median)
-
             # Debt Ratio
             df_debt_ratio = debt_ratio(df_pivot)
             calc_list.append(df_debt_ratio)
 
             # Fill in the missing dates for share price
             df_calculated = pd.concat(calc_list)
-
-            # PE10
-            df_pe10 = pe_10_year(df_pivot, df_calculated)
-            calc_list.append(df_pe10)
-
-            # DP10
-            df_dp10 = dp_10_year(df_pivot, df_calculated)
-            calc_list.append(df_dp10)
 
             # Merge all dataframes
             df_calculated = pd.concat(calc_list)

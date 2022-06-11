@@ -362,13 +362,16 @@ def div_cover(df_pivot):
 
 def dcf_intrinsic_value(df_pivot, df_dcf_variables):
     """
-    Function(dividends_per_share, shares_outstanding)
-    TODO REALLY, should be FCF??
+    Function(Free Cash Flow, Shares Outstanding)
     """
 
     intrinsic_value_list = []
-    base_year_fcf = _dataframe_slice(df_pivot, "Free cash flow (FCF)_Free Cash Flow")
-    shares_outstanding = _dataframe_slice(df_pivot, "Average shares (diluted)_Other")
+    base_year_fcf = _dataframe_slice(
+        df_pivot, "Free cash flow (FCF)_Free Cash Flow"
+        )
+    shares_outstanding = _dataframe_slice(
+        df_pivot, "Average shares (diluted)_Other"
+        )
     growth_rate = df_dcf_variables[
         df_dcf_variables.parameter__param_name == ("Estimated Growth Rate")
     ]
@@ -465,41 +468,6 @@ def roce(df_pivot, df_c_e):
     return df_roce
 
 
-def median_roce_10_year(df_pivot, df_roce):
-    """
-    TODO Notes Here
-    """
-
-    roce_list = []
-    roce_growth_list = []
-    year_count = 0
-
-    for col in range(0, df_pivot.shape[1]):
-        year_count = year_count + 1
-
-        # Build first 10 years list
-        current_year_roce = df_roce.values[0][col]
-        if math.isnan(current_year_roce):
-            current_year_roce = 0
-        roce_list.append(current_year_roce)
-
-        # Start calculation after 10 years
-        if year_count < 10:
-            roce_growth_list.append(None)
-        elif year_count >= 10:
-            roce_growth_list.append(statistics.median(roce_list))
-
-            # Remove first
-            roce_list.pop(0)
-
-    df_roce_median = pd.DataFrame(data=roce_growth_list).transpose()
-    df_roce_median.columns = list(df_pivot.columns)
-    if not df_roce_median.empty:
-        df_roce_median.index = ["Median ROCE (10 year)"]
-
-    return df_roce_median
-
-
 def debt_ratio(df_pivot):
     """
     TODO Notes Here
@@ -559,107 +527,6 @@ def debt_ratio(df_pivot):
         df_debt_ratio.index = ["Debt Ratio"]
 
     return df_debt_ratio
-
-
-def pe_10_year(df_pivot, df_calculated):
-    """
-    TODO Notes Here
-    """
-
-    eps_list = []
-    ep10_list = []
-    year_count = 0
-    row_title = "EPS norm. continuous_Per Share Values"
-    if not _dataframe_slice(df_pivot, row_title).empty:
-        df_eps = _dataframe_slice(df_pivot, row_title)
-
-        row_title = "Share Price"
-        if not _dataframe_slice(df_calculated, row_title).empty:
-            df_share_price = _dataframe_slice(df_calculated, row_title)
-
-            for col in range(0, df_pivot.shape[1]):
-                year_count = year_count + 1
-
-                # Build first 10 years list
-                current_year_eps = df_eps.values[0][col]
-                if math.isnan(current_year_eps):
-                    current_year_eps = 0
-                eps_list.append(current_year_eps)
-
-                # Start calculation after 10 years
-                if year_count < 10:
-                    ep10_list.append(None)
-                elif year_count >= 10:
-                    current_year_share_price = df_share_price.values[0][col]
-                    if math.isnan(current_year_share_price):
-                        current_year_share_price = 0
-                    ep10_list.append(
-                        (current_year_share_price / statistics.mean(eps_list)) * 100
-                    )
-
-                    # Remove first
-                    eps_list.pop(0)
-        else:
-            ep10_list = [None] * df_pivot.shape[1]
-
-    df_pe10 = pd.DataFrame(data=ep10_list).transpose()
-    df_pe10.columns = list(df_pivot.columns)
-    if not df_pe10.empty:
-        df_pe10.index = ["PE10"]
-
-    return df_pe10
-
-
-def dp_10_year(df_pivot, df_calculated):
-    """
-    TODO Notes Here
-    """
-
-    div_list = []
-    dp10_list = []
-    year_count = 0
-    row_title = "Dividend (adjusted) ps_Per Share Values"
-    if not _dataframe_slice(df_pivot, row_title).empty:
-        df_div = _dataframe_slice(df_pivot, row_title)
-
-        row_title = "Share Price"
-        if not _dataframe_slice(df_calculated, row_title).empty:
-            df_share_price = _dataframe_slice(df_calculated, row_title)
-
-            for col in range(0, df_pivot.shape[1]):
-                year_count = year_count + 1
-
-                # Build first 10 years list
-                current_year_div = df_div.values[0][col]
-                if math.isnan(current_year_div):
-                    current_year_div = 0
-                div_list.append(current_year_div)
-
-                # Start calculation after 10 years
-                if year_count < 10:
-                    dp10_list.append(None)
-                elif year_count >= 10:
-                    current_year_share_price = df_share_price.values[0][col]
-                    if math.isnan(current_year_share_price):
-                        current_year_share_price = 0
-                    if statistics.mean(div_list) != 0:
-                        dp10_list.append(
-                            (current_year_share_price / statistics.mean(div_list)) * 100
-                        )
-                    else:
-                        dp10_list.append(0)
-
-                    # Remove first
-                    div_list.pop(0)
-        else:
-            dp10_list = [None] * df_pivot.shape[1]
-
-    df_dp10 = pd.DataFrame(data=dp10_list).transpose()
-    df_dp10.columns = list(df_pivot.columns)
-    if not df_dp10.empty:
-        df_dp10.index = ["DP10"]
-
-    return df_dp10
 
 
 def _dataframe_slice(df_input, row_title):
