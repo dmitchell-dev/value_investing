@@ -25,6 +25,12 @@ class CalculatedStatsQueryset(QuerySet):
 
 
 def total_equity(df_pivot):
+    """
+    Total Equity =
+    Balance Sheet Total Assets
+    - Total Liabilities
+    """
+
     df_tl = _dataframe_slice(
         df_pivot, "Total Liabilities"
         ).reset_index(drop=True)
@@ -37,7 +43,48 @@ def total_equity(df_pivot):
     return df_t_e
 
 
+def shares_outstanding(df_pivot):
+    """
+    Shares Outstanding =
+    Net Income
+    / Reported EPS
+    """
+
+    df_ni = _dataframe_slice(
+        df_pivot, "Net Income"
+        ).reset_index(drop=True)
+    df_r_eps = _dataframe_slice(
+        df_pivot, "Reported EPS"
+        ).reset_index(drop=True)
+    df_s_o = df_ni.div(df_r_eps)
+    df_s_o.index = ["Shares Outstanding"]
+
+    return df_s_o
+
+
+def market_cap(df_pivot, df_s_o):
+    """
+    Market Capitalisation =
+    Shares Outstanding
+    / Share Price
+    """
+
+    df_s_p = _dataframe_slice(
+        df_pivot, "Share Price"
+        ).reset_index(drop=True)
+    df_m_c = df_s_o.reset_index(drop=True).div(df_s_p)
+    df_m_c.index = ["Market Capitalisation"]
+
+    return df_m_c
+
+
 def debt_to_eq_ratio(df_pivot, df_t_e):
+    """
+    Debt to Equity (D/E) =
+    Balance Sheet Total Liabilities
+    / Total Equity
+    """
+
     df_tl = _dataframe_slice(
         df_pivot, "Total Liabilities"
         ).reset_index(drop=True)
@@ -48,6 +95,12 @@ def debt_to_eq_ratio(df_pivot, df_t_e):
 
 
 def current_ratio(df_pivot):
+    """
+    Current Ratio =
+    Total Current Assets
+    / Total Current Liabilities
+    """
+
     df_ca = _dataframe_slice(
         df_pivot, "Total Current Assets"
         ).reset_index(drop=True)
@@ -64,6 +117,12 @@ def current_ratio(df_pivot):
 
 
 def return_on_equity(df_pivot, df_t_e):
+    """
+    Return on Equity (ROE) =
+    Net Income
+    / Total Equity
+    """
+
     df_ni = _dataframe_slice(
         df_pivot, "Net Income"
     ).reset_index(drop=True)
@@ -74,27 +133,33 @@ def return_on_equity(df_pivot, df_t_e):
     return df_roe
 
 
-def equity_per_share(df_pivot, df_t_e):
-    df_nav = _dataframe_slice(
-        df_pivot, "Shareholders funds (NAV)_Equity"
-        ).reset_index(drop=True)
-    df_shares = _dataframe_slice(
-        df_pivot, "Average shares (diluted)_Other"
-    ).reset_index(drop=True)
-    if not df_nav.empty and not df_shares.empty:
-        df_eps = df_nav.div(df_shares)
+def equity_per_share(df_t_e, df_s_o):
+    """
+    Equity (Book Value) Per Share =
+    Total Equity
+    / Shares Outstanding
+    """
+
+    if not df_t_e.empty and not df_s_o.empty:
+        df_eps = df_t_e.reset_index(drop=True).div(df_s_o.reset_index(drop=True))
         df_eps.index = ["Equity (Book Value) Per Share"]
 
     return df_eps
 
 
 def price_per_earnings(df_pivot):
-    df_mark_cap = _dataframe_slice(df_pivot, "Market capitalisation_Other").reset_index(
-        drop=True
-    )
+    """
+    Price to Earnings (P/E) =
+    Market capitalisation_Other
+    / Profit for financial year_Continuous Operatings
+    """
+
+    df_mark_cap = _dataframe_slice(
+        df_pivot, "Market capitalisation_Other"
+        ).reset_index(drop=True)
     df_profit = _dataframe_slice(
         df_pivot, "Profit for financial year_Continuous Operatings"
-    ).reset_index(drop=True)
+        ).reset_index(drop=True)
     if not df_mark_cap.empty and not df_profit.empty:
         df_ppe = df_mark_cap.div(df_profit)
         df_ppe.index = ["Price to Earnings (P/E)"]
@@ -103,6 +168,10 @@ def price_per_earnings(df_pivot):
 
 
 def price_book_value(df_pivot, df_eps):
+    """
+    TODO Notes Here
+    """
+
     df_mark_cap = _dataframe_slice(df_pivot, "Market capitalisation_Other").reset_index(
         drop=True
     )
@@ -127,6 +196,10 @@ def price_book_value(df_pivot, df_eps):
 
 
 def annual_yield(df_pivot):
+    """
+    TODO Notes Here
+    """
+
     df_profit = _dataframe_slice(
         df_pivot, "Profit for financial year_Continuous Operatings"
     ).reset_index(drop=True)
@@ -141,6 +214,10 @@ def annual_yield(df_pivot):
 
 
 def fcf_growth_rate(df_pivot):
+    """
+    TODO Notes Here
+    """
+
     df_fcf = _dataframe_slice(
         df_pivot, "Free cash flow (FCF)_Free Cash Flow"
     ).reset_index(drop=True)
@@ -164,6 +241,10 @@ def fcf_growth_rate(df_pivot):
 
 
 def div_payment(df_pivot):
+    """
+    TODO Notes Here
+    """
+
     df_div_payment = np.where(
         (_dataframe_slice(df_pivot, "Dividend (adjusted) ps_Per Share Values") > 0),
         "yes",
@@ -176,6 +257,10 @@ def div_payment(df_pivot):
 
 
 def div_cover(df_pivot):
+    """
+    TODO Notes Here
+    """
+
     row_title = "Post-tax profit_Continuous Operatings"
     df_profit = _dataframe_slice(df_pivot, row_title)
 
@@ -197,6 +282,10 @@ def div_cover(df_pivot):
 
 
 def dcf_intrinsic_value(df_pivot, df_dcf_variables):
+    """
+    TODO Notes Here
+    """
+
     intrinsic_value_list = []
     base_year_fcf = _dataframe_slice(df_pivot, "Free cash flow (FCF)_Free Cash Flow")
     shares_outstanding = _dataframe_slice(df_pivot, "Average shares (diluted)_Other")
@@ -277,6 +366,10 @@ def dcf_intrinsic_value(df_pivot, df_dcf_variables):
 
 
 def share_price(df_fcf, df_share_price):
+    """
+    TODO Notes Here
+    """
+
     price_list = []
     date_list = []
     for date in list(df_fcf.columns):
@@ -309,6 +402,10 @@ def share_price(df_fcf, df_share_price):
 
 
 def revenue_growth(df_pivot):
+    """
+    TODO Notes Here
+    """
+
     revenue_growth_list = []
     year_count = 0
     row_title = "Turnover_Continuous Operatings"
@@ -340,6 +437,10 @@ def revenue_growth(df_pivot):
 
 
 def eps_growth(df_pivot):
+    """
+    TODO Notes Here
+    """
+
     eps_growth_list = []
     year_count = 0
     row_title = "EPS norm. continuous_Per Share Values"
@@ -368,6 +469,10 @@ def eps_growth(df_pivot):
 
 
 def dividend_growth(df_pivot):
+    """
+    TODO Notes Here
+    """
+
     div_growth_list = []
     year_count = 0
     row_title = "Dividend (adjusted) ps_Per Share Values"
@@ -400,6 +505,10 @@ def dividend_growth(df_pivot):
 
 
 def growth_quality(df_pivot, df_revenue_growth, df_eps_growth, df_div_growth):
+    """
+    TODO Notes Here
+    """
+
     growth_qual_list = []
     year_count = 0
     df_growth_all = pd.concat([df_revenue_growth, df_eps_growth, df_div_growth])
@@ -426,6 +535,10 @@ def growth_quality(df_pivot, df_revenue_growth, df_eps_growth, df_div_growth):
 
 
 def revenue_growth_10_year(df_pivot):
+    """
+    TODO Notes Here
+    """
+
     turnover_list = []
     rev_growth_list = []
     year_count = 0
@@ -464,6 +577,10 @@ def revenue_growth_10_year(df_pivot):
 
 
 def earnings_growth_10_year(df_pivot):
+    """
+    TODO Notes Here
+    """
+
     eps_list = []
     eps_growth_list = []
     year_count = 0
@@ -501,6 +618,10 @@ def earnings_growth_10_year(df_pivot):
 
 
 def dividend_growth_10_year(df_pivot):
+    """
+    TODO Notes Here
+    """
+
     div_list = []
     div_growth_list = []
     year_count = 0
@@ -542,6 +663,10 @@ def dividend_growth_10_year(df_pivot):
 def overall_growth_and_rate(
     df_pivot, df_rev_growth_10, df_eps_growth_10, df_div_growth_10
 ):
+    """
+    TODO Notes Here
+    """
+
     df_growth_rates = pd.concat([df_rev_growth_10, df_eps_growth_10, df_div_growth_10])
 
     df_overall_growth = pd.DataFrame(df_growth_rates.mean(axis=0)).transpose()
@@ -561,6 +686,10 @@ def overall_growth_and_rate(
 
 
 def capital_employed(df_pivot):
+    """
+    TODO Notes Here
+    """
+
     ce_list = []
     year_count = 0
 
@@ -596,6 +725,10 @@ def capital_employed(df_pivot):
 
 
 def roce(df_pivot, df_ce):
+    """
+    TODO Notes Here
+    """
+
     row_title = "Profit for financial year_Continuous Operatings"
     if not _dataframe_slice(df_pivot, row_title).empty:
         df_profit = _dataframe_slice(df_pivot, row_title).reset_index(drop=True)
@@ -612,6 +745,10 @@ def roce(df_pivot, df_ce):
 
 
 def median_roce_10_year(df_pivot, df_roce):
+    """
+    TODO Notes Here
+    """
+
     roce_list = []
     roce_growth_list = []
     year_count = 0
@@ -643,6 +780,10 @@ def median_roce_10_year(df_pivot, df_roce):
 
 
 def debt_ratio(df_pivot):
+    """
+    TODO Notes Here
+    """
+
     profit_list = []
     debt_ratio_list = []
     year_count = 0
@@ -700,6 +841,10 @@ def debt_ratio(df_pivot):
 
 
 def pe_10_year(df_pivot, df_calculated):
+    """
+    TODO Notes Here
+    """
+
     eps_list = []
     ep10_list = []
     year_count = 0
@@ -745,6 +890,10 @@ def pe_10_year(df_pivot, df_calculated):
 
 
 def dp_10_year(df_pivot, df_calculated):
+    """
+    TODO Notes Here
+    """
+
     div_list = []
     dp10_list = []
     year_count = 0

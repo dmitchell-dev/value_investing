@@ -10,6 +10,8 @@ from calculated_stats.models import CalculatedStats
 
 from calculated_stats.managers import (
     total_equity,
+    shares_outstanding,
+    market_cap,
     debt_to_eq_ratio,
     current_ratio,
     return_on_equity,
@@ -84,39 +86,27 @@ class Command(BaseCommand):
             # Calculations
             calc_list = []
 
-            # Total Equity =
-            # Balance Sheet Total Assets
-            # - Total Liabilities
             df_t_e = total_equity(df_pivot)
             calc_list.append(df_t_e)
 
-            # Debt to Equity (D/E) =
-            # Balance Sheet Total Liabilities
-            # / Total Equity
+            df_s_o = shares_outstanding(df_pivot)
+            calc_list.append(df_s_o)
+
+            df_m_c = market_cap(df_pivot, df_s_o)
+            calc_list.append(df_m_c)
+
             df_d_e = debt_to_eq_ratio(df_pivot, df_t_e)
             calc_list.append(df_d_e)
 
-            # Current Ratio =
-            # Total Current Assets
-            # / Total Current Liabilities
             df_cr = current_ratio(df_pivot)
             calc_list.append(df_cr)
 
-            # Return on Equity (ROE) =
-            # Net Income
-            # / Total Equity
             df_roe = return_on_equity(df_pivot, df_t_e)
             calc_list.append(df_roe)
 
-            # Equity (Book Value) Per Share =
-            # Total Equity
-            # / Shares Outstanding
-            df_eps = equity_per_share(df_pivot, df_t_e)
+            df_eps = equity_per_share(df_t_e, df_s_o)
             calc_list.append(df_eps)
 
-            # Price to Earnings (P/E) =
-            # Market capitalisation_Other
-            # / Profit for financial year_Continuous Operatings
             df_ppe = price_per_earnings(df_pivot)
             calc_list.append(df_ppe)
 
