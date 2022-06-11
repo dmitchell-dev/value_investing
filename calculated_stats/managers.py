@@ -2,8 +2,6 @@ from django.db.models import QuerySet
 import pandas as pd
 import numpy as np
 from datetime import timedelta
-import math
-import statistics
 
 
 class CalculatedStatsQueryset(QuerySet):
@@ -22,6 +20,12 @@ class CalculatedStatsQueryset(QuerySet):
             "company__tidm",
             "parameter__param_name",
         )
+
+    def get_latest_date(self, tidm):
+        if self.filter(company__tidm=tidm):
+            return self.filter(company__tidm=tidm).latest("time_stamp")
+        else:
+            return []
 
 
 class DcfVariablesQueryset(QuerySet):

@@ -48,6 +48,7 @@ class Command(BaseCommand):
         company_list = df_companies.tidm.to_list()
         num_companies = len(company_list)
         company_num = 0
+        total_rows_added = 0
 
         for company_tidm in company_list:
             company_num = company_num + 1
@@ -154,6 +155,7 @@ class Command(BaseCommand):
             df_calculated = df_calculated.round(decimals=2)
 
             # Generate parameter_id and replace index
+
             df_unpivot = self._replace_with_id(
                 df_calculated, company_tidm, df_params, df_companies
             )
@@ -164,6 +166,17 @@ class Command(BaseCommand):
             # Replace infinity values
             df_unpivot["value"] = df_unpivot["value"].astype(str)
             df_unpivot["value"] = df_unpivot["value"].replace(["inf", "-inf"], None)
+
+            # Filter out prices already in DB
+            latest_data = CalculatedStats.objects.get_latest_date(
+                company_tidm
+            )
+            if latest_data:
+                latest_date = latest_data.time_stamp
+                mask = df_unpivot["time_stamp"] > pd.Timestamp(latest_date)
+                df_unpivot = df_unpivot.loc[mask]
+
+            num_rows = df_unpivot.shape[0]
 
             # Save to database
             reports = [
@@ -176,6 +189,12 @@ class Command(BaseCommand):
                 for i, row in df_unpivot.iterrows()
             ]
             CalculatedStats.objects.bulk_create(reports)
+
+            print(f"Rows saved to database: {num_rows}")
+
+            total_rows_added = total_rows_added + num_rows
+
+        print(f"{total_rows_added} saved to database")
 
     def _replace_with_id(self, df_calculated, company_tidm, df_params, df_companies):
         param_id_list = []
