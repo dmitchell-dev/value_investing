@@ -16,7 +16,9 @@ class Command(BaseCommand):
         pd.set_option("display.max_columns", None)
 
         # Companies
-        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
+        df_companies = pd.DataFrame(
+            list(Companies.objects.get_companies_joined())
+            )
 
         df_companies.index = df_companies["tidm"]
 
@@ -25,19 +27,23 @@ class Command(BaseCommand):
             """SELECT reporting_data.id, tidm, company_name, param_name, time_stamp, value
                 FROM reporting_data
                 LEFT JOIN companies ON companies.id = reporting_data.company_id
-                LEFT JOIN parameters ON parameters.id = reporting_data.parameter_id
+                LEFT JOIN params ON params.id = reporting_data.parameter_id
                 RIGHT JOIN (
                     SELECT MAX(time_stamp) AS time_stamp, company_id, parameter_id
                     FROM reporting_data
-                    GROUP BY company_id, parameter_id ORDER BY NULL)
+                    GROUP BY company_id, parameter_id)
                     subTable USING (parameter_id, company_id, time_stamp);"""
         )
 
         qs_list = []
         for row in reporting_qs:
-            qs_list.append(
-                [row.tidm, row.company_name, row.time_stamp, row.param_name, row.value]
-            )
+            qs_list.append([
+                row.tidm,
+                row.company_name,
+                row.time_stamp,
+                row.param_name,
+                row.value
+                ])
 
         df_reporting = pd.DataFrame(qs_list)
         df_reporting = df_reporting.rename(
@@ -65,11 +71,11 @@ class Command(BaseCommand):
             """SELECT calculated_data.id, tidm, company_name, param_name, time_stamp, value
                 FROM calculated_data
                 LEFT JOIN companies ON companies.id = calculated_data.company_id
-                LEFT JOIN parameters ON parameters.id = calculated_data.parameter_id
+                LEFT JOIN params ON params.id = calculated_data.parameter_id
                 RIGHT JOIN (
                     SELECT MAX(time_stamp) AS time_stamp, company_id, parameter_id
                     FROM calculated_data
-                    GROUP BY company_id, parameter_id ORDER BY NULL)
+                    GROUP BY company_id, parameter_id)
                     subTable USING (parameter_id, company_id, time_stamp);"""
         )
 
@@ -116,8 +122,8 @@ class Command(BaseCommand):
 
         df_merged = df_merged.drop("id", axis=1)
 
-        for col in df_merged.columns:
-            print(col)
+        # for col in df_merged.columns:
+            # print(col)
 
         # Save to database
         reports = [
@@ -125,17 +131,15 @@ class Command(BaseCommand):
                 tidm=row["tidm"],
                 company_name=row["company_name"],
                 company_summary=row["company_summary"],
-                share_listing=row["market__share_listing"],
-                company_type=row["comp_type__"],
-                industry_name=row["industry__industry_name"],
-                turnover=float(row["Turnover"]),
-                earnings=float(row["EPS rep. continuous"]),
-                dividends=float(row["Dividend (announced) ps"]),
-                total_borrowing=float(row["Total borrowing"]),
-                shareholder_equity=float(row["Shareholders funds (NAV)"]),
-                capital_expenditure=float(row["Capital expenditure"]),
-                net_profit=float(row["Profit for financial year"]),
-                total_equity=float(row["Total equity"]),
+                share_listing=row["exchange__value"],
+                company_type=row["comp_type__value"],
+                industry_name=row["industry__value"],
+                revenue=float(row["Total Revenue"]),
+                earnings=float(row["Reported EPS"]),
+                dividends=float(row["Dividends Per Share"]),
+                capital_expenditure=float(row["Capital Expenditures"]),
+                net_income=float(row["Net Income"]),
+                total_equity=float(row["Total Equity"]),
                 share_price=float(row["Share Price"]),
                 debt_to_equity=float(row["Debt to Equity (D/E)"]),
                 current_ratio=float(row["Current Ratio"]),
@@ -143,14 +147,13 @@ class Command(BaseCommand):
                 equity_per_share=float(row["Equity (Book Value) Per Share"]),
                 price_to_earnings=float(row["Price to Earnings (P/E)"]),
                 price_to_equity=float(row["Price to Book Value (Equity)"]),
-                annual_return=float(row["Annual Yield (Return)"]),
-                fcf_ps=float(row["FCF ps"]),
-                dividend_payment=row["Dividend Payment"],
+                earnings_yield_return=float(row["Earnings Yield (Return)"]),
+                fcf=float(row["Free Cash Flow"]),
+                dividend_payment=row["Dividend Payout"],
                 dividend_cover=float(row["Dividend Cover"]),
                 capital_employed=float(row["Capital Employed"]),
-                roce=float(row["ROCE"]),
-                debt_ratio=float(row["Debt Ratio"]),
-                dcf_intrinsic_value=float(row["DCF Intrinsic Value"]),
+                roce=float(row["Return on Capital Employed (ROCE)"]),
+                dcf_intrinsic_value=float(row["Intrinsic Value"]),
                 estimated_growth_rate=float(row["Estimated Growth Rate"]),
                 estimated_discount_rate=float(row["Estimated Discount Rate"]),
                 estimated_long_term_growth_rate=float(
@@ -159,6 +162,6 @@ class Command(BaseCommand):
             )
             for i, row in df_merged.iterrows()
         ]
-        DashboardCompany.objects.bulk_create(reports)
+        DashboardCompany.objects.bulk_update(reports)
 
         print("Dashboard Complete")

@@ -24,7 +24,7 @@ class DashboardListView(ListView):
     context_object_name = "company_list"
     template_name = "dashboard/dashboard_list.html"
 
-    ordering = ["defensive_rank"]
+    ordering = ["tidm"]
 
 
 class DashboardDetailView(DetailView):
