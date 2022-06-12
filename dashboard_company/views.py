@@ -24,7 +24,7 @@ class DashboardListView(ListView):
     context_object_name = "company_list"
     template_name = "dashboard/dashboard_list.html"
 
-    ordering = ["tidm"]
+    ordering = ["margin_safety"]
 
 
 class DashboardDetailView(DetailView):

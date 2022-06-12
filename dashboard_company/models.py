@@ -29,6 +29,7 @@ class DashboardCompany(models.Model):
     capital_employed = models.FloatField()
     roce = models.FloatField()
     dcf_intrinsic_value = models.FloatField()
+    margin_safety = models.FloatField()
     estimated_growth_rate = models.FloatField()
     estimated_discount_rate = models.FloatField()
     estimated_long_term_growth_rate = models.FloatField()

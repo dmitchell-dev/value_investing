@@ -8,12 +8,11 @@
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Industry</th>
-            <th scope="col">PE10</th>
-            <th scope="col">DP10</th>
-            <th scope="col">Growth Qual</th>
-            <th scope="col">Growth Rate</th>
-            <th scope="col">ROCE</th>
-            <th scope="col">Defensive</th>
+            <th scope="col">Revenue</th>
+            <th scope="col">FCF</th>
+            <th scope="col">Share Price</th>
+            <th scope="col">Intrinsic Value</th>
+            <th scope="col">Margin of Safety</th>
         </tr>
     </thead>
     <tbody>
@@ -21,12 +20,11 @@
             <tr>
                 <td><a href="{{ company.get_absolute_url }}">{{company.company_name}}</a></td>
                 <td>{{company.industry_name}}</td>
-                <td>{{company.pe_10_rank}}</td>
-                <td>{{company.dp_10_rank}}</td>
-                <td>{{company.growth_quality_rank}}</td>
-                <td>{{company.growth_rate_10_rank}}</td>
-                <td>{{company.median_roce_10_rank}}</td>
-                <td>{{ company.defensive_rank }}</td>
+                <td>{{company.revenue}}</td>
+                <td>{{company.fcf}}</td>
+                <td>{{company.share_price}}</td>
+                <td>{{company.dcf_intrinsic_value}}</td>
+                <td>{{company.margin_safety}}</td>
             </tr>
         {% endfor %}
     </tbody>

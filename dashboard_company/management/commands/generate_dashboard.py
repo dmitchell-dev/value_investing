@@ -122,8 +122,8 @@ class Command(BaseCommand):
 
         df_merged = df_merged.drop("id", axis=1)
 
-        # for col in df_merged.columns:
-            # print(col)
+        for col in df_merged.columns:
+            print(col)
 
         # Save to database
         reports = [
@@ -154,6 +154,7 @@ class Command(BaseCommand):
                 capital_employed=float(row["Capital Employed"]),
                 roce=float(row["Return on Capital Employed (ROCE)"]),
                 dcf_intrinsic_value=float(row["Intrinsic Value"]),
+                margin_safety=float(row["Margin of Safety"]),
                 estimated_growth_rate=float(row["Estimated Growth Rate"]),
                 estimated_discount_rate=float(row["Estimated Discount Rate"]),
                 estimated_long_term_growth_rate=float(
@@ -162,6 +163,6 @@ class Command(BaseCommand):
             )
             for i, row in df_merged.iterrows()
         ]
-        DashboardCompany.objects.bulk_update(reports)
+        DashboardCompany.objects.bulk_create(reports)
 
         print("Dashboard Complete")
