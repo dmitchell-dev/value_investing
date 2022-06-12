@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 from ancillary_info.models import Companies
 from calculated_stats.models import CalculatedStats
-from ranking_stats.models import RankingStats
 from financial_reports.models import FinancialReports
 from dashboard_company.models import DashboardCompany
 import pandas as pd
@@ -97,53 +96,19 @@ class Command(BaseCommand):
             values="value",
         )
 
-        # Ranking Stats
-        rank_stats_qs = RankingStats.objects.raw(
-            """SELECT ranking_data.id, tidm, company_name, param_name, time_stamp, value
-                FROM ranking_data
-                LEFT JOIN companies ON companies.id = ranking_data.company_id
-                LEFT JOIN parameters ON parameters.id = ranking_data.parameter_id
-                RIGHT JOIN (
-                    SELECT MAX(time_stamp) AS time_stamp, company_id, parameter_id
-                    FROM ranking_data
-                    GROUP BY company_id, parameter_id ORDER BY NULL)
-                    subTable USING (parameter_id, company_id, time_stamp);"""
-        )
-
-        qs_list = []
-        for row in rank_stats_qs:
-            qs_list.append(
-                [row.tidm, row.company_name, row.time_stamp, row.param_name, row.value]
-            )
-
-        df_rank_latest = pd.DataFrame(qs_list)
-        df_rank_latest = df_rank_latest.rename(
-            columns={
-                0: "tidm",
-                1: "company_name",
-                2: "time_stamp",
-                3: "param_name",
-                4: "value",
-            }
-        )
-
-        df_rank_latest_pivot = df_rank_latest.pivot(
-            columns="param_name",
-            index="tidm",
-            values="value",
-        )
-
         # Join dataframes
         df_merged = pd.merge(
-            df_companies, df_calc_latest_pivot, left_index=True, right_index=True
+            df_companies,
+            df_calc_latest_pivot,
+            left_index=True,
+            right_index=True
         )
 
         df_merged = pd.merge(
-            df_merged, df_reporting_pivot, left_index=True, right_index=True
-        )
-
-        df_merged = pd.merge(
-            df_merged, df_rank_latest_pivot, left_index=True, right_index=True
+            df_merged,
+            df_reporting_pivot,
+            left_index=True,
+            right_index=True
         )
 
         # Replace NaN for mySQL compatability

@@ -29,5 +29,4 @@ The aim of this site is to not only help with value investing, it will also impr
     * --symbol AAPL ABBV (Example)
 * python manage.py detault_dfc_variables
 * python manage.py calculate_stats
-* python manage.py rank_stats
 * python manage.py generate_dashboard
