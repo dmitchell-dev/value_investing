@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     "financial_reports.apps.FinancialReportsConfig",
     "calculated_stats.apps.CalculatedStatsConfig",
     "share_prices.apps.SharePricesConfig",
-    "ranking_stats.apps.RankingStatsConfig",
     "dashboard_company.apps.DashboardCompanyConfig",
     "economic.apps.EconomicConfig",
     "api_import.apps.ApiImportConfig",
