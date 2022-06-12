@@ -7,6 +7,7 @@
     <thead>
         <tr>
             <th scope="col">Name</th>
+            <th scope="col">Exchange</th>
             <th scope="col">Industry</th>
             <th scope="col">Revenue</th>
             <th scope="col">FCF</th>
@@ -19,11 +20,12 @@
         {% for company in company_list %}
             <tr>
                 <td><a href="{{ company.get_absolute_url }}">{{company.company_name}}</a></td>
+                <td>{{company.share_listing}}</td>
                 <td>{{company.industry_name}}</td>
-                <td>{{company.revenue}}</td>
-                <td>{{company.fcf}}</td>
-                <td>{{company.share_price}}</td>
-                <td>{{company.dcf_intrinsic_value}}</td>
+                <td>£{{company.revenue|floatformat:2}}</td>
+                <td>£{{company.fcf|floatformat:2}}</td>
+                <td>£{{company.share_price|floatformat:2}}</td>
+                <td>£{{company.dcf_intrinsic_value|floatformat:2}}</td>
                 <td>{{company.margin_safety}}</td>
             </tr>
         {% endfor %}
