@@ -268,7 +268,7 @@ class EpsNormDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, FinancialReports, "EPS norm. continuous")
+        data = _param_chart(company_id, FinancialReports, "Reported EPS")
 
         return JsonResponse(data)
 
@@ -278,7 +278,8 @@ class DividendDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, FinancialReports, "Dividend (adjusted) ps")
+        data = _param_chart(company_id, CalculatedStats, "Dividends Per Share")
+        print(data)
 
         return JsonResponse(data)
 
@@ -310,7 +311,7 @@ class RoceDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, CalculatedStats, "ROCE")
+        data = _param_chart(company_id, CalculatedStats, "Return on Capital Employed (ROCE)")
 
         return JsonResponse(data)
 
@@ -360,7 +361,7 @@ class IntrinsicValueDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, CalculatedStats, "DCF Intrinsic Value")
+        data = _param_chart(company_id, CalculatedStats, "Intrinsic Value")
 
         return JsonResponse(data)
 
@@ -370,7 +371,7 @@ class AnnualYieldDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, CalculatedStats, "Annual Yield (Return)")
+        data = _param_chart(company_id, CalculatedStats, "Earnings Yield (Return)")
 
         return JsonResponse(data)
 
@@ -380,7 +381,7 @@ class FcfPsDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, FinancialReports, "FCF ps")
+        data = _param_chart(company_id, FinancialReports, "Free Cash Flow")
 
         return JsonResponse(data)
 

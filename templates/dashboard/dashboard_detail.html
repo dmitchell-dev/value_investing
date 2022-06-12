@@ -235,14 +235,6 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>
                         <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
-                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#fdfpsModal"></i>
-                            FCF Per Share (Owners Earnings)
-                        </span>
-                        <span class="badge badge-primary badge-pill">{{ company.fcf_ps|floatformat:2 }}p</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>
-                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
                         <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#bookValueModal"></i>
                             Equity Per Share (Book Value)
                         </span>
@@ -263,6 +255,20 @@
                         </span>
                         <span class="badge {% if company.dividend_payment == 'yes' %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.dividend_payment }}</span>
                     </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Capital Employed
+                        </span>
+                        <span class="badge badge-primary badge-pill">£{{company.capital_employed|floatformat:2}}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                            Return on Capital Employed (ROCE)
+                        </span>
+                        <span class="badge badge-primary badge-pill">{{company.roce|floatformat}}</span>
+                    </li>
+
+
                 </ul>
             </div>
         </div>
@@ -275,9 +281,9 @@
                         <span>
                         <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
                         <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#annualYieldModal"></i>
-                            Annual Yield (Return)
+                            Earnings Yield (Return)
                         </span>
-                        <span class="badge badge-primary badge-pill">{{company.annual_return|floatformat:1}}%</span>
+                        <span class="badge badge-primary badge-pill">{{company.earnings_yield_return|floatformat:1}}%</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>
@@ -316,94 +322,6 @@
         </div>
 
     <hr>
-
-    <div class="row">
-        <div class="col">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center active">
-                    <span><i class="far fa-question-circle fa-lg text-white mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Growth Quality (>50%)</span>
-                    <span class="badge {% if company.growth_quality > 50 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.growth_quality|floatformat}}%</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Revenue Growth</span>
-                    <span class="badge badge-primary badge-pill">{{company.revenue_growth}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>EPS Growth</span>
-                    <span class="badge badge-primary badge-pill">{{company.eps_growth}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Dividend Growth</span>
-                    <span class="badge badge-primary badge-pill">{{company.dividend_growth}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center text-white">
-                        N/A
-                </li>
-            </ul>
-        </div>
-        <div class="col">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center active">
-                    <span><i class="far fa-question-circle fa-lg text-white mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Growth Rate (>2%)</span>
-                    <span class="badge {% if company.growth_rate_10 > 2 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.growth_rate_10|floatformat}}%</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Overall Growth (10 year)</span>
-                    <span class="badge badge-primary badge-pill">{{company.overall_growth_10|floatformat}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Revenue Growth (10 year)</span>
-                    <span class="badge badge-primary badge-pill">{{company.revenue_rowth_10|floatformat}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Earnings Growth (10 year)</span>
-                    <span class="badge badge-primary badge-pill">{{company.earnings_growth_10|floatformat}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Dividend Growth (10 year)</span>
-                    <span class="badge badge-primary badge-pill">{{company.dividend_growth_10|floatformat}}</span>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <hr>
-
-    <div class="row mb-5">
-        <div class="col">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Capital Employed</span>
-                    <span class="badge badge-primary badge-pill">£{{company.capital_employed|floatformat:2}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>ROCE</span>
-                    <span class="badge badge-primary badge-pill">{{company.roce|floatformat}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Median ROCE (>7%)</span>
-                    <span class="badge {% if company.median_roce_10 > 7 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.median_roce_10|floatformat}}</span>
-                </li>
-            </ul>
-        </div>
-        <div class="col">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>Debt Ratio (<4)</span>
-                    <span class="badge {% if company.debt_ratio < 4 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.debt_ratio|floatformat}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>PE10 (<30)</span>
-                    <span class="badge {% if company.pe_10 < 30 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.pe_10|floatformat}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>DP10 (<60)</span>
-                    <span class="badge {% if company.dp_10 < 60 %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{company.dp_10|floatformat}}</span>
-                </li>
-            </ul>
-        </div>
-    </div>
-
 
     <form action="/your-name/" method="post">
         {% csrf_token %}

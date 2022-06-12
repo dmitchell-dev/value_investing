@@ -10,11 +10,6 @@
     </div>
     <div class="row">
         <div class="col">
-            <div id="epsNormDiv" class="responsive-plot"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
             <div id="dividendDiv" class="responsive-plot"></div>
         </div>
     </div>
@@ -49,8 +44,8 @@
     // API Data
     {% block jquery %}
 
-        var index = ["share-price/", "eps-norm/", "dividend/", "roe/", "eps/", "roce/"];
-        var div_index = ["sharePriceDiv", "epsNormDiv", "dividendDiv", "roeDiv", "epsDiv", "roceDiv"];
+        var index = ["share-price/", "dividend/", "roe/", "eps/", "roce/"];
+        var div_index = ["sharePriceDiv", "dividendDiv", "roeDiv", "epsDiv", "roceDiv"];
         var index_size = index.length;
 
         var f = (function(){
