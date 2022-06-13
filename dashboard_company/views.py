@@ -371,7 +371,7 @@ class AnnualYieldDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, CalculatedStats, "Earnings Yield (Return)")
+        data = _param_chart(company_id, CalculatedStats, "Earnings Yield")
 
         return JsonResponse(data)
 

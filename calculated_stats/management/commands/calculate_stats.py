@@ -24,6 +24,7 @@ from calculated_stats.managers import (
     price_per_earnings,
     price_book_value,
     earnings_yield,
+    annual_yield,
     div_cover,
     dcf_intrinsic_value,
     roce,
@@ -127,8 +128,11 @@ class Command(BaseCommand):
             df_pbv = price_book_value(df_m_c, df_s_o, df_eps)
             calc_list.append(df_pbv)
 
-            df_a_return = earnings_yield(df_pivot, df_e_v)
-            calc_list.append(df_a_return)
+            df_e_yield = earnings_yield(df_pivot, df_e_v)
+            calc_list.append(df_e_yield)
+
+            df_a_yield = annual_yield(df_pivot, df_m_c)
+            calc_list.append(df_a_yield)
 
             df_div_cover = div_cover(df_pivot)
             calc_list.append(df_div_cover)

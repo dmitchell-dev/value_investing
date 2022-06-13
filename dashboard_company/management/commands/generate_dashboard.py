@@ -122,8 +122,8 @@ class Command(BaseCommand):
 
         df_merged = df_merged.drop("id", axis=1)
 
-        for col in df_merged.columns:
-            print(col)
+        # for col in df_merged.columns:
+        #     print(col)
 
         # Save to database
         reports = [
@@ -147,7 +147,8 @@ class Command(BaseCommand):
                 equity_per_share=float(row["Equity (Book Value) Per Share"]),
                 price_to_earnings=float(row["Price to Earnings (P/E)"]),
                 price_to_equity=float(row["Price to Book Value (Equity)"]),
-                earnings_yield_return=float(row["Earnings Yield (Return)"]),
+                earnings_yield=float(row["Earnings Yield"]),
+                annual_yield_return=float(row["Annual Yield (Return)"]),
                 fcf=float(row["Free Cash Flow"]),
                 dividend_payment=row["Dividend Payout"],
                 dividend_cover=float(row["Dividend Cover"]),
@@ -157,9 +158,7 @@ class Command(BaseCommand):
                 margin_safety=float(row["Margin of Safety"]),
                 estimated_growth_rate=float(row["Estimated Growth Rate"]),
                 estimated_discount_rate=float(row["Estimated Discount Rate"]),
-                estimated_long_term_growth_rate=float(
-                    row["Estimated Long Term Growth Rate"]
-                ),
+                estimated_long_term_growth_rate=float(row["Estimated Long Term Growth Rate"]),
             )
             for i, row in df_merged.iterrows()
         ]

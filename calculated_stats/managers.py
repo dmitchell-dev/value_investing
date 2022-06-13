@@ -321,7 +321,7 @@ def price_book_value(df_m_c, df_s_o, df_eps):
 
 def earnings_yield(df_pivot, df_e_v):
     """
-    Earnings Yield (Return) =
+    Earnings Yield =
     Net Income
     / Enterprise Value
     """
@@ -331,10 +331,28 @@ def earnings_yield(df_pivot, df_e_v):
     ).reset_index(drop=True)
 
     if not df_n_i.empty and not df_e_v.empty:
-        df_a_return = df_n_i.div(df_e_v.reset_index(drop=True)) * 100
-        df_a_return.index = ["Earnings Yield (Return)"]
+        df_e_yield = df_n_i.div(df_e_v.reset_index(drop=True)) * 100
+        df_e_yield.index = ["Earnings Yield"]
 
-    return df_a_return
+    return df_e_yield
+
+
+def annual_yield(df_pivot, df_m_c):
+    """
+    Annual Yield (Return) =
+    Net Income
+    / Market Capitalisation
+    """
+
+    df_n_i = _dataframe_slice(
+        df_pivot, "Net Income"
+    ).reset_index(drop=True)
+
+    if not df_n_i.empty and not df_m_c.empty:
+        df_a_yield = df_n_i.div(df_m_c.reset_index(drop=True)) * 100
+        df_a_yield.index = ["Annual Yield (Return)"]
+
+    return df_a_yield
 
 
 def div_cover(df_pivot):
