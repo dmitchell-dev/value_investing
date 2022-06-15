@@ -68,10 +68,10 @@
         </div>
     </div>
 
-    <div class="modal fade" id="epsNormModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal fade" id="epsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div id="epsNormDiv" class="responsive-plot"></div>
+                <div id="epsDiv" class="responsive-plot"></div>
             </div>
         </div>
     </div>
@@ -92,10 +92,10 @@
         </div>
     </div>
 
-    <div class="modal fade" id="epsNormModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal fade" id="roceModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div id="epsNormDiv" class="responsive-plot"></div>
+                <div id="roceDiv" class="responsive-plot"></div>
             </div>
         </div>
     </div>
@@ -156,18 +156,26 @@
         </div>
     </div>
 
-    <div class="modal fade" id="fdfpsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div id="fdfpsDiv" class="responsive-plot"></div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal fade" id="currentRatioModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div id="currentRatioDiv" class="responsive-plot"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="capEmpModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div id="capEmpDiv" class="responsive-plot"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="earningsYieldModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div id="earningsYieldDiv" class="responsive-plot"></div>
             </div>
         </div>
     </div>
@@ -227,7 +235,7 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>
                         <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
-                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#epsNormModal"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#epsModal"></i>
                             Earnings Per Share
                         </span>
                         <span class="badge badge-primary badge-pill">{{ company.earnings|floatformat:2 }}p</span>
@@ -251,18 +259,15 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>
                         <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
-                            Dividend Payment
-                        </span>
-                        <span class="badge {% if company.dividend_payment == 'yes' %}badge-success{% else %}badge-danger{% endif %} badge-pill">{{ company.dividend_payment }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#capEmpModal"></i>
                             Capital Employed
                         </span>
                         <span class="badge badge-primary badge-pill">£{{company.capital_employed|floatformat:2}}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="Fill In"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#roceModal"></i>
                             Return on Capital Employed (ROCE)
                         </span>
                         <span class="badge badge-primary badge-pill">{{company.roce|floatformat}}</span>
@@ -349,8 +354,8 @@
         $('[data-toggle="tooltip"]').tooltip()
     });
 
-    var index = ["share-price/", "eps-norm/", "dividend/", "roe/", "book-value/", "roce/", "debt-to-equity/", "dividend-cover/", "price-to-earnings/", "price-to-bookvalue/", "intrinsic-value/","annual-yield/", "fcf-ps/", "current-ratio/"];
-    var div_index = ["sharePriceDiv", "epsNormDiv", "dividendDiv", "roeDiv", "bookValueDiv", "roceDiv", "debtToEquityDiv", "dividendCoverDiv", "priceToEaringsDiv", "priceToBookDiv", "intrinsicValueDiv", "annualYieldDiv", "fdfpsDiv", "currentRatioDiv"];
+    var index = ["share-price/", "eps/", "dividend/", "roe/", "book-value/", "roce/", "debt-to-equity/", "dividend-cover/", "price-to-earnings/", "price-to-bookvalue/", "intrinsic-value/","annual-yield/", "current-ratio/", "capital-employed/", "earnings-yield/"];
+    var div_index = ["sharePriceDiv", "epsDiv", "dividendDiv", "roeDiv", "bookValueDiv", "roceDiv", "debtToEquityDiv", "dividendCoverDiv", "priceToEaringsDiv", "priceToBookDiv", "intrinsicValueDiv", "annualYieldDiv", "currentRatioDiv", "capEmpDiv", "earningsYieldDiv"];
     var index_size = index.length;
 
     var f = (function(){

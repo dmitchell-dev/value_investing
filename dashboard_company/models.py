@@ -25,7 +25,6 @@ class DashboardCompany(models.Model):
     earnings_yield = models.FloatField()
     annual_yield_return = models.FloatField()
     fcf = models.FloatField()
-    dividend_payment = models.CharField(max_length=10, null=True)
     dividend_cover = models.FloatField()
     capital_employed = models.FloatField()
     roce = models.FloatField()

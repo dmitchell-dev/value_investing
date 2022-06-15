@@ -150,7 +150,6 @@ class Command(BaseCommand):
                 earnings_yield=float(row["Earnings Yield"]),
                 annual_yield_return=float(row["Annual Yield (Return)"]),
                 fcf=float(row["Free Cash Flow"]),
-                dividend_payment=row["Dividend Payout"],
                 dividend_cover=float(row["Dividend Cover"]),
                 capital_employed=float(row["Capital Employed"]),
                 roce=float(row["Return on Capital Employed (ROCE)"]),

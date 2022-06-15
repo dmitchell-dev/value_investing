@@ -263,7 +263,7 @@ class ShareChartDataView(View):
         return JsonResponse(data)
 
 
-class EpsNormDataView(View):
+class EpsDataView(View):
     def get(self, request, pk):
 
         company_id = _pk_to_comp_id(pk)
@@ -371,17 +371,7 @@ class AnnualYieldDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, CalculatedStats, "Earnings Yield")
-
-        return JsonResponse(data)
-
-
-class FcfPsDataView(View):
-    def get(self, request, pk):
-
-        company_id = _pk_to_comp_id(pk)
-
-        data = _param_chart(company_id, FinancialReports, "Free Cash Flow")
+        data = _param_chart(company_id, CalculatedStats, "Annual Yield (Return)")
 
         return JsonResponse(data)
 
@@ -392,6 +382,26 @@ class CurrentRatioDataView(View):
         company_id = _pk_to_comp_id(pk)
 
         data = _param_chart(company_id, CalculatedStats, "Current Ratio")
+
+        return JsonResponse(data)
+
+
+class CapitalEmployedDataView(View):
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(company_id, CalculatedStats, "Capital Employed")
+
+        return JsonResponse(data)
+
+
+class EarningsYieldDataView(View):
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(company_id, CalculatedStats, "Earnings Yield")
 
         return JsonResponse(data)
 
