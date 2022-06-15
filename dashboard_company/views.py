@@ -183,12 +183,12 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
             company_id=company_id, parameter_id=param_id_1
         ).values()
     )
-    df_3 = pd.DataFrame(
+    df_2 = pd.DataFrame(
         DataSource.objects.filter(
             company_id=company_id, parameter_id=param_id_2
         ).values()
     )
-    df_2 = pd.DataFrame(
+    df_3 = pd.DataFrame(
         DataSource.objects.filter(
             company_id=company_id, parameter_id=param_id_3
         ).values()
@@ -414,9 +414,9 @@ class TotalMultiDataView(View):
         data = _multi_chart(
             company_id,
             FinancialReports,
-            chart_name_1="Post-tax profit",
-            chart_name_2="Total equity",
-            chart_name_3="Total liabilities",
+            chart_name_1="Net Income",
+            chart_name_2="Total Equity",
+            chart_name_3="Total Liabilities",
             chart_title="Total Charts",
         )
 
@@ -431,9 +431,9 @@ class CurrentMultiDataView(View):
         data = _multi_chart(
             company_id,
             FinancialReports,
-            chart_name_1="Post-tax profit",
-            chart_name_2="Current assets",
-            chart_name_3="Current liabilities",
+            chart_name_1="Net Income",
+            chart_name_2="Total Current Assets",
+            chart_name_3="Total Current Liabilities",
             chart_title="Current Charts",
         )
 
