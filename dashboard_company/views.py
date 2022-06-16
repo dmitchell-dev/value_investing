@@ -279,7 +279,6 @@ class DividendDataView(View):
         company_id = _pk_to_comp_id(pk)
 
         data = _param_chart(company_id, CalculatedStats, "Dividends Per Share")
-        print(data)
 
         return JsonResponse(data)
 
