@@ -415,7 +415,7 @@ class TotalMultiDataView(View):
             company_id,
             FinancialReports,
             chart_name_1="Net Income",
-            chart_name_2="Total Equity",
+            chart_name_2="Total Assets",
             chart_name_3="Total Liabilities",
             chart_title="Total Charts",
         )
