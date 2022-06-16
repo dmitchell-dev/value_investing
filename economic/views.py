@@ -23,7 +23,7 @@ class CapeChartDataView(View):
         param_name = "Test CAPE"
 
         df = pd.DataFrame(CalculatedStats.objects.filter(parameter_id=225).values())
-        print(df)
+        # print(df)
 
         # df = pd.DataFrame(SharePrices.objects.values())
         # print(df)
