@@ -63,25 +63,6 @@ def total_equity(df_pivot):
     return df_t_e
 
 
-def shares_outstanding(df_pivot):
-    """
-    Shares Outstanding =
-    Net Income
-    / Reported EPS
-    """
-
-    df_ni = _dataframe_slice(
-        df_pivot, "Net Income"
-        ).reset_index(drop=True)
-    df_r_eps = _dataframe_slice(
-        df_pivot, "Reported EPS"
-        ).reset_index(drop=True)
-    df_s_o = df_ni.div(df_r_eps)
-    df_s_o.index = ["Shares Outstanding"]
-
-    return df_s_o
-
-
 def share_price(df_pivot, df_share_price):
     """
     Nearest share price to fundamental dates
@@ -118,13 +99,15 @@ def share_price(df_pivot, df_share_price):
     return df_share_price_reduced
 
 
-def market_cap(df_s_o, df_share_price_reduced):
+def market_cap(df_pivot, df_share_price_reduced):
     """
     Market Capitalisation =
     Shares Outstanding
     * Share Price
     """
-
+    df_s_o = _dataframe_slice(
+        df_pivot, "Shares Outstanding"
+        ).reset_index(drop=True)
     df_m_c = df_s_o.reset_index(drop=True) * (
         df_share_price_reduced.reset_index(drop=True)
         )
@@ -195,13 +178,16 @@ def capital_employed(df_pivot):
     return df_c_e
 
 
-def dividends_per_share(df_pivot, df_s_o):
+def dividends_per_share(df_pivot):
     """
     Dividends Per Share =
     Dividend Payout /
     Shares Outstanding
     """
 
+    df_s_o = _dataframe_slice(
+        df_pivot, "Shares Outstanding"
+        ).reset_index(drop=True)
     df_dpo = _dataframe_slice(
         df_pivot, "Dividend Payout"
         ).reset_index(drop=True)
@@ -267,13 +253,16 @@ def return_on_equity(df_pivot, df_t_e):
     return df_roe
 
 
-def equity_per_share(df_t_e, df_s_o):
+def equity_per_share(df_pivot, df_t_e):
     """
     Equity (Book Value) Per Share =
     Total Equity
     / Shares Outstanding
     """
 
+    df_s_o = _dataframe_slice(
+        df_pivot, "Shares Outstanding"
+        ).reset_index(drop=True)
     if not df_t_e.empty and not df_s_o.empty:
         df_eps = df_t_e.reset_index(drop=True).div(
             df_s_o.reset_index(drop=True)
@@ -300,12 +289,16 @@ def price_per_earnings(df_pivot, df_m_c):
     return df_ppe
 
 
-def price_book_value(df_m_c, df_s_o, df_eps):
+def price_book_value(df_pivot, df_m_c, df_eps):
     """
     Price to Book Value (Equity) =
     (Market Capitalisation / Shares Outstanding)
     / Equity (Book Value) Per Share
     """
+
+    df_s_o = _dataframe_slice(
+        df_pivot, "Shares Outstanding"
+        ).reset_index(drop=True)
 
     df_m_c = df_m_c.reset_index(drop=True)
     df_s_o = df_s_o.reset_index(drop=True)
@@ -376,10 +369,14 @@ def div_cover(df_pivot):
     return df_div_cover
 
 
-def dcf_intrinsic_value(df_pivot, df_dcf_variables, df_s_o, df_fcf):
+def dcf_intrinsic_value(df_pivot, df_dcf_variables, df_fcf):
     """
     Function(Free Cash Flow, Shares Outstanding)
     """
+
+    df_s_o = _dataframe_slice(
+        df_pivot, "Shares Outstanding"
+        ).reset_index(drop=True)
 
     intrinsic_value_list = []
     base_year_fcf = df_fcf.reset_index(drop=True)

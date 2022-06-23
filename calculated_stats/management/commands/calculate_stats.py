@@ -10,7 +10,6 @@ from calculated_stats.models import CalculatedStats, DcfVariables
 
 from calculated_stats.managers import (
     total_equity,
-    shares_outstanding,
     share_price,
     market_cap,
     enterprise_value,
@@ -57,7 +56,10 @@ class Command(BaseCommand):
 
             # Get DCF Variables
             df_dcf_variables = pd.DataFrame(
-                list(DcfVariables.objects.get_table_joined_filtered(company_tidm))
+                list(DcfVariables.objects.get_table_joined_filtered(
+                    company_tidm
+                    )
+                )
             )
 
             # Get Share Price
@@ -89,13 +91,10 @@ class Command(BaseCommand):
             df_t_e = total_equity(df_pivot)
             calc_list.append(df_t_e)
 
-            df_s_o = shares_outstanding(df_pivot)
-            calc_list.append(df_s_o)
-
             df_share_price_reduced = share_price(df_pivot, df_share_price)
             calc_list.append(df_share_price_reduced)
 
-            df_m_c = market_cap(df_s_o, df_share_price_reduced)
+            df_m_c = market_cap(df_pivot, df_share_price_reduced)
             calc_list.append(df_m_c)
 
             df_e_v = enterprise_value(df_pivot, df_m_c)
@@ -107,7 +106,7 @@ class Command(BaseCommand):
             df_c_e = capital_employed(df_pivot)
             calc_list.append(df_c_e)
 
-            df_dps = dividends_per_share(df_pivot, df_s_o)
+            df_dps = dividends_per_share(df_pivot)
             calc_list.append(df_dps)
 
             df_d_e = debt_to_eq_ratio(df_pivot, df_t_e)
@@ -119,13 +118,13 @@ class Command(BaseCommand):
             df_roe = return_on_equity(df_pivot, df_t_e)
             calc_list.append(df_roe)
 
-            df_eps = equity_per_share(df_t_e, df_s_o)
+            df_eps = equity_per_share(df_pivot, df_t_e)
             calc_list.append(df_eps)
 
             df_ppe = price_per_earnings(df_pivot, df_m_c)
             calc_list.append(df_ppe)
 
-            df_pbv = price_book_value(df_m_c, df_s_o, df_eps)
+            df_pbv = price_book_value(df_pivot, df_m_c, df_eps)
             calc_list.append(df_pbv)
 
             df_e_yield = earnings_yield(df_pivot, df_e_v)
@@ -140,7 +139,6 @@ class Command(BaseCommand):
             df_dcf_intrinsic_value = dcf_intrinsic_value(
                 df_pivot,
                 df_dcf_variables,
-                df_s_o,
                 df_fcf
                 )
             calc_list.append(df_dcf_intrinsic_value)
@@ -150,7 +148,10 @@ class Command(BaseCommand):
             calc_list.append(df_roce)
 
             # Debt Ratio
-            df_margin_of_safety = margin_of_safety(df_share_price_reduced, df_dcf_intrinsic_value)
+            df_margin_of_safety = margin_of_safety(
+                df_share_price_reduced,
+                df_dcf_intrinsic_value
+                )
             calc_list.append(df_margin_of_safety)
 
             # Merge all dataframes
@@ -169,7 +170,10 @@ class Command(BaseCommand):
 
             # Replace infinity values
             df_unpivot["value"] = df_unpivot["value"].astype(str)
-            df_unpivot["value"] = df_unpivot["value"].replace(["inf", "-inf"], None)
+            df_unpivot["value"] = df_unpivot["value"].replace(
+                ["inf", "-inf"],
+                None
+                )
 
             # Filter out prices already in DB
             latest_data = CalculatedStats.objects.get_latest_date(
@@ -214,7 +218,10 @@ class Command(BaseCommand):
         company_id = df_companies[df_companies["tidm"] == company_tidm].id.values[0]
 
         df_unpivot = pd.melt(
-            df_calculated, var_name="time_stamp", value_name="value", ignore_index=False
+            df_calculated,
+            var_name="time_stamp",
+            value_name="value",
+            ignore_index=False
         )
 
         df_unpivot["company_id"] = company_id
