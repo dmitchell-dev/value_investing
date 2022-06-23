@@ -84,11 +84,11 @@ def share_price(df_pivot, df_share_price):
                 if share_price_slice.empty:
                     pass
                 else:
-                    price_list.append(share_price_slice.values[0][2])
+                    price_list.append(share_price_slice.values[0][3])
                     date_list.append(date)
                     break
         else:
-            price_list.append(share_price_slice.values[0][2])
+            price_list.append(share_price_slice.values[0][3])
             date_list.append(share_price_slice.values[0][1])
 
     df_share_price_reduced = pd.DataFrame(data=price_list).transpose()
@@ -301,7 +301,6 @@ def price_book_value(df_pivot, df_m_c, df_eps):
         ).reset_index(drop=True)
 
     df_m_c = df_m_c.reset_index(drop=True)
-    df_s_o = df_s_o.reset_index(drop=True)
     df_eps = df_eps.reset_index(drop=True)
 
     if not df_eps.empty:

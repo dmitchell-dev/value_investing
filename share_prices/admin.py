@@ -3,7 +3,7 @@ from .models import SharePrices, ShareSplits
 
 
 class SharePricesAdmin(admin.ModelAdmin):
-    fields = ["company", "time_stamp", "value", "volume"]
+    fields = ["company", "time_stamp", "value", "value_adjusted", "volume"]
 
 
 class ShareSplitsAdmin(admin.ModelAdmin):

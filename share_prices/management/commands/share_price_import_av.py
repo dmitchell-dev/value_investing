@@ -45,7 +45,7 @@ class Command(BaseCommand):
             header, json_data = av_import.get_share_data(
                 location=curr_comp_loc,
                 symbol=current_company,
-                type="TIME_SERIES_WEEKLY",
+                type="TIME_SERIES_WEEKLY_ADJUSTED",
             )
 
             # Convert to dataframe
@@ -73,6 +73,7 @@ class Command(BaseCommand):
                     company=Companies.objects.get(id=row["company_id"]),
                     time_stamp=row["time_stamp"],
                     value=row["value"],
+                    value_adjusted=row["value_adjusted"],
                     volume=row["volume"],
                 )
                 for i, row in df_data.iterrows()
@@ -93,7 +94,9 @@ class Command(BaseCommand):
         df.rename(
             columns={
                 "4. close": "value",
-                "5. volume": "volume",
+                "5. adjusted close": "value_adjusted",
+                "6. volume": "volume",
+
             },
             inplace=True,
         )
