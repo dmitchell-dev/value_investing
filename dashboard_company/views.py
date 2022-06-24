@@ -249,7 +249,7 @@ class ShareChartDataView(View):
         x_data = []
 
         for item in share_qs:
-            y_data.append(item["value"])
+            y_data.append(item["value_adjusted"])
             x_data.append(item["time_stamp"])
 
         y_data.reverse()
@@ -405,6 +405,16 @@ class EarningsYieldDataView(View):
         return JsonResponse(data)
 
 
+class EquityPerShareDataView(View):
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _param_chart(company_id, CalculatedStats, "Equity (Book Value) Per Share")
+
+        return JsonResponse(data)
+
+
 class TotalMultiDataView(View):
     def get(self, request, pk):
 
@@ -434,6 +444,23 @@ class CurrentMultiDataView(View):
             chart_name_2="Total Current Assets",
             chart_name_3="Total Current Liabilities",
             chart_title="Current Charts",
+        )
+
+        return JsonResponse(data)
+
+
+class IntrinsicMultiDataView(View):
+    def get(self, request, pk):
+
+        company_id = _pk_to_comp_id(pk)
+
+        data = _multi_chart(
+            company_id,
+            CalculatedStats,
+            chart_name_1="Share Price",
+            chart_name_2="Intrinsic Value",
+            chart_name_3="Intrinsic Value",
+            chart_title="Intrinsic Charts",
         )
 
         return JsonResponse(data)

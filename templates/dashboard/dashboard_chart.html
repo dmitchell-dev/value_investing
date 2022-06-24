@@ -5,6 +5,11 @@
 {% block content %}
     <div class="row">
         <div class="col">
+            <div id="intrinsicValueDiv" class="responsive-plot"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
             <div id="sharePriceDiv" class="responsive-plot"></div>
         </div>
     </div>
@@ -30,6 +35,11 @@
     </div>
     <div class="row">
         <div class="col">
+            <div id="equityDiv" class="responsive-plot"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
             <div id="totalDiv" class="responsive-plot"></div>
         </div>
     </div>
@@ -44,8 +54,8 @@
     // API Data
     {% block jquery %}
 
-        var index = ["share-price/", "dividend/", "roe/", "eps/", "roce/"];
-        var div_index = ["sharePriceDiv", "dividendDiv", "roeDiv", "epsDiv", "roceDiv"];
+        var index = ["share-price/", "dividend/", "roe/", "eps/", "roce/", "equity-share/"];
+        var div_index = ["sharePriceDiv", "dividendDiv", "roeDiv", "epsDiv", "roceDiv", "equityDiv"];
         var index_size = index.length;
 
         var f = (function(){
@@ -89,8 +99,8 @@
             }
         })();
 
-        var index = ["total-multi/", "current-multi/"];
-        var div_index = ["totalDiv", "currentDiv"];
+        var index = ["total-multi/", "current-multi/", "intrinsic-multi/",];
+        var div_index = ["totalDiv", "currentDiv", "intrinsicValueDiv"];
         var index_size = index.length;
 
         var f = (function(){
