@@ -84,12 +84,12 @@ def share_price(df_pivot, df_share_price):
                 if share_price_slice.empty:
                     pass
                 else:
-                    price_list.append(share_price_slice.values[0][3])
+                    price_list.append(share_price_slice.iloc[0]['value_adjusted'])
                     date_list.append(date)
                     break
         else:
-            price_list.append(share_price_slice.values[0][3])
-            date_list.append(share_price_slice.values[0][1])
+            price_list.append(share_price_slice.iloc[0]['value_adjusted'])
+            date_list.append(share_price_slice.iloc[0]['time_stamp'])
 
     df_share_price_reduced = pd.DataFrame(data=price_list).transpose()
     df_share_price_reduced.columns = date_list

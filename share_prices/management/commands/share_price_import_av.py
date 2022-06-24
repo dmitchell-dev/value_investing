@@ -88,7 +88,7 @@ class Command(BaseCommand):
 
     def _format_dataframe(self, df, company_id):
         df.insert(0, "company_id", [company_id] * df.shape[0])
-        df = df.drop(["1. open", "2. high", "3. low"], axis=1)
+        df = df.drop(["1. open", "2. high", "3. low", "7. dividend amount"], axis=1)
         df["time_stamp"] = df.index
         df.reset_index(drop=True, inplace=True)
         df.rename(
