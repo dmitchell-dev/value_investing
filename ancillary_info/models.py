@@ -90,7 +90,7 @@ class Params(models.Model):
     limit_logic = models.CharField(max_length=255)
     limit_value = models.CharField(max_length=255)
     data_type = models.CharField(max_length=255)
-    param_description = models.CharField(max_length=255)
+    param_description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
