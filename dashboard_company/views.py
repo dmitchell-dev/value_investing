@@ -35,8 +35,7 @@ class DashboardDetailView(DetailView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-
-        # context['share_chart'] = _share_chart(self.kwargs['pk'])
+        # Add Parameter data to context
         context["params"] = Params.objects.all()
 
         return context
