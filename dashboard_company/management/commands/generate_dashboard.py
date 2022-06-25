@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from ancillary_info.models import Companies
 from calculated_stats.models import CalculatedStats
 from financial_reports.models import FinancialReports
+from share_prices.models import SharePrices
 from dashboard_company.models import DashboardCompany
 import pandas as pd
 import numpy as np
@@ -60,6 +61,8 @@ class Command(BaseCommand):
             subset=["time_stamp", "company_name", "param_name"], keep="last"
         )
 
+        financial_latest_date = df_reporting['time_stamp'].max()
+
         df_reporting_pivot = df_reporting.pivot(
             columns="param_name",
             index="tidm",
@@ -102,6 +105,38 @@ class Command(BaseCommand):
             values="value",
         )
 
+        # Share Price Data
+        share_qs = SharePrices.objects.raw(
+            """SELECT share_price.id, tidm, company_name, time_stamp, value_adjusted
+                FROM share_price
+                LEFT JOIN companies ON companies.id = share_price.company_id
+                RIGHT JOIN (
+                    SELECT MAX(time_stamp) AS time_stamp, company_id
+                    FROM share_price
+                    GROUP BY company_id)
+                    subTable USING (company_id, time_stamp);"""
+        )
+
+        qs_list = []
+        for row in share_qs:
+            qs_list.append(
+                [row.tidm, row.company_name, row.time_stamp, row.value_adjusted]
+            )
+
+        df_share_latest = pd.DataFrame(qs_list)
+
+        df_share_latest = df_share_latest.rename(
+            columns={
+                0: "tidm",
+                1: "company_name",
+                2: "share_latest_date",
+                3: "value",
+            }
+        )
+
+        df_share_latest = df_share_latest.drop(['company_name', 'value'], axis=1)
+        df_share_latest = df_share_latest.set_index('tidm')
+
         # Join dataframes
         df_merged = pd.merge(
             df_companies,
@@ -113,6 +148,13 @@ class Command(BaseCommand):
         df_merged = pd.merge(
             df_merged,
             df_reporting_pivot,
+            left_index=True,
+            right_index=True
+        )
+
+        df_merged = pd.merge(
+            df_merged,
+            df_share_latest,
             left_index=True,
             right_index=True
         )
@@ -158,6 +200,12 @@ class Command(BaseCommand):
                 estimated_growth_rate=float(row["Estimated Growth Rate"]),
                 estimated_discount_rate=float(row["Estimated Discount Rate"]),
                 estimated_long_term_growth_rate=float(row["Estimated Long Term Growth Rate"]),
+                pick_source=row["company_source__value"],
+                exchange_country=row["country__value"],
+                currency_symbol=row["currency__value"],
+                latest_financial_date=financial_latest_date,
+                latest_share_price_date=row["share_latest_date"],
+                market_cap=float(row["Market Capitalisation"]),
             )
             for i, row in df_merged.iterrows()
         ]

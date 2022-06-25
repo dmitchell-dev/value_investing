@@ -12,6 +12,8 @@ class CompaniesQueryset(QuerySet):
             "comp_type__value",
             "exchange__value",
             "country__value",
+            "company_source__value",
+            "currency__value",
         )
 
 

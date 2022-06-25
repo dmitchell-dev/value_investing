@@ -33,6 +33,12 @@ class DashboardCompany(models.Model):
     estimated_growth_rate = models.FloatField()
     estimated_discount_rate = models.FloatField()
     estimated_long_term_growth_rate = models.FloatField()
+    pick_source = models.CharField(max_length=255)
+    exchange_country = models.CharField(max_length=255)
+    currency_symbol = models.CharField(max_length=5)
+    latest_financial_date = models.DateTimeField()
+    latest_share_price_date = models.DateTimeField()
+    market_cap = models.FloatField()
 
     # objects = CalculatedStatsQueryset.as_manager()
 
