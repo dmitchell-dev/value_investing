@@ -24,6 +24,7 @@ from .views import (
     IntrinsicMultiDataView,
     DashboardTableView,
     dashboard_chart,
+    htmx_explore,
     dashboard_table,
 )
 
@@ -32,6 +33,7 @@ app_name = "dashboard_company"
 urlpatterns = [
     path("", DashboardListView.as_view(), name="dashboard_list"),
     path("<int:pk>/chart/", dashboard_chart, name="dashboard_chart"),
+    path("<int:pk>/htmx-explore/", htmx_explore, name="htmx_explore"),
     path("<int:pk>/", DashboardDetailView.as_view(), name="dashboard_detail"),
     path("table/<int:pk>/<str:report_type>/", dashboard_table, name="dashboard_table"),
     path(
@@ -62,6 +64,7 @@ data_patterns = (
         path("<int:pk>/chart/data/total-multi/", TotalMultiDataView.as_view()),
         path("<int:pk>/chart/data/current-multi/", CurrentMultiDataView.as_view()),
         path("<int:pk>/chart/data/intrinsic-multi/", IntrinsicMultiDataView.as_view()),
+
     ],
     "data",
 )

@@ -1,0 +1,24 @@
+{% extends '_base.html' %}
+
+{% block title %}HTMX Explore{% endblock title %}
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <div id="intrinsicValueDiv" class="responsive-plot"></div>
+        </div>
+    </div>
+
+<div class="select is-large">
+    <select name="q" hx-trigger="change, load" hx-get="/htmx-explore" hx-target="#frameworks">
+        <option value="Python">Python</option>
+        <option value="Ruby">Ruby</option>
+        <option value="Javascript">Javascript</option>
+    </select>
+<div>
+</div class="select is-large">
+    <select id="frameworks">
+    </select>
+</div>
+
+{% endblock content %}

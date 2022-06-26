@@ -142,6 +142,20 @@ def dashboard_chart(request, pk):
     return render(request, "dashboard/dashboard_chart.html", context)
 
 
+def htmx_explore(request, pk):
+
+    error_message = None
+
+    print(dir(request))
+    print(request.GET.get("q"))
+
+    context = {
+        "error_message": error_message,
+    }
+
+    return render(request, "dashboard/htmx_explore.html", context)
+
+
 def _param_chart(company_id, DataSource, param_name):
 
     param_id = Params.objects.filter(param_name=param_name).values()[0]["id"]
