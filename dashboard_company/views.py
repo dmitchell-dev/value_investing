@@ -6,6 +6,10 @@ from django.core.paginator import Paginator
 
 import pandas as pd
 
+# import plotly.graph_objects as go
+from plotly.offline import plot
+import plotly.express as px
+
 from django.http import JsonResponse
 from django.views import View
 
@@ -146,10 +150,34 @@ def htmx_explore(request, pk):
 
     error_message = None
 
-    print(dir(request))
-    print(request.GET.get("q"))
+    company_id = _pk_to_comp_id(pk)
+
+    # data = _param_chart(company_id, FinancialReports, "Reported EPS")
+    param_id = Params.objects.filter(param_name="Price to Earnings (P/E)").values()[0]["id"]
+
+    df = pd.DataFrame(
+        CalculatedStats.objects.filter(
+            company_id=company_id,
+            parameter_id=param_id
+            ).values()
+    )
+    df["value"] = df["value"].astype(float)
+
+    chart_plot = px.line(
+        df,
+        x='time_stamp',
+        y='value',
+        labels={
+            "time_stamp": "Date",
+            "value": "Price to Earnings (P/E)"
+            },
+        )
+
+    # Getting HTML needed to render the plot.
+    plot_div = chart_plot.to_html(full_html=False)
 
     context = {
+        "graph": plot_div,
         "error_message": error_message,
     }
 
@@ -158,10 +186,15 @@ def htmx_explore(request, pk):
 
 def _param_chart(company_id, DataSource, param_name):
 
-    param_id = Params.objects.filter(param_name=param_name).values()[0]["id"]
+    param_id = Params.objects.filter(
+        param_name=param_name
+        ).values()[0]["id"]
 
     df = pd.DataFrame(
-        DataSource.objects.filter(company_id=company_id, parameter_id=param_id).values()
+        DataSource.objects.filter(
+            company_id=company_id,
+            parameter_id=param_id
+            ).values()
     )
     df["value"] = df["value"].astype(float)
 
