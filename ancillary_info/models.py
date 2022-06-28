@@ -130,6 +130,8 @@ class ParamsApi(models.Model):
     datasource = models.ForeignKey(Datasource, on_delete=models.CASCADE)
     param = models.ForeignKey(Params, on_delete=models.CASCADE)
     param_name_api = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = ParamsApiQueryset.as_manager()
 

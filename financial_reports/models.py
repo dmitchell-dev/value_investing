@@ -8,6 +8,8 @@ class FinancialReports(models.Model):
     parameter = models.ForeignKey(Params, on_delete=models.CASCADE)
     time_stamp = models.DateField()
     value = models.FloatField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = FinancialReportsQueryset.as_manager()
 

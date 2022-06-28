@@ -8,6 +8,8 @@ class CalculatedStats(models.Model):
     parameter = models.ForeignKey(Params, on_delete=models.CASCADE)
     time_stamp = models.DateField()
     value = models.CharField(max_length=255, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = CalculatedStatsQueryset.as_manager()
 
@@ -23,6 +25,8 @@ class DcfVariables(models.Model):
     company = models.ForeignKey(Companies, on_delete=models.CASCADE)
     parameter = models.ForeignKey(Params, on_delete=models.CASCADE)
     value = models.CharField(max_length=255, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = DcfVariablesQueryset.as_manager()
 
