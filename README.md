@@ -27,6 +27,7 @@ The aim of this site is to not only help with value investing, it will also impr
 * python manage.py share_price_import
 * python manage.py share_price_import_av
     * --symbol AAPL ABBV (Example)
+* python manage.py share_split_calcs
 * python manage.py detault_dfc_variables
 * python manage.py calculate_stats
 * python manage.py generate_dashboard
