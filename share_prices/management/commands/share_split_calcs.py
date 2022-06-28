@@ -24,6 +24,7 @@ class Command(BaseCommand):
         num_comps = len(comp_list)
         comp_num = 0
         total_rows_added = 0
+        num_rows = 0
 
         # For each report import data
         for current_company in comp_list:
@@ -36,30 +37,36 @@ class Command(BaseCommand):
                 ))
 
             # TODO Calculate stock
-            df_data['share_multiple'] = df_data['value_adjusted'].div(df_data['value'])
+            df_data['share_multiple'] = df_data['value'].div(df_data['value_adjusted']).round(decimals = 0)
+            df_data['share_multiple_changes'] = df_data["share_multiple"].shift() != df_data["share_multiple"]
+            df_data['share_multiple_changes'].iloc[0] = False
 
-            # Filter out prices already in DB
-            latest_share_data = ShareSplits.objects.get_latest_date(
-                current_company
-                )
+            df_data_filtered = df_data[df_data['share_multiple_changes'] == True]
 
-            if latest_share_data:
-                latest_date = latest_share_data.time_stamp
-                mask = df_data["time_stamp"] > pd.Timestamp(latest_date)
-                df_data = df_data.loc[mask]
+            if not df_data_filtered.empty:
 
-            num_rows = df_data.shape[0]
+                # Filter out prices already in DB
+                latest_share_data = ShareSplits.objects.get_latest_date(
+                    current_company
+                    )
 
-            # Save to database
-            reports = [
-                ShareSplits(
-                    company=Companies.objects.get(id=row["company_id"]),
-                    time_stamp=row["time_stamp"],
-                    value=row["share_multiple"],
-                )
-                for i, row in df_data.iterrows()
-            ]
-            ShareSplits.objects.bulk_create(reports)
+                if latest_share_data:
+                    latest_date = latest_share_data.time_stamp
+                    mask = df_data["time_stamp"] > pd.Timestamp(latest_date)
+                    df_data = df_data.loc[mask]
+
+                num_rows = df_data.shape[0]
+
+                # Save to database
+                reports = [
+                    ShareSplits(
+                        company=Companies.objects.get(id=row["company_id"]),
+                        time_stamp=row["time_stamp"],
+                        value=row["share_multiple"],
+                    )
+                    for i, row in df_data.iterrows()
+                ]
+                ShareSplits.objects.bulk_create(reports)
 
             print(f"Rows saved to database: {num_rows}")
 
