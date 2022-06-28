@@ -4,17 +4,10 @@
 
 {% block content %}
 
-<div class="select is-large">
-    <select name="q" hx-trigger="change, load" hx-get="/htmx-explore" hx-target="#frameworks">
-        <option value="Python">Python</option>
-        <option value="Ruby">Ruby</option>
-        <option value="Javascript">Javascript</option>
-    </select>
-<div>
-</div class="select is-large" id="frameworks">
-    {% if graph %}
-        {{ graph|safe }}
-    {% endif %}
-</div>
+    <div name="q" hx-trigger="load" hx-get="/htmx-explore" hx-target="#frameworks" id="frameworks">
+        {% if graph %}
+            {{ graph|safe }}
+        {% endif %}
+    <div>
 
 {% endblock content %}

@@ -56,6 +56,9 @@
                 <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type='Cash Flow' %}">Cash Flow</a></p>
             </div>
             <div class="col">
+                <a class="float-right icon-blue" href="{% url 'dashboard_company:htmx_explore' pk=company.id %}"><i class="fas fa-code fa-3x"></i></a>
+            </div>
+            <div class="col">
                 <a class="float-right icon-blue" href="{% url 'dashboard_company:dashboard_chart' pk=company.id %}"><i class="fas fa-chart-bar fa-3x"></i></a>
             </div>
         </div>
