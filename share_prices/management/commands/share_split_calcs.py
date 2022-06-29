@@ -32,16 +32,24 @@ class Command(BaseCommand):
 
             print(f"API Import {comp_num} of {num_comps}: {current_company}")
 
+            # Get info oncurrent company
+            curr_comp_id = df_companies["id"].iat[comp_num - 1]
+
             df_data = pd.DataFrame(list(
                 SharePrices.objects.get_share_joined_filtered(current_company)
                 ))
 
-            # TODO Calculate stock
-            df_data['share_multiple'] = df_data['value'].div(df_data['value_adjusted']).round(decimals = 0)
-            df_data['share_multiple_changes'] = df_data["share_multiple"].shift() != df_data["share_multiple"]
-            df_data['share_multiple_changes'].iloc[0] = False
+            # TODO Calculate stock Split
+            df_data['share_split'] = df_data['value'].div(
+                df_data['value_adjusted']
+                ).diff().abs()
+            df_data['share_multiple_original'] = df_data['value'].div(
+                df_data['value_adjusted']
+                ).abs()
 
-            df_data_filtered = df_data[df_data['share_multiple_changes'] == True]
+            df_data_index = df_data["share_split"] > 0.1
+
+            df_data_filtered = df_data[df_data_index]
 
             if not df_data_filtered.empty:
 
@@ -50,21 +58,29 @@ class Command(BaseCommand):
                     current_company
                     )
 
+                df_data_filtered.insert(
+                    0,
+                    "company_id",
+                    [curr_comp_id] * df_data_filtered.shape[0]
+                    )
+
                 if latest_share_data:
                     latest_date = latest_share_data.time_stamp
-                    mask = df_data["time_stamp"] > pd.Timestamp(latest_date)
-                    df_data = df_data.loc[mask]
+                    mask = df_data_filtered["time_stamp"] > pd.Timestamp(
+                        latest_date
+                        )
+                    df_data_filtered = df_data_filtered.loc[mask]
 
-                num_rows = df_data.shape[0]
+                num_rows = df_data_filtered.shape[0]
 
                 # Save to database
                 reports = [
                     ShareSplits(
                         company=Companies.objects.get(id=row["company_id"]),
                         time_stamp=row["time_stamp"],
-                        value=row["share_multiple"],
+                        value=row["share_split"],
                     )
-                    for i, row in df_data.iterrows()
+                    for i, row in df_data_filtered.iterrows()
                 ]
                 ShareSplits.objects.bulk_create(reports)
 
@@ -76,7 +92,10 @@ class Command(BaseCommand):
 
     def _format_dataframe(self, df, company_id):
         df.insert(0, "company_id", [company_id] * df.shape[0])
-        df = df.drop(["1. open", "2. high", "3. low", "7. dividend amount"], axis=1)
+        df = df.drop(
+            ["1. open", "2. high", "3. low", "7. dividend amount"],
+            axis=1
+            )
         df["time_stamp"] = df.index
         df.reset_index(drop=True, inplace=True)
         df.rename(
