@@ -39,13 +39,10 @@ class Command(BaseCommand):
                 SharePrices.objects.get_share_joined_filtered(current_company)
                 ))
 
-            # TODO Calculate stock Split
+            # Detect and calculate stock splits
             df_data['share_split'] = df_data['value'].div(
                 df_data['value_adjusted']
                 ).diff().abs()
-            df_data['share_multiple_original'] = df_data['value'].div(
-                df_data['value_adjusted']
-                ).abs()
 
             df_data_index = df_data["share_split"] > 0.1
 
