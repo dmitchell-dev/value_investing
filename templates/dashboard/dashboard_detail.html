@@ -342,6 +342,14 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col">
+                {% for share_split in share_splits %}
+                    {{ share_split.time_stamp }}
+                {% endfor %}
+            </div>
+        </div>
+
     <hr>
 
     <form action="/your-name/" method="post">

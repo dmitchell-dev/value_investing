@@ -15,7 +15,7 @@ from django.views import View
 
 from .models import DashboardCompany
 from ancillary_info.models import Params, Companies
-from share_prices.models import SharePrices
+from share_prices.models import SharePrices, ShareSplits
 from financial_reports.models import FinancialReports
 from calculated_stats.models import CalculatedStats
 
@@ -39,8 +39,15 @@ class DashboardDetailView(DetailView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add Parameter data to context
+
+        # Share Splits
+        comp_pk = self.kwargs['pk']
+        comp_tidm = DashboardCompany.objects.get_tidm_from_id(comp_pk)
+        share_splits = ShareSplits.objects.get_share_joined_filtered(comp_tidm)
+
+        # Add context data
         context["params"] = Params.objects.all()
+        context["share_splits"] = share_splits
 
         return context
 

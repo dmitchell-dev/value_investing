@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
 
+from.managers import DashboardCompanyQueryset
+
 
 class DashboardCompany(models.Model):
     tidm = models.CharField(max_length=255, null=True)
@@ -40,7 +42,7 @@ class DashboardCompany(models.Model):
     latest_share_price_date = models.DateTimeField()
     market_cap = models.FloatField()
 
-    # objects = CalculatedStatsQueryset.as_manager()
+    objects = DashboardCompanyQueryset.as_manager()
 
     class Meta:
         db_table = "dashboard_company"
