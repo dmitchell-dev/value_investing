@@ -43,11 +43,14 @@ class DashboardDetailView(DetailView):
         # Share Splits
         comp_pk = self.kwargs['pk']
         comp_tidm = DashboardCompany.objects.get_tidm_from_id(comp_pk)
-        share_splits = ShareSplits.objects.get_share_joined_filtered(comp_tidm)
+        share_splits = ShareSplits.objects.get_latest_date(comp_tidm)
+        share_splits_last = None
+        if share_splits:
+            share_splits_last = share_splits.time_stamp
 
         # Add context data
         context["params"] = Params.objects.all()
-        context["share_splits"] = share_splits
+        context["share_splits"] = share_splits_last
 
         return context
 
