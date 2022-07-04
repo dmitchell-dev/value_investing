@@ -1,10 +1,13 @@
 from django.db import models
 from django.urls import reverse
 
+from ancillary_info.models import Companies
+
 from.managers import DashboardCompanyQueryset
 
 
 class DashboardCompany(models.Model):
+    company = models.ForeignKey(Companies, on_delete=models.CASCADE)
     tidm = models.CharField(max_length=255, null=True)
     company_name = models.CharField(max_length=255, null=True)
     company_summary = models.TextField()

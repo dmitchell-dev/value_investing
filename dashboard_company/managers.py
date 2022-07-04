@@ -8,3 +8,10 @@ class DashboardCompanyQueryset(QuerySet):
         ).filter(id=val)[0]['tidm']
 
         return tidm
+
+    def get_dash_joined(self):
+        return self.values(
+            "id",
+            "tidm",
+            "company_name",
+        )

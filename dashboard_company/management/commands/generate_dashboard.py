@@ -162,14 +162,51 @@ class Command(BaseCommand):
         # Replace NaN for mySQL compatability
         df_merged = df_merged.replace([np.nan, "NaN", "nan", "None"], "-9999")
 
-        df_merged = df_merged.drop("id", axis=1)
+        # df_merged = df_merged.drop("id", axis=1)
+
+        [df_create, df_update] = self._create_update_split(df_merged)
 
         # for col in df_merged.columns:
         #     print(col)
 
+        update_cols = [
+            'id',
+            'revenue',
+            'earnings',
+            'dividends',
+            'capital_expenditure',
+            'net_income',
+            'total_equity',
+            'share_price',
+            'debt_to_equity',
+            'current_ratio',
+            'return_on_equity',
+            'equity_per_share',
+            'price_to_earnings',
+            'price_to_equity',
+            'earnings_yield',
+            'annual_yield_return',
+            'fcf',
+            'dividend_cover',
+            'capital_employed',
+            'roce',
+            'dcf_intrinsic_value',
+            'margin_safety',
+            'estimated_growth_rate',
+            'estimated_discount_rate',
+            'estimated_long_term_growth_rate',
+            'pick_source',
+            'exchange_country',
+            'currency_symbol',
+            'latest_financial_date',
+            'latest_share_price_date',
+            'market_cap',
+            ]
+
         # Save to database
         reports = [
             DashboardCompany(
+                company=Companies.objects.get(id=row["id"]),
                 tidm=row["tidm"],
                 company_name=row["company_name"],
                 company_summary=row["company_summary"],
@@ -207,8 +244,23 @@ class Command(BaseCommand):
                 latest_share_price_date=row["share_latest_date"],
                 market_cap=float(row["Market Capitalisation"]),
             )
-            for i, row in df_merged.iterrows()
+            for i, row in df_create.iterrows()
         ]
-        # DashboardCompany.objects.bulk_create(reports)
+        DashboardCompany.objects.bulk_create(reports)
 
         print("Dashboard Complete")
+
+    def _create_update_split(self, new_df):
+        existing_df = pd.DataFrame(
+            list(DashboardCompany.objects.get_dash_joined())
+            )
+
+        if not existing_df.empty:
+            test_index = np.where(new_df['tidm'].isin(existing_df['tidm']), 'existing', 'new')
+            df_existing = new_df[test_index == 'existing']
+            df_new = new_df[test_index == 'new']
+        else:
+            df_new = new_df
+            df_existing = None
+
+        return [df_new, df_existing]
