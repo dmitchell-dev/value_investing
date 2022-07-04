@@ -209,6 +209,6 @@ class Command(BaseCommand):
             )
             for i, row in df_merged.iterrows()
         ]
-        DashboardCompany.objects.bulk_create(reports)
+        # DashboardCompany.objects.bulk_create(reports)
 
         print("Dashboard Complete")
