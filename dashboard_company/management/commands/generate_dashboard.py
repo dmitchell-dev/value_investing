@@ -162,46 +162,35 @@ class Command(BaseCommand):
         # Replace NaN for mySQL compatability
         df_merged = df_merged.replace([np.nan, "NaN", "nan", "None"], "-9999")
 
-        # df_merged = df_merged.drop("id", axis=1)
-
+        # Split ready for create or update
         [df_create, df_update] = self._create_update_split(df_merged)
 
-        # for col in df_merged.columns:
-        #     print(col)
+        # Create new companies
+        if not df_create.empty:
+            self._create_rows(df_create, financial_latest_date)
 
-        update_cols = [
-            'id',
-            'revenue',
-            'earnings',
-            'dividends',
-            'capital_expenditure',
-            'net_income',
-            'total_equity',
-            'share_price',
-            'debt_to_equity',
-            'current_ratio',
-            'return_on_equity',
-            'equity_per_share',
-            'price_to_earnings',
-            'price_to_equity',
-            'earnings_yield',
-            'annual_yield_return',
-            'fcf',
-            'dividend_cover',
-            'capital_employed',
-            'roce',
-            'dcf_intrinsic_value',
-            'margin_safety',
-            'estimated_growth_rate',
-            'estimated_discount_rate',
-            'estimated_long_term_growth_rate',
-            'pick_source',
-            'exchange_country',
-            'currency_symbol',
-            'latest_financial_date',
-            'latest_share_price_date',
-            'market_cap',
-            ]
+        # Update existing companies
+        if not df_update.empty:
+            self._update_rows(df_update, financial_latest_date)
+
+        print("Dashboard Complete")
+
+    def _create_update_split(self, new_df):
+        existing_df = pd.DataFrame(
+            list(DashboardCompany.objects.get_dash_joined())
+            )
+
+        if not existing_df.empty:
+            test_index = np.where(new_df['tidm'].isin(existing_df['tidm']), 'existing', 'new')
+            df_existing = new_df[test_index == 'existing']
+            df_new = new_df[test_index == 'new']
+        else:
+            df_new = new_df
+            df_existing = None
+
+        return [df_new, df_existing]
+
+    def _create_rows(self, df_create, financial_latest_date):
 
         # Save to database
         reports = [
@@ -248,19 +237,43 @@ class Command(BaseCommand):
         ]
         DashboardCompany.objects.bulk_create(reports)
 
-        print("Dashboard Complete")
+    def _update_rows(self, df_update, financial_latest_date):
 
-    def _create_update_split(self, new_df):
-        existing_df = pd.DataFrame(
-            list(DashboardCompany.objects.get_dash_joined())
-            )
+        update_cols = [
+            'company',
+            'revenue',
+            'earnings',
+            'dividends',
+            'capital_expenditure',
+            'net_income',
+            'total_equity',
+            'share_price',
+            'debt_to_equity',
+            'current_ratio',
+            'return_on_equity',
+            'equity_per_share',
+            'price_to_earnings',
+            'price_to_equity',
+            'earnings_yield',
+            'annual_yield_return',
+            'fcf',
+            'dividend_cover',
+            'capital_employed',
+            'roce',
+            'dcf_intrinsic_value',
+            'margin_safety',
+            'estimated_growth_rate',
+            'estimated_discount_rate',
+            'estimated_long_term_growth_rate',
+            'pick_source',
+            'exchange_country',
+            'currency_symbol',
+            'latest_financial_date',
+            'latest_share_price_date',
+            'market_cap',
+            ]
 
-        if not existing_df.empty:
-            test_index = np.where(new_df['tidm'].isin(existing_df['tidm']), 'existing', 'new')
-            df_existing = new_df[test_index == 'existing']
-            df_new = new_df[test_index == 'new']
-        else:
-            df_new = new_df
-            df_existing = None
-
-        return [df_new, df_existing]
+        companies = list(DashboardCompany.objects.all())
+        for index, company in enumerate(companies):
+            companies[index].industry_name = f"Updated Test {index}"
+        DashboardCompany.objects.bulk_update(companies, ['industry_name'])
