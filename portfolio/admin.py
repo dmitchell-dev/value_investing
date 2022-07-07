@@ -8,7 +8,16 @@ from .models import (
 
 
 class InvestmentsAdmin(admin.ModelAdmin):
-    fields = ["value"]
+    fields = [
+        "company__company_name",
+        # "decision__decision_type",
+        "num_stock",
+        "date_dealt",
+        "date_settled",
+        "reference",
+        "price",
+        "fees",
+    ]
 
 
 class WishListAdmin(admin.ModelAdmin):
