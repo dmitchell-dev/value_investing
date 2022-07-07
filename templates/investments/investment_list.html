@@ -1,0 +1,36 @@
+{% extends '_base.html' %}
+
+{% block title %}Investments{% endblock title %}
+
+{% block content %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Decision</th>
+            <th scope="col">reporting_stock_price</th>
+            <th scope="col">current_stock_price</th>
+            <th scope="col">reporting_mos</th>
+            <th scope="col">current_mos</th>
+            <th scope="col">buy_mos</th>
+            <th scope="col">created_at</th>
+            <th scope="col">updated_at</th>
+        </tr>
+    </thead>
+    <tbody>
+        <h1>Investment Page</h1>
+        {% for investment in investment_list %}
+            <tr>
+                <td><a href="{{ investment.get_absolute_url }}">{{ investment.company_name }}</a></td>
+                <td>{{ investment.decision_type }}</td> 
+                <td>{{ investment.reporting_stock_price }}</td>
+                <td>{{ investment.current_stock_price }}</td>
+                <td>{{ investment.reporting_mos }}</td>
+                <td>{{ investment.buy_mos }}</td>
+                <td>{{ investment.created_at }}</td>
+                <td>{{ investment.updated_at }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}
