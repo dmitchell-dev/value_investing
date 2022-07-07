@@ -240,7 +240,6 @@ class Command(BaseCommand):
     def _update_rows(self, df_update, financial_latest_date):
 
         update_cols = [
-            'company',
             'revenue',
             'earnings',
             'dividends',
@@ -275,5 +274,42 @@ class Command(BaseCommand):
 
         companies = list(DashboardCompany.objects.all())
         for index, company in enumerate(companies):
-            companies[index].industry_name = f"Updated Test {index}"
+
+            # For each company, get the associated row in df
+            df_update = df_update.reset_index(drop=True)
+            cur_row = df_update[df_update['tidm'] == company.tidm].index[0]
+
+            if cur_row:
+                companies[index].industry_name = df_update.loc[df_update.index[cur_row], 'industry__value']
+                # companies[index].revenue= float(row["Total Revenue"])
+                # companies[index].earnings = float(row["Reported EPS"])
+                # companies[index].dividends = float(row["Dividends Per Share"])
+                # companies[index].capital_expenditure = float(row["Capital Expenditures"])
+                # companies[index].net_income = float(row["Net Income"])
+                # companies[index].total_equity = float(row["Total Equity"])
+                # companies[index].share_price = float(row["Share Price"])
+                # companies[index].debt_to_equity = float(row["Debt to Equity (D/E)"])
+                # companies[index].current_ratio = float(row["Current Ratio"])
+                # companies[index].return_on_equity = float(row["Return on Equity (ROE)"])
+                # companies[index].equity_per_share = float(row["Equity (Book Value) Per Share"])
+                # companies[index].price_to_earnings = float(row["Price to Earnings (P/E)"])
+                # companies[index].price_to_equity = float(row["Price to Book Value (Equity)"])
+                # companies[index].earnings_yield = float(row["Earnings Yield"])
+                # companies[index].annual_yield_return = float(row["Annual Yield (Return)"])
+                # companies[index].fcf = float(row["Free Cash Flow"])
+                # companies[index].dividend_cover = float(row["Dividend Cover"])
+                # companies[index].capital_employed = float(row["Capital Employed"])
+                # companies[index].roce = float(row["Return on Capital Employed (ROCE)"])
+                # companies[index].dcf_intrinsic_value = float(row["Intrinsic Value"])
+                # companies[index].margin_safety = float(row["Margin of Safety"])
+                # companies[index].estimated_growth_rate = float(row["Estimated Growth Rate"])
+                # companies[index].estimated_discount_rate = float(row["Estimated Discount Rate"])
+                # companies[index].estimated_long_term_growth_rate = float(row["Estimated Long Term Growth Rate"])
+                # companies[index].pick_source = row["company_source__value"]
+                # companies[index].exchange_country = row["country__value"]
+                # companies[index].currency_symbol = row["currency__value"]
+                # companies[index].latest_financial_date = financial_latest_date,
+                # companies[index].latest_share_price_date = row["share_latest_date"]
+                # companies[index].market_cap = float(row["Market Capitalisation"])
+
         DashboardCompany.objects.bulk_update(companies, ['industry_name'])
