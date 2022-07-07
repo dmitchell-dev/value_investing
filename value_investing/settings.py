@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "dashboard_company.apps.DashboardCompanyConfig",
     "economic.apps.EconomicConfig",
     "api_import.apps.ApiImportConfig",
+    "portfolio.apps.PortfolioConfig",
 ]
 
 MIDDLEWARE = [
