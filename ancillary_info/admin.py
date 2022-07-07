@@ -11,6 +11,7 @@ from .models import (
     Params,
     CompSource,
     Companies,
+    DecisionType,
 )
 
 
@@ -47,6 +48,10 @@ class DatasourceAdmin(admin.ModelAdmin):
 
 
 class CompSourceAdmin(admin.ModelAdmin):
+    fields = ["value"]
+
+
+class DecisionTypeAdmin(admin.ModelAdmin):
     fields = ["value"]
 
 
@@ -104,3 +109,4 @@ admin.site.register(Countries, CountriesAdmin)
 admin.site.register(Params, ParamsAdmin)
 admin.site.register(CompSource, CompSourceAdmin)
 admin.site.register(Companies, CompaniesAdmin)
+admin.site.register(DecisionType, DecisionTypeAdmin)

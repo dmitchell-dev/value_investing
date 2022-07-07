@@ -126,6 +126,17 @@ class CompSource(models.Model):
         return self.value
 
 
+class DecisionType(models.Model):
+    value = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "decision_type"
+        verbose_name_plural = "Decision Types"
+
+    def __str__(self):
+        return self.value
+
+
 class ParamsApi(models.Model):
     datasource = models.ForeignKey(Datasource, on_delete=models.CASCADE)
     param = models.ForeignKey(Params, on_delete=models.CASCADE)

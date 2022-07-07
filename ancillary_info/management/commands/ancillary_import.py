@@ -16,6 +16,7 @@ from ancillary_info.models import (
     CompSource,
     ParamsApi,
     Companies,
+    DecisionType,
 )
 
 object_list = [
@@ -31,6 +32,7 @@ object_list = [
     CompSource,
     ParamsApi,
     Companies,
+    DecisionType,
 ]
 
 BASE_DIR_LOCAL = settings.BASE_DIR
