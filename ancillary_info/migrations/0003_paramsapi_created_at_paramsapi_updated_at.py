@@ -7,19 +7,21 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ancillary_info', '0002_alter_params_param_description'),
+        ("ancillary_info", "0002_alter_params_param_description"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='paramsapi',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="paramsapi",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='paramsapi',
-            name='updated_at',
+            model_name="paramsapi",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
     ]

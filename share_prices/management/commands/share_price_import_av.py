@@ -96,7 +96,6 @@ class Command(BaseCommand):
                 "4. close": "value",
                 "5. adjusted close": "value_adjusted",
                 "6. volume": "volume",
-
             },
             inplace=True,
         )

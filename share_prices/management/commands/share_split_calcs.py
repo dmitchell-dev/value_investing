@@ -11,9 +11,7 @@ class Command(BaseCommand):
         parser.add_argument("--symbol", nargs="+", type=str)
 
     def handle(self, *args, **options):
-        df_companies = pd.DataFrame(list(
-            Companies.objects.get_companies_joined()
-            ))
+        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
         # Specific symbols or all
         if options["symbol"] is None:
@@ -35,14 +33,14 @@ class Command(BaseCommand):
             # Get info oncurrent company
             curr_comp_id = df_companies["id"].iat[comp_num - 1]
 
-            df_data = pd.DataFrame(list(
-                SharePrices.objects.get_share_joined_filtered(current_company)
-                ))
+            df_data = pd.DataFrame(
+                list(SharePrices.objects.get_share_joined_filtered(current_company))
+            )
 
             # Detect and calculate stock splits
-            df_data['share_split'] = df_data['value'].div(
-                df_data['value_adjusted']
-                ).diff().abs()
+            df_data["share_split"] = (
+                df_data["value"].div(df_data["value_adjusted"]).diff().abs()
+            )
 
             df_data_index = df_data["share_split"] > 0.1
 
@@ -51,21 +49,15 @@ class Command(BaseCommand):
             if not df_data_filtered.empty:
 
                 # Filter out prices already in DB
-                latest_share_data = ShareSplits.objects.get_latest_date(
-                    current_company
-                    )
+                latest_share_data = ShareSplits.objects.get_latest_date(current_company)
 
                 df_data_filtered.insert(
-                    0,
-                    "company_id",
-                    [curr_comp_id] * df_data_filtered.shape[0]
-                    )
+                    0, "company_id", [curr_comp_id] * df_data_filtered.shape[0]
+                )
 
                 if latest_share_data:
                     latest_date = latest_share_data.time_stamp
-                    mask = df_data_filtered["time_stamp"] > pd.Timestamp(
-                        latest_date
-                        )
+                    mask = df_data_filtered["time_stamp"] > pd.Timestamp(latest_date)
                     df_data_filtered = df_data_filtered.loc[mask]
 
                 num_rows = df_data_filtered.shape[0]

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ancillary_info', '0001_initial'),
+        ("ancillary_info", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='params',
-            name='param_description',
+            model_name="params",
+            name="param_description",
             field=models.TextField(),
         ),
     ]

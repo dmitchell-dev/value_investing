@@ -7,30 +7,34 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('calculated_stats', '0002_dcfvariables'),
+        ("calculated_stats", "0002_dcfvariables"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='calculatedstats',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="calculatedstats",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='calculatedstats',
-            name='updated_at',
+            model_name="calculatedstats",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
-            model_name='dcfvariables',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="dcfvariables",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='dcfvariables',
-            name='updated_at',
+            model_name="dcfvariables",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
     ]

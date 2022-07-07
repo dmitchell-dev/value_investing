@@ -3,7 +3,8 @@
 from django.core.management.base import BaseCommand
 from ancillary_info.models import (
     Params,
-    Companies,)
+    Companies,
+)
 from calculated_stats.models import DcfVariables
 
 import pandas as pd
@@ -15,21 +16,17 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # Default Values
         dcf_dict = {
-            'Estimated Growth Rate': 0.06,
-            'Estimated Discount Rate': 0.1,
-            'Estimated Long Term Growth Rate': 0.03
+            "Estimated Growth Rate": 0.06,
+            "Estimated Discount Rate": 0.1,
+            "Estimated Long Term Growth Rate": 0.03,
         }
 
         dcf_key_list = list(dcf_dict.keys())
         dcf_value_list = list(dcf_dict.values())
 
         # Get ancillary data
-        df_params = pd.DataFrame(
-            list(Params.objects.get_params_joined())
-            )
-        df_companies = pd.DataFrame(
-            list(Companies.objects.get_companies_joined())
-            )
+        df_params = pd.DataFrame(list(Params.objects.get_params_joined()))
+        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
         # Populate values for each company
         # Get list of companies
@@ -42,15 +39,13 @@ class Command(BaseCommand):
             print(f"Company {company_num} of {num_companies}, {company_tidm}")
 
             # company id
-            company_id = df_companies[
-                df_companies["tidm"] == company_tidm
-            ].id.values[0]
+            company_id = df_companies[df_companies["tidm"] == company_tidm].id.values[0]
 
             data_dict = {
-                'parameter_id': [dcf_key_list[0], dcf_key_list[1], dcf_key_list[2]],
-                'company_id': [company_id, company_id, company_id],
-                'value': [dcf_value_list[0], dcf_value_list[1], dcf_value_list[2]]
-                }
+                "parameter_id": [dcf_key_list[0], dcf_key_list[1], dcf_key_list[2]],
+                "company_id": [company_id, company_id, company_id],
+                "value": [dcf_value_list[0], dcf_value_list[1], dcf_value_list[2]],
+            }
             df_data = pd.DataFrame(data_dict)
 
             # Generate parameter_id and replace index
@@ -61,12 +56,8 @@ class Command(BaseCommand):
             # Save to database
             reports = [
                 DcfVariables(
-                    company=Companies.objects.get(
-                        id=row["company_id"]
-                    ),
-                    parameter=Params.objects.get(
-                        id=row["parameter_id"]
-                    ),
+                    company=Companies.objects.get(id=row["company_id"]),
+                    parameter=Params.objects.get(id=row["parameter_id"]),
                     value=row["value"],
                 )
                 for i, row in df_data.iterrows()
@@ -86,8 +77,7 @@ class Command(BaseCommand):
         # Replace index with id
         df_data = df_data.reset_index()
         df_data["parameter_id"] = df_data["parameter_id"].replace(
-            param_name_list,
-            param_id_list
+            param_name_list, param_id_list
         )
 
         return df_data

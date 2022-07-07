@@ -51,12 +51,8 @@ def total_equity(df_pivot):
     - Total Liabilities
     """
 
-    df_tl = _dataframe_slice(
-        df_pivot, "Total Liabilities"
-        ).reset_index(drop=True)
-    df_ta = _dataframe_slice(
-        df_pivot, "Total Assets"
-        ).reset_index(drop=True)
+    df_tl = _dataframe_slice(df_pivot, "Total Liabilities").reset_index(drop=True)
+    df_ta = _dataframe_slice(df_pivot, "Total Assets").reset_index(drop=True)
     df_t_e = df_ta - df_tl
     df_t_e.index = ["Total Equity"]
 
@@ -84,12 +80,12 @@ def share_price(df_pivot, df_share_price):
                 if share_price_slice.empty:
                     pass
                 else:
-                    price_list.append(share_price_slice.iloc[0]['value_adjusted'])
+                    price_list.append(share_price_slice.iloc[0]["value_adjusted"])
                     date_list.append(date)
                     break
         else:
-            price_list.append(share_price_slice.iloc[0]['value_adjusted'])
-            date_list.append(share_price_slice.iloc[0]['time_stamp'])
+            price_list.append(share_price_slice.iloc[0]["value_adjusted"])
+            date_list.append(share_price_slice.iloc[0]["time_stamp"])
 
     df_share_price_reduced = pd.DataFrame(data=price_list).transpose()
     df_share_price_reduced.columns = date_list
@@ -105,12 +101,10 @@ def market_cap(df_pivot, df_share_price_reduced):
     Shares Outstanding
     * Share Price
     """
-    df_s_o = _dataframe_slice(
-        df_pivot, "Shares Outstanding"
-        ).reset_index(drop=True)
+    df_s_o = _dataframe_slice(df_pivot, "Shares Outstanding").reset_index(drop=True)
     df_m_c = df_s_o.reset_index(drop=True) * (
         df_share_price_reduced.reset_index(drop=True)
-        )
+    )
     df_m_c.index = ["Market Capitalisation"]
 
     return df_m_c
@@ -124,12 +118,10 @@ def enterprise_value(df_pivot, df_m_c):
     Total Cash and Short Term
     """
 
-    df_t_l = _dataframe_slice(
-        df_pivot, "Total Liabilities"
-        ).reset_index(drop=True)
-    df_t_c_st = _dataframe_slice(
-        df_pivot, "Total Cash and Short Term"
-        ).reset_index(drop=True)
+    df_t_l = _dataframe_slice(df_pivot, "Total Liabilities").reset_index(drop=True)
+    df_t_c_st = _dataframe_slice(df_pivot, "Total Cash and Short Term").reset_index(
+        drop=True
+    )
 
     df_e_v = df_m_c.reset_index(drop=True) + df_t_l - df_t_c_st
     df_e_v.index = ["Enterprise Value"]
@@ -144,12 +136,8 @@ def free_cash_flow(df_pivot):
     Capital Expenditures
     """
 
-    df_ocf = _dataframe_slice(
-        df_pivot, "Operating Cash Flow"
-        ).reset_index(drop=True)
-    df_ce = _dataframe_slice(
-        df_pivot, "Capital Expenditures"
-        ).reset_index(drop=True)
+    df_ocf = _dataframe_slice(df_pivot, "Operating Cash Flow").reset_index(drop=True)
+    df_ce = _dataframe_slice(df_pivot, "Capital Expenditures").reset_index(drop=True)
 
     # CE Negative in DB
     df_fcf = df_ocf + df_ce
@@ -165,12 +153,10 @@ def capital_employed(df_pivot):
     Total Current Liabilities
     """
 
-    df_ta = _dataframe_slice(
-        df_pivot, "Total Assets"
-        ).reset_index(drop=True)
-    df_tcl = _dataframe_slice(
-        df_pivot, "Total Current Liabilities"
-        ).reset_index(drop=True)
+    df_ta = _dataframe_slice(df_pivot, "Total Assets").reset_index(drop=True)
+    df_tcl = _dataframe_slice(df_pivot, "Total Current Liabilities").reset_index(
+        drop=True
+    )
 
     df_c_e = df_ta - df_tcl
     df_c_e.index = ["Capital Employed"]
@@ -185,12 +171,8 @@ def dividends_per_share(df_pivot):
     Shares Outstanding
     """
 
-    df_s_o = _dataframe_slice(
-        df_pivot, "Shares Outstanding"
-        ).reset_index(drop=True)
-    df_dpo = _dataframe_slice(
-        df_pivot, "Dividend Payout"
-        ).reset_index(drop=True)
+    df_s_o = _dataframe_slice(df_pivot, "Shares Outstanding").reset_index(drop=True)
+    df_dpo = _dataframe_slice(df_pivot, "Dividend Payout").reset_index(drop=True)
 
     df_dps = df_dpo.div(df_s_o.reset_index(drop=True)) * -1
     df_dps.index = ["Dividends Per Share"]
@@ -205,9 +187,7 @@ def debt_to_eq_ratio(df_pivot, df_t_e):
     / Total Equity
     """
 
-    df_tl = _dataframe_slice(
-        df_pivot, "Total Liabilities"
-        ).reset_index(drop=True)
+    df_tl = _dataframe_slice(df_pivot, "Total Liabilities").reset_index(drop=True)
     df_d_e = df_tl.div(df_t_e.reset_index(drop=True))
     df_d_e.index = ["Debt to Equity (D/E)"]
 
@@ -221,12 +201,10 @@ def current_ratio(df_pivot):
     / Total Current Liabilities
     """
 
-    df_ca = _dataframe_slice(
-        df_pivot, "Total Current Assets"
-        ).reset_index(drop=True)
-    df_cl = _dataframe_slice(
-        df_pivot, "Total Current Liabilities"
-        ).reset_index(drop=True)
+    df_ca = _dataframe_slice(df_pivot, "Total Current Assets").reset_index(drop=True)
+    df_cl = _dataframe_slice(df_pivot, "Total Current Liabilities").reset_index(
+        drop=True
+    )
     if not df_ca.empty and not df_cl.empty:
         df_cr = df_ca.div(df_cl)
         df_cr.index = ["Current Ratio"]
@@ -243,9 +221,7 @@ def return_on_equity(df_pivot, df_t_e):
     / Total Equity
     """
 
-    df_ni = _dataframe_slice(
-        df_pivot, "Net Income"
-    ).reset_index(drop=True)
+    df_ni = _dataframe_slice(df_pivot, "Net Income").reset_index(drop=True)
     if not df_ni.empty:
         df_roe = df_ni.div(df_t_e.reset_index(drop=True)) * 100
         df_roe.index = ["Return on Equity (ROE)"]
@@ -260,13 +236,9 @@ def equity_per_share(df_pivot, df_t_e):
     / Shares Outstanding
     """
 
-    df_s_o = _dataframe_slice(
-        df_pivot, "Shares Outstanding"
-        ).reset_index(drop=True)
+    df_s_o = _dataframe_slice(df_pivot, "Shares Outstanding").reset_index(drop=True)
     if not df_t_e.empty and not df_s_o.empty:
-        df_eps = df_t_e.reset_index(drop=True).div(
-            df_s_o.reset_index(drop=True)
-            )
+        df_eps = df_t_e.reset_index(drop=True).div(df_s_o.reset_index(drop=True))
         df_eps.index = ["Equity (Book Value) Per Share"]
 
     return df_eps
@@ -279,9 +251,7 @@ def price_per_earnings(df_pivot, df_m_c):
     / Net Income
     """
 
-    df_n_i = _dataframe_slice(
-        df_pivot, "Net Income"
-        ).reset_index(drop=True)
+    df_n_i = _dataframe_slice(df_pivot, "Net Income").reset_index(drop=True)
     if not df_m_c.empty and not df_n_i.empty:
         df_ppe = df_m_c.reset_index(drop=True).div(df_n_i)
         df_ppe.index = ["Price to Earnings (P/E)"]
@@ -296,9 +266,7 @@ def price_book_value(df_pivot, df_m_c, df_eps):
     / Equity (Book Value) Per Share
     """
 
-    df_s_o = _dataframe_slice(
-        df_pivot, "Shares Outstanding"
-        ).reset_index(drop=True)
+    df_s_o = _dataframe_slice(df_pivot, "Shares Outstanding").reset_index(drop=True)
 
     df_m_c = df_m_c.reset_index(drop=True)
     df_eps = df_eps.reset_index(drop=True)
@@ -318,9 +286,7 @@ def earnings_yield(df_pivot, df_e_v):
     / Enterprise Value
     """
 
-    df_n_i = _dataframe_slice(
-        df_pivot, "Net Income"
-    ).reset_index(drop=True)
+    df_n_i = _dataframe_slice(df_pivot, "Net Income").reset_index(drop=True)
 
     if not df_n_i.empty and not df_e_v.empty:
         df_e_yield = df_n_i.div(df_e_v.reset_index(drop=True)) * 100
@@ -336,9 +302,7 @@ def annual_yield(df_pivot, df_m_c):
     / Market Capitalisation
     """
 
-    df_n_i = _dataframe_slice(
-        df_pivot, "Net Income"
-    ).reset_index(drop=True)
+    df_n_i = _dataframe_slice(df_pivot, "Net Income").reset_index(drop=True)
 
     if not df_n_i.empty and not df_m_c.empty:
         df_a_yield = df_n_i.div(df_m_c.reset_index(drop=True)) * 100
@@ -354,12 +318,8 @@ def div_cover(df_pivot):
     Dividend Payout
     """
 
-    df_n_i = _dataframe_slice(
-        df_pivot, "Net Income"
-    ).reset_index(drop=True)
-    df_dpo = _dataframe_slice(
-        df_pivot, "Dividend Payout"
-    ).reset_index(drop=True)
+    df_n_i = _dataframe_slice(df_pivot, "Net Income").reset_index(drop=True)
+    df_dpo = _dataframe_slice(df_pivot, "Dividend Payout").reset_index(drop=True)
 
     df_div_cover = df_n_i.div(df_dpo) * -1
 
@@ -373,9 +333,7 @@ def dcf_intrinsic_value(df_pivot, df_dcf_variables, df_fcf):
     Function(Free Cash Flow, Shares Outstanding)
     """
 
-    df_s_o = _dataframe_slice(
-        df_pivot, "Shares Outstanding"
-        ).reset_index(drop=True)
+    df_s_o = _dataframe_slice(df_pivot, "Shares Outstanding").reset_index(drop=True)
 
     intrinsic_value_list = []
     base_year_fcf = df_fcf.reset_index(drop=True)
@@ -466,9 +424,7 @@ def roce(df_pivot, df_c_e):
     Capital Employed
     """
 
-    df_n_i = _dataframe_slice(
-        df_pivot, "Net Income"
-    ).reset_index(drop=True)
+    df_n_i = _dataframe_slice(df_pivot, "Net Income").reset_index(drop=True)
 
     df_roce = df_n_i.div(df_c_e.reset_index(drop=True)) * 100
 
@@ -487,7 +443,9 @@ def margin_of_safety(df_share_price_reduced, df_dcf_intrinsic_value):
         df_dcf_intrinsic_value, "Intrinsic Value"
     ).reset_index(drop=True)
 
-    df_margin_of_safety = df_share_price_reduced.reset_index(drop=True).div(df_dcf_intrinsic_value)
+    df_margin_of_safety = df_share_price_reduced.reset_index(drop=True).div(
+        df_dcf_intrinsic_value
+    )
 
     df_margin_of_safety.index = ["Margin of Safety"]
 

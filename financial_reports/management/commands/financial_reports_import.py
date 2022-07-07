@@ -13,12 +13,8 @@ class Command(BaseCommand):
         parser.add_argument("--symbol", nargs="+", type=str)
 
     def handle(self, *args, **options):
-        df_params_api = pd.DataFrame(list(
-            ParamsApi.objects.get_params_api_joined()
-            ))
-        df_companies = pd.DataFrame(list(
-            Companies.objects.get_companies_joined()
-            ))
+        df_params_api = pd.DataFrame(list(ParamsApi.objects.get_params_api_joined()))
+        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
         # Specific symbols or all
         if options["symbol"] is None:
@@ -33,14 +29,10 @@ class Command(BaseCommand):
         # For each report import data
         for current_company_filename in file_list:
             file_num = file_num + 1
-            print(
-                f"file {file_num} of {num_files}, {current_company_filename}"
-                )
+            print(f"file {file_num} of {num_files}, {current_company_filename}")
 
             # Process filename
-            current_company_tidm = self._process_filename(
-                current_company_filename
-            )
+            current_company_tidm = self._process_filename(current_company_filename)
 
             # Get company report data
             df_data = self._import_reporting_data(current_company_filename)
@@ -61,10 +53,7 @@ class Command(BaseCommand):
 
             # Format dataframe ready to import into database
             df_unpivot = pd.melt(
-                df_data,
-                var_name="time_stamp",
-                value_name="value",
-                ignore_index=False
+                df_data, var_name="time_stamp", value_name="value", ignore_index=False
             )
             df_unpivot["company_id"] = company_id
             df_unpivot["parameter_id"] = df_unpivot.index
@@ -138,17 +127,11 @@ class Command(BaseCommand):
         )
 
         # TIKR sometimes has duplicate Operating Expenses in Income Statement
-        income_index = np.where(
-            df_income.index == 'Other Operating Expenses'
-            )[0]
+        income_index = np.where(df_income.index == "Other Operating Expenses")[0]
         if income_index.size == 2:
-            df_income.drop(
-                df_income.index[income_index[0]], inplace=True
-                )
+            df_income.drop(df_income.index[income_index[0]], inplace=True)
         # TIKR has duplicate Net Income in Cash Flow Statement
-        df_cash.drop(
-            df_cash[df_cash.index == "Net Income"].index, inplace=True
-            )
+        df_cash.drop(df_cash[df_cash.index == "Net Income"].index, inplace=True)
 
         # Stack dataframes
         df = pd.concat([df_income, df_balance, df_cash], axis=0)
@@ -197,10 +180,7 @@ class Command(BaseCommand):
 
         # Replace index with id
         df_data = df_data.reset_index()
-        df_data["index_id"] = df_data["index"].replace(
-            param_name_list,
-            param_id_list
-        )
+        df_data["index_id"] = df_data["index"].replace(param_name_list, param_id_list)
 
         # Filter out rows not in params list
         df_data = df_data[df_data["index"].isin(param_name_list)]

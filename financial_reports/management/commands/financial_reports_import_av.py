@@ -13,12 +13,8 @@ class Command(BaseCommand):
         parser.add_argument("--symbol", nargs="+", type=str)
 
     def handle(self, *args, **options):
-        df_params_api = pd.DataFrame(list(
-            ParamsApi.objects.get_params_api_joined()
-            ))
-        df_companies = pd.DataFrame(list(
-            Companies.objects.get_companies_joined()
-            ))
+        df_params_api = pd.DataFrame(list(ParamsApi.objects.get_params_api_joined()))
+        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
         # Specific symbols or all
         if options["symbol"] is None:
@@ -41,11 +37,7 @@ class Command(BaseCommand):
             curr_comp_loc = df_companies["country__value"].iat[comp_num - 1]
 
             # For each statement type
-            statement_list = [
-                "INCOME_STATEMENT",
-                "BALANCE_SHEET",
-                "CASH_FLOW"
-            ]
+            statement_list = ["INCOME_STATEMENT", "BALANCE_SHEET", "CASH_FLOW"]
 
             if curr_comp_loc == "US":
 
@@ -60,8 +52,7 @@ class Command(BaseCommand):
                     # AV API Share Import
                     av_import = AlphaVantageClient()
                     header, json_data = av_import.get_financial_data(
-                        symbol=current_company,
-                        type=statement
+                        symbol=current_company, type=statement
                     )
 
                     # Convert to dataframe and unpivot
@@ -80,12 +71,12 @@ class Command(BaseCommand):
                     # Filter out prices already in DB
                     latest_share_data = FinancialReports.objects.get_latest_date(
                         current_company
-                        )
+                    )
                     latest_date = latest_share_data.time_stamp
                     latest_date_first = latest_date.replace(day=1)
-                    dates_first = df_data["time_stamp"].dt.to_period(
-                        'M'
-                        ).dt.to_timestamp()
+                    dates_first = (
+                        df_data["time_stamp"].dt.to_period("M").dt.to_timestamp()
+                    )
 
                     mask = dates_first > pd.Timestamp(latest_date_first)
 
@@ -98,12 +89,8 @@ class Command(BaseCommand):
                     # Save to database
                     reports = [
                         FinancialReports(
-                            company=Companies.objects.get(
-                                id=row["company_id"]
-                            ),
-                            parameter=Params.objects.get(
-                                id=row["parameter_id"]
-                            ),
+                            company=Companies.objects.get(id=row["company_id"]),
+                            parameter=Params.objects.get(id=row["parameter_id"]),
                             time_stamp=row["time_stamp"],
                             value=row["value"],
                         )
@@ -154,8 +141,7 @@ class Command(BaseCommand):
         # Replace index with id
         df_data = df_data.reset_index()
         df_data["index_id"] = df_data["variable"].replace(
-            param_name_list,
-            param_id_list
+            param_name_list, param_id_list
         )
 
         # Filter out rows not in params list

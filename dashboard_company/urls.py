@@ -53,18 +53,24 @@ data_patterns = (
         path("<int:pk>/chart/data/debt-to-equity/", DebtToEquityDataView.as_view()),
         path("<int:pk>/chart/data/dividend-cover/", DividendCoverDataView.as_view()),
         path("<int:pk>/chart/data/roce/", RoceDataView.as_view()),
-        path("<int:pk>/chart/data/price-to-earnings/", PriceToEarningsDataView.as_view()),
-        path("<int:pk>/chart/data/price-to-bookvalue/", PriceToBookValueDataView.as_view()),
+        path(
+            "<int:pk>/chart/data/price-to-earnings/", PriceToEarningsDataView.as_view()
+        ),
+        path(
+            "<int:pk>/chart/data/price-to-bookvalue/",
+            PriceToBookValueDataView.as_view(),
+        ),
         path("<int:pk>/chart/data/intrinsic-value/", IntrinsicValueDataView.as_view()),
         path("<int:pk>/chart/data/annual-yield/", AnnualYieldDataView.as_view()),
         path("<int:pk>/chart/data/current-ratio/", CurrentRatioDataView.as_view()),
-        path("<int:pk>/chart/data/capital-employed/", CapitalEmployedDataView.as_view()),
+        path(
+            "<int:pk>/chart/data/capital-employed/", CapitalEmployedDataView.as_view()
+        ),
         path("<int:pk>/chart/data/earnings-yield/", EarningsYieldDataView.as_view()),
         path("<int:pk>/chart/data/equity-share/", EquityPerShareDataView.as_view()),
         path("<int:pk>/chart/data/total-multi/", TotalMultiDataView.as_view()),
         path("<int:pk>/chart/data/current-multi/", CurrentMultiDataView.as_view()),
         path("<int:pk>/chart/data/intrinsic-multi/", IntrinsicMultiDataView.as_view()),
-
     ],
     "data",
 )

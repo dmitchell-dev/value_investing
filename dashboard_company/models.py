@@ -3,7 +3,7 @@ from django.urls import reverse
 
 from ancillary_info.models import Companies
 
-from.managers import DashboardCompanyQueryset
+from .managers import DashboardCompanyQueryset
 
 
 class DashboardCompany(models.Model):

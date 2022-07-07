@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('share_prices', '0003_shareprices_value_adjusted'),
+        ("share_prices", "0003_shareprices_value_adjusted"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='sharesplits',
-            name='volume',
+            model_name="sharesplits",
+            name="volume",
         ),
     ]

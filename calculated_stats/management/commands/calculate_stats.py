@@ -36,12 +36,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Get ancillary data
-        df_params = pd.DataFrame(
-            list(Params.objects.get_params_joined())
-            )
-        df_companies = pd.DataFrame(
-            list(Companies.objects.get_companies_joined())
-            )
+        df_params = pd.DataFrame(list(Params.objects.get_params_joined()))
+        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
         # Calculate values for each company
         # Get list of companies
@@ -56,17 +52,12 @@ class Command(BaseCommand):
 
             # Get DCF Variables
             df_dcf_variables = pd.DataFrame(
-                list(DcfVariables.objects.get_table_joined_filtered(
-                    company_tidm
-                    )
-                )
+                list(DcfVariables.objects.get_table_joined_filtered(company_tidm))
             )
 
             # Get Share Price
             df_share_price = pd.DataFrame(
-                list(
-                    SharePrices.objects.get_share_joined_filtered(company_tidm)
-                )
+                list(SharePrices.objects.get_share_joined_filtered(company_tidm))
             )
 
             # Get Financial Data
@@ -137,10 +128,8 @@ class Command(BaseCommand):
             calc_list.append(df_div_cover)
 
             df_dcf_intrinsic_value = dcf_intrinsic_value(
-                df_pivot,
-                df_dcf_variables,
-                df_fcf
-                )
+                df_pivot, df_dcf_variables, df_fcf
+            )
             calc_list.append(df_dcf_intrinsic_value)
 
             # ROCE
@@ -149,9 +138,8 @@ class Command(BaseCommand):
 
             # Debt Ratio
             df_margin_of_safety = margin_of_safety(
-                df_share_price_reduced,
-                df_dcf_intrinsic_value
-                )
+                df_share_price_reduced, df_dcf_intrinsic_value
+            )
             calc_list.append(df_margin_of_safety)
 
             # Merge all dataframes
@@ -170,15 +158,10 @@ class Command(BaseCommand):
 
             # Replace infinity values
             df_unpivot["value"] = df_unpivot["value"].astype(str)
-            df_unpivot["value"] = df_unpivot["value"].replace(
-                ["inf", "-inf"],
-                None
-                )
+            df_unpivot["value"] = df_unpivot["value"].replace(["inf", "-inf"], None)
 
             # Filter out prices already in DB
-            latest_data = CalculatedStats.objects.get_latest_date(
-                company_tidm
-            )
+            latest_data = CalculatedStats.objects.get_latest_date(company_tidm)
             if latest_data:
                 latest_date = latest_data.time_stamp
                 mask = df_unpivot["time_stamp"] > pd.Timestamp(latest_date)
@@ -218,10 +201,7 @@ class Command(BaseCommand):
         company_id = df_companies[df_companies["tidm"] == company_tidm].id.values[0]
 
         df_unpivot = pd.melt(
-            df_calculated,
-            var_name="time_stamp",
-            value_name="value",
-            ignore_index=False
+            df_calculated, var_name="time_stamp", value_name="value", ignore_index=False
         )
 
         df_unpivot["company_id"] = company_id

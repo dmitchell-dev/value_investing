@@ -41,7 +41,7 @@ class DashboardDetailView(DetailView):
         context = super().get_context_data(**kwargs)
 
         # Share Splits
-        comp_pk = self.kwargs['pk']
+        comp_pk = self.kwargs["pk"]
         comp_tidm = DashboardCompany.objects.get_tidm_from_id(comp_pk)
         share_splits = ShareSplits.objects.get_latest_date(comp_tidm)
         share_splits_last = None
@@ -163,25 +163,23 @@ def htmx_explore(request, pk):
     company_id = _pk_to_comp_id(pk)
 
     # data = _param_chart(company_id, FinancialReports, "Reported EPS")
-    param_id = Params.objects.filter(param_name="Price to Earnings (P/E)").values()[0]["id"]
+    param_id = Params.objects.filter(param_name="Price to Earnings (P/E)").values()[0][
+        "id"
+    ]
 
     df = pd.DataFrame(
         CalculatedStats.objects.filter(
-            company_id=company_id,
-            parameter_id=param_id
-            ).values()
+            company_id=company_id, parameter_id=param_id
+        ).values()
     )
     df["value"] = df["value"].astype(float)
 
     chart_plot = px.line(
         df,
-        x='time_stamp',
-        y='value',
-        labels={
-            "time_stamp": "Date",
-            "value": "Price to Earnings (P/E)"
-            },
-        )
+        x="time_stamp",
+        y="value",
+        labels={"time_stamp": "Date", "value": "Price to Earnings (P/E)"},
+    )
 
     # Getting HTML needed to render the plot.
     plot_div = chart_plot.to_html(full_html=False)
@@ -196,15 +194,10 @@ def htmx_explore(request, pk):
 
 def _param_chart(company_id, DataSource, param_name):
 
-    param_id = Params.objects.filter(
-        param_name=param_name
-        ).values()[0]["id"]
+    param_id = Params.objects.filter(param_name=param_name).values()[0]["id"]
 
     df = pd.DataFrame(
-        DataSource.objects.filter(
-            company_id=company_id,
-            parameter_id=param_id
-            ).values()
+        DataSource.objects.filter(company_id=company_id, parameter_id=param_id).values()
     )
     df["value"] = df["value"].astype(float)
 
@@ -366,7 +359,9 @@ class RoceDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, CalculatedStats, "Return on Capital Employed (ROCE)")
+        data = _param_chart(
+            company_id, CalculatedStats, "Return on Capital Employed (ROCE)"
+        )
 
         return JsonResponse(data)
 
@@ -466,7 +461,9 @@ class EquityPerShareDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        data = _param_chart(company_id, CalculatedStats, "Equity (Book Value) Per Share")
+        data = _param_chart(
+            company_id, CalculatedStats, "Equity (Book Value) Per Share"
+        )
 
         return JsonResponse(data)
 
