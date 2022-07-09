@@ -1,0 +1,22 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Portfolio{% endblock title %}
+
+{% block content %}
+    <h1>Portfolio Overview</h1>
+    <table class="table table-striped">
+        <tbody>
+        {% for investment in investments %}
+        <tr>
+            <td>{{ investment.decision }}</td> 
+            <td>{{ investment.date_dealt }}</td>
+            <td>{{ investment.date_settled }}</td>
+            <td>{{ investment.reference }}</td>
+            <td>{{ investment.price }}</td>
+            <td>{{ investment.fees }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+{% endblock content %}
