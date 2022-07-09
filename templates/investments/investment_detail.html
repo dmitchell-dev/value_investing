@@ -74,8 +74,8 @@ updated_at = models.DateTimeField(auto_now=True)
             </div>
         </div>
 
-        <a class="btn btn-primary" href="{% url 'portfolio:investment_update' investment.pk %}"> Edit Investment</a>
-
+        <a class="btn btn-primary" href="{% url 'portfolio:investment_update' investment.pk %}">Edit</a>
+        <a class="btn btn-danger" href="{% url 'portfolio:investment_delete' investment.pk %}">Delete</a>
 
     </div>
 

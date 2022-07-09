@@ -3,6 +3,17 @@
 {% block title %}Investments{% endblock title %}
 
 {% block content %}
+
+<div class="row">
+    <div class="col-6">
+        <h1>Investment Page</h1>
+    </div>
+    <div class="col-6">
+        <a class="btn btn-primary float-right" href="{% url 'portfolio:investment_create' %}">Add Investment</a>
+    </div>
+</div>
+
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -13,12 +24,9 @@
             <th scope="col">reference</th>
             <th scope="col">price</th>
             <th scope="col">fees</th>
-            <th scope="col">created_at</th>
-            <th scope="col">updated_at</th>
         </tr>
     </thead>
     <tbody>
-        <h1>Investment Page</h1>
         {% for investment in investment_list %}
             <tr>
                 <td><a href="{{ investment.get_absolute_url }}">{{ investment.company }}</a></td>
@@ -28,8 +36,6 @@
                 <td>{{ investment.reference }}</td>
                 <td>{{ investment.price }}</td>
                 <td>{{ investment.fees }}</td>
-                <td>{{ investment.created_at }}</td>
-                <td>{{ investment.updated_at }}</td>
             </tr>
         {% endfor %}
     </tbody>

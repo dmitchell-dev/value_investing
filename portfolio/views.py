@@ -1,4 +1,11 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.urls import reverse_lazy
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView
+    )
 from django.shortcuts import render
 from .models import Investments, WishList, Portfolio
 
@@ -63,3 +70,9 @@ class InvestmentUpdateView(UpdateView):
         "price",
         "fees",
     ]
+
+
+class InvestmentDeleteView(DeleteView):
+    model = Investments
+    template_name = "investments/investment_delete.html"
+    success_url = reverse_lazy('portfolio:investment_list')
