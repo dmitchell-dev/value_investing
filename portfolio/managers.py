@@ -2,17 +2,25 @@ from django.db.models import QuerySet
 
 
 class InvestmentsQueryset(QuerySet):
-    def get_table_joined_filtered(self, tidm):
+    def get_table_joined_filtered(self):
         return self.values(
             "num_stock",
+            "decision",
+            "reference",
             "price",
             "fees",
             "created_at",
             "date_dealt",
+            "date_settled",
             "company__tidm",
             "company__company_name",
+            "company__industry",
+            "company__sector",
+            "company__exchange",
+            "company__country",
+            "company__currency",
             "decision__value",
-        ).filter(company__tidm=tidm)
+        )
 
 
 class WishListQueryset(QuerySet):

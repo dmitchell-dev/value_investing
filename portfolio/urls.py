@@ -7,6 +7,7 @@ from .views import (
     InvestmentUpdateView,
     InvestmentDeleteView,
     PortfolioOverviewView,
+    portfolio_overview_view,
     )
 
 app_name = "portfolio"
@@ -18,4 +19,5 @@ urlpatterns = [
     path("investments/<int:pk>/update/", InvestmentUpdateView.as_view(), name="investment_update"),
     path("investments/", InvestmentListView.as_view(), name="investment_list"),
     path("portfolio/", PortfolioOverviewView.as_view(), name="portfolio_overview"),
+    path("portfolio/overview/", portfolio_overview_view, name="portfolio_overview_2"),
 ]

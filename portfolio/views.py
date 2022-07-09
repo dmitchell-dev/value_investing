@@ -10,6 +10,7 @@ from django.views.generic import (
 from django.shortcuts import render
 from .models import Investments, WishList, Portfolio
 
+import plotly.express as px
 import pandas as pd
 
 
@@ -71,14 +72,44 @@ class PortfolioOverviewView(TemplateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
 
-        portfolio_data = self._get_portfolio_data()
+        portfolio_df = self._get_portfolio_data()
 
         # Add context data
-        context["investments"] = portfolio_data
+        context["investments"] = portfolio_df
 
         return context
 
     def _get_portfolio_data(self):
-        test_df = Investments.objects.all()
+        test_df = pd.DataFrame(
+            list(Investments.objects.get_table_joined_filtered())
+            )
 
         return test_df
+
+
+def portfolio_overview_view(request, pk):
+
+    error_message = None
+
+    df = pd.DataFrame(
+            list(Investments.objects.get_table_joined_filtered())
+            )
+
+    df["value"] = df["value"].astype(float)
+
+    chart_plot = px.line(
+        df,
+        x="time_stamp",
+        y="value",
+        labels={"time_stamp": "Date", "value": "Price to Earnings (P/E)"},
+    )
+
+    # Getting HTML needed to render the plot.
+    plot_div = chart_plot.to_html(full_html=False)
+
+    context = {
+        "graph": plot_div,
+        "error_message": error_message,
+    }
+
+    return render(request, "portfolio/overview.html", context)
