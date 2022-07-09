@@ -8,11 +8,11 @@
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Decision</th>
-            <th scope="col">reporting_stock_price</th>
-            <th scope="col">current_stock_price</th>
-            <th scope="col">reporting_mos</th>
-            <th scope="col">current_mos</th>
-            <th scope="col">buy_mos</th>
+            <th scope="col">date_dealt</th>
+            <th scope="col">date_settled</th>
+            <th scope="col">reference</th>
+            <th scope="col">price</th>
+            <th scope="col">fees</th>
             <th scope="col">created_at</th>
             <th scope="col">updated_at</th>
         </tr>
@@ -21,12 +21,13 @@
         <h1>Investment Page</h1>
         {% for investment in investment_list %}
             <tr>
-                <td><a href="{{ investment.get_absolute_url }}">{{ investment.company_name }}</a></td>
-                <td>{{ investment.decision_type }}</td> 
-                <td>{{ investment.reporting_stock_price }}</td>
-                <td>{{ investment.current_stock_price }}</td>
-                <td>{{ investment.reporting_mos }}</td>
-                <td>{{ investment.buy_mos }}</td>
+                <td><a href="{{ investment.get_absolute_url }}">{{ investment.company }}</a></td>
+                <td>{{ investment.decision }}</td> 
+                <td>{{ investment.date_dealt }}</td>
+                <td>{{ investment.date_settled }}</td>
+                <td>{{ investment.reference }}</td>
+                <td>{{ investment.price }}</td>
+                <td>{{ investment.fees }}</td>
                 <td>{{ investment.created_at }}</td>
                 <td>{{ investment.updated_at }}</td>
             </tr>
