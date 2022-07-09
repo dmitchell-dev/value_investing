@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.shortcuts import render
 from .models import Investments, WishList, Portfolio
 
@@ -38,6 +38,21 @@ class InvestmentDetailView(DetailView):
 class InvestmentCreateView(CreateView):
     model = Investments
     template_name = "investments/investment_create.html"
+    fields = [
+        "company",
+        "decision",
+        "date_dealt",
+        "date_settled",
+        "reference",
+        "num_stock",
+        "price",
+        "fees",
+    ]
+
+
+class InvestmentUpdateView(UpdateView):
+    model = Investments
+    template_name = "investments/investment_update.html"
     fields = [
         "company",
         "decision",
