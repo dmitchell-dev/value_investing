@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from ancillary_info.models import Companies, DecisionType
 from .managers import (
     InvestmentsQueryset,
@@ -27,6 +28,9 @@ class Investments(models.Model):
 
     def __str__(self):
         return f"{self.company} - {self.decision} - {self.created_at}"
+
+    def get_absolute_url(self):
+        return reverse("portfolio:investment_detail", kwargs={"pk": self.pk})
 
 
 class WishList(models.Model):
