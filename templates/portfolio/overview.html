@@ -5,27 +5,22 @@
 
 {% block content %}
     <h1>Portfolio Overview</h1>
-    <table class="table table-striped">
-        <tbody>
-        {% for investment in investments %}
-        <tr>
-            <td>{{ investment.decision }}</td> 
-            <td>{{ investment.date_dealt }}</td>
-            <td>{{ investment.date_settled }}</td>
-            <td>{{ investment.reference }}</td>
-            <td>{{ investment.num_stock }}</td>
-            <td>{{ investment.price }}</td>
-            <td>{{ investment.fees }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-    </table>
 
+    <div class="row">
+        <div class="col">
+            <div hx-trigger="load" hx-get="{% url 'portfolio:portfolio_overview_pie' %}" hx-swap="innerHTML" id="frameworks_pie">
+                {% include 'portfolio/partials/pie-chart.html' %}
+            <div>
+        <div>
+    </div>
 
-
-    <div name="q" hx-trigger="load" hx-get="{% url 'portfolio:portfolio_overview_2' %}" hx-swap="innerHTML" hx-target="#frameworks" id="frameworks">
-        {% include 'portfolio/partials/pie-chart.html' %}
-    <div>
+    <div class="row">
+        <div class="col">
+            <div hx-trigger="load" hx-get="{% url 'portfolio:portfolio_overview_table' %}" hx-swap="innerHTML" id="frameworks_table">
+                {% include 'portfolio/partials/pie-chart-2.html' %}
+            <div>
+        <div>
+    </div>
 
 {% endblock content %}
 
