@@ -8,16 +8,8 @@
 
     <div class="row">
         <div class="col">
-            <div hx-trigger="load" hx-get="{% url 'portfolio:portfolio_overview_pie' %}" hx-swap="innerHTML" id="frameworks_pie">
-                {% include 'portfolio/partials/pie-chart.html' %}
-            <div>
-        <div>
-    </div>
-
-    <div class="row">
-        <div class="col">
-            <div hx-trigger="load" hx-get="{% url 'portfolio:portfolio_overview_table' %}" hx-swap="innerHTML" id="frameworks_table">
-                {% include 'portfolio/partials/pie-chart-2.html' %}
+            <div hx-trigger="load" hx-get="{% url 'portfolio:portfolio_charts' %}" hx-swap="innerHTML" id="frameworks_pie">
+                {% include 'portfolio/partials/charts.html' %}
             <div>
         <div>
     </div>
