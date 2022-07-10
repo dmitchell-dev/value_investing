@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "django_extensions",
     "rest_framework",
+    "django_htmx",
     # Local
     "users.apps.UsersConfig",
     "pages.apps.PagesConfig",
@@ -65,6 +66,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "value_investing.urls"

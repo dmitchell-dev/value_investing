@@ -81,35 +81,40 @@ class PortfolioOverviewView(TemplateView):
 
     def _get_portfolio_data(self):
         test_df = pd.DataFrame(
-            list(Investments.objects.get_table_joined_filtered())
+            list(Investments.objects.get_table_joined())
             )
 
         return test_df
 
 
-def portfolio_overview_view(request, pk):
+def portfolio_overview_view(request):
 
     error_message = None
 
     df = pd.DataFrame(
-            list(Investments.objects.get_table_joined_filtered())
+            list(Investments.objects.get_table_joined())
             )
 
-    df["value"] = df["value"].astype(float)
+    df["price"] = df["price"].astype(float)
 
-    chart_plot = px.line(
+    chart_plot = px.pie(
         df,
-        x="time_stamp",
-        y="value",
-        labels={"time_stamp": "Date", "value": "Price to Earnings (P/E)"},
+        values="price",
+        names="company__company_name",
+        title="Test Chart",
     )
 
     # Getting HTML needed to render the plot.
-    plot_div = chart_plot.to_html(full_html=False)
+    plot_div = chart_plot.to_html()
 
     context = {
         "graph": plot_div,
         "error_message": error_message,
     }
 
-    return render(request, "portfolio/overview.html", context)
+    return render(request, 'portfolio/partials/pie-chart.html', context)
+
+    # if request.htmx:
+    #     return render(request, 'portfolio/partials/pie-chart.html', context)
+    # else:
+    #     return render(request, 'portfolio/overview.html', context)

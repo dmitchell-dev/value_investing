@@ -5,6 +5,7 @@ mysqlclient
 SQLAlchemy
 mysql-connector-python
 Psycopg2
+django-htmx
 
 # API Import
 httpx

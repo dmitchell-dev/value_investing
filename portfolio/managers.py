@@ -2,7 +2,7 @@ from django.db.models import QuerySet
 
 
 class InvestmentsQueryset(QuerySet):
-    def get_table_joined_filtered(self):
+    def get_table_joined(self):
         return self.values(
             "num_stock",
             "decision",

@@ -19,5 +19,5 @@ urlpatterns = [
     path("investments/<int:pk>/update/", InvestmentUpdateView.as_view(), name="investment_update"),
     path("investments/", InvestmentListView.as_view(), name="investment_list"),
     path("portfolio/", PortfolioOverviewView.as_view(), name="portfolio_overview"),
-    path("portfolio/overview/", portfolio_overview_view, name="portfolio_overview_2"),
+    path("portfolio/overview-chart/", portfolio_overview_view, name="portfolio_overview_2"),
 ]
