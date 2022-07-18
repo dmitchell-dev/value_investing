@@ -1,0 +1,47 @@
+{% extends '_base.html' %}
+
+{% block title %}Companies{% endblock title %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-6">
+        <h1>Companies Page</h1>
+    </div>
+    <div class="col-6">
+        <a class="btn btn-primary float-right" href="{% url 'ancillary:company_create' %}">Add Company</a>
+    </div>
+</div>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">TIDM</th>
+            <th scope="col">Type</th>
+            <th scope="col">Sector</th>
+            <th scope="col">Exchange</th>
+            <th scope="col">Country</th>
+            <th scope="col">Currency</th>
+            <th scope="col">Source</th>
+            <th scope="col">Wish List</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for company in company_list %}
+            <tr>
+                <td><a href="{{ company.get_absolute_url }}">{{ company.company_name }}</a></td>
+                <td>{{ company.tidm }}</td>
+                <td>{{ company.comp_type }}</td> 
+                <td>{{ company.sector }}</td>
+                <td>{{ company.exchange }}</td>
+                <td>{{ company.country }}</td>
+                <td>{{ company.currency }}</td>
+                <td>{{ company.company_source }}</td>
+                <td>{{ company.wish_list }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

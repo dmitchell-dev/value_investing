@@ -25,5 +25,6 @@ urlpatterns = [
     path("", include("pages.urls")),
     path("dashboard/", include("dashboard_company.urls")),
     path("portfolio/", include("portfolio.urls")),
+    path("ancillary/", include("ancillary_info.urls")),
     path("economic/", include("economic.urls")),
 ]

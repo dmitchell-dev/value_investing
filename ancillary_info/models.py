@@ -4,6 +4,7 @@ from .managers import (
     ParamsQueryset,
     ParamsApiQueryset,
 )
+from django.urls import reverse
 
 
 class Exchanges(models.Model):
@@ -177,3 +178,6 @@ class Companies(models.Model):
 
     def __str__(self):
         return self.company_name
+
+    def get_absolute_url(self):
+        return reverse("ancillary:company_detail", kwargs={"pk": self.pk})
