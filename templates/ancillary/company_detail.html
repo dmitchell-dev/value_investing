@@ -7,6 +7,7 @@
 <td>{{ company.tidm }}</td>
 <td>{{ company.comp_type }}</td> 
 <td>{{ company.sector }}</td>
+<td>{{ company.industry }}</td>
 <td>{{ company.exchange }}</td>
 <td>{{ company.country }}</td>
 <td>{{ company.currency }}</td>
@@ -36,7 +37,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-4">
+            <div class="col-3">
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Type</h5>
@@ -44,7 +45,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-3">
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Sector</h5>
@@ -52,7 +53,15 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-3">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Industry</h5>
+                        <p class="card-text">{{ company.industry }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Exchange</h5>
