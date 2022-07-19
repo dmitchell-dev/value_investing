@@ -33,8 +33,9 @@ class Command(BaseCommand):
             print(f"API Import {comp_num} of {num_comps}: {current_company}")
 
             # Get info oncurrent company
-            curr_comp_id = df_companies["id"].iat[comp_num - 1]
-            curr_comp_loc = df_companies["country__value"].iat[comp_num - 1]
+            comp_idx = df_companies[df_companies['tidm'] == current_company].index[0]
+            curr_comp_id = df_companies["id"].iat[comp_idx]
+            curr_comp_loc = df_companies["country__value"].iat[comp_idx]
 
             # For each statement type
             statement_list = ["INCOME_STATEMENT", "BALANCE_SHEET", "CASH_FLOW"]
