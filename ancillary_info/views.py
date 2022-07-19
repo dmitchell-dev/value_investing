@@ -1,4 +1,5 @@
 from django.urls import reverse_lazy
+from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import (
     ListView,
     DetailView,
@@ -23,7 +24,7 @@ class CompanyDetailView(DetailView):
     template_name = "ancillary/company_detail.html"
 
 
-class CompanyCreateView(CreateView):
+class CompanyCreateView(SuccessMessageMixin, CreateView):
     model = Companies
     template_name = "ancillary/company_create.html"
     fields = [
@@ -40,8 +41,10 @@ class CompanyCreateView(CreateView):
         "company_summary",
     ]
 
+    success_message = "Company was created successfully"
 
-class CompanyUpdateView(UpdateView):
+
+class CompanyUpdateView(SuccessMessageMixin, UpdateView):
     model = Companies
     template_name = "ancillary/company_update.html"
     fields = [
@@ -57,6 +60,8 @@ class CompanyUpdateView(UpdateView):
         "wish_list",
         "company_summary",
     ]
+
+    success_message = "Company was updated successfully"
 
 
 class CompanyDeleteView(DeleteView):
