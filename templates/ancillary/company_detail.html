@@ -26,6 +26,11 @@
         {% endfor %}
     {% endif %}
 
+
+    <a class="btn btn-primary" href="{% url 'ancillary:company_update' company.pk %}">Edit</a>
+    <a class="btn btn-danger" href="{% url 'ancillary:company_delete' company.pk %}">Delete</a>
+    <a class="btn btn-primary" href="{% url 'ancillary:company_delete' company.pk %}">Update Stats</a>
+
     <div class="container">
         <div class="row">
             <div class="col-6">
@@ -125,10 +130,6 @@
                 </div>
             </div>
         </div>
-
-        <a class="btn btn-primary" href="{% url 'ancillary:company_update' company.pk %}">Edit</a>
-        <a class="btn btn-danger" href="{% url 'ancillary:company_delete' company.pk %}">Delete</a>
-
     </div>
 
 {% endblock content %}
