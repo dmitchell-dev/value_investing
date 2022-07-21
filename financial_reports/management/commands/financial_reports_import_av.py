@@ -105,6 +105,8 @@ class Command(BaseCommand):
 
         print(f"{total_rows_added} saved to database")
 
+        return total_rows_added
+
     def _format_dataframe(self, df, company_id):
         df.insert(0, "company_id", [company_id] * df.shape[0])
         df.reset_index(drop=True, inplace=True)

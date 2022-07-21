@@ -87,6 +87,8 @@ class Command(BaseCommand):
 
         print(f"{total_rows_added} saved to database")
 
+        return total_rows_added
+
     def _format_dataframe(self, df, company_id):
         df.insert(0, "company_id", [company_id] * df.shape[0])
         df = df.drop(["1. open", "2. high", "3. low", "7. dividend amount"], axis=1)

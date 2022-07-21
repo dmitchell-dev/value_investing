@@ -13,7 +13,10 @@ import pandas as pd
 class Command(BaseCommand):
     help = "Populates Static tables from csv files"
 
-    def handle(self, *args, **kwargs):
+    def add_arguments(self, parser):
+        parser.add_argument("--symbol", nargs="+", type=str)
+
+    def handle(self, *args, **options):
         # Default Values
         dcf_dict = {
             "Estimated Growth Rate": 0.06,
@@ -28,13 +31,20 @@ class Command(BaseCommand):
         df_params = pd.DataFrame(list(Params.objects.get_params_joined()))
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
+        # Specific symbols or all
+        if options["symbol"] is None:
+            comp_list = df_companies["tidm"].to_list()
+        else:
+            comp_list = options["symbol"]
+
         # Populate values for each company
         # Get list of companies
-        company_list = df_companies.tidm.to_list()
-        num_companies = len(company_list)
+        num_companies = len(comp_list)
+        total_rows_added = 0
         company_num = 0
+        num_rows = 0
 
-        for company_tidm in company_list:
+        for company_tidm in comp_list:
             company_num = company_num + 1
             print(f"Company {company_num} of {num_companies}, {company_tidm}")
 
@@ -65,6 +75,10 @@ class Command(BaseCommand):
             DcfVariables.objects.bulk_create(reports)
 
             print(f"Rows saved to database: {num_rows} for {company_tidm}")
+
+            total_rows_added = total_rows_added + num_rows
+
+            return total_rows_added
 
     @staticmethod
     def _generate_param_id(df_params, df_data):

@@ -152,13 +152,15 @@ class Command(BaseCommand):
 
         # Create new companies
         if not df_create.empty:
-            self._create_rows(df_create, financial_latest_date)
-            print("Dashboard Create Complete: TODO rows updated")
+            num_rows_created = self._create_rows(df_create, financial_latest_date)
+            print(f"Dashboard Create Complete: {num_rows_created} rows updated")
 
         # Update existing companies
         if not df_update.empty:
             num_rows_updated = self._update_rows(df_update, financial_latest_date)
             print(f"Dashboard Update Complete: {num_rows_updated} rows updated")
+
+        return num_rows_created, num_rows_updated
 
     def _create_update_split(self, new_df):
         existing_df = pd.DataFrame(list(DashboardCompany.objects.get_dash_joined()))
@@ -222,7 +224,11 @@ class Command(BaseCommand):
             )
             for i, row in df_create.iterrows()
         ]
-        DashboardCompany.objects.bulk_create(reports)
+        list_of_objects = DashboardCompany.objects.bulk_create(reports)
+
+        total_rows_added = len(list_of_objects)
+
+        return total_rows_added
 
     def _update_rows(self, df_update, financial_latest_date):
 
