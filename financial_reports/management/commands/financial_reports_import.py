@@ -20,7 +20,8 @@ class Command(BaseCommand):
         if options["symbol"] is None:
             file_list = self._get_report_list()
         else:
-            file_list = options["symbol"]
+            file_list = ["single_company"]
+            file_list_single = self._get_report_list()
 
         num_files = len(file_list)
         file_num = 0
@@ -32,7 +33,11 @@ class Command(BaseCommand):
             print(f"file {file_num} of {num_files}, {current_company_filename}")
 
             # Process filename
-            current_company_tidm = self._process_filename(current_company_filename)
+            if options["symbol"] is None:
+                current_company_tidm = self._process_filename(current_company_filename)
+            else:
+                current_company_tidm = options["symbol"][0]
+                current_company_filename = self._get_filename(file_list_single, current_company_tidm)
 
             # Get company report data
             df_data = self._import_reporting_data(current_company_filename)
@@ -171,6 +176,16 @@ class Command(BaseCommand):
         current_company_tidm = current_company_filename.split("_")[0]
 
         return current_company_tidm
+
+    @staticmethod
+    def _get_filename(file_list_single, current_company_tidm):
+
+        # Get company tidm for associated id
+        tidm_list = [tidm.split('_', 1)[0] for tidm in file_list_single]
+        tidm_idx = tidm_list.index(current_company_tidm)
+        current_company_filename = file_list_single[tidm_idx]
+
+        return current_company_filename
 
     @staticmethod
     def _generate_param_id(df_params_api, df_data):
