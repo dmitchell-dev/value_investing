@@ -1,12 +1,16 @@
 {% extends '_base.html' %}
-{% load crispy_forms_tags %}
 
-{% block title %}Companies{% endblock title %}
+{% block title %}Companies Stats Update{% endblock title %}
 
 {% block content %}
-    <h1>Company Delete</h1>
-    <form action="" method="post">{% csrf_token %}
-        <p>Are you sure you want to delete "{{ companies.company_name }}"?</p>
-        <input class="btn btn-success" type="submit" value="Confirm">
-    </form>
+    <h1>Company Stats Update</h1>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="text-center alert alert-{{ message.tags }}">
+                {{ message|safe }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <p>{{ company_name }}</p>
+    <p>{{ company_tidm }}</p>
 {% endblock content %}

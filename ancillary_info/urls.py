@@ -6,6 +6,7 @@ from .views import (
     CompanyCreateView,
     CompanyUpdateView,
     CompanyDeleteView,
+    company_stats_update,
     )
 
 app_name = "ancillary"
@@ -15,5 +16,6 @@ urlpatterns = [
     path("companies/create/", CompanyCreateView.as_view(), name="company_create"),
     path("companies/<int:pk>/", CompanyDetailView.as_view(), name="company_detail"),
     path("companies/<int:pk>/update/", CompanyUpdateView.as_view(), name="company_update"),
+    path("companies/<int:pk>/stats-update/", company_stats_update, name="company_stats_update"),
     path("companies/", CompanyListView.as_view(), name="company_list"),
 ]

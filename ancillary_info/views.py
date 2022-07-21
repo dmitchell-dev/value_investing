@@ -1,4 +1,8 @@
+from django.core import management
+from django.shortcuts import render
+from django.http import HttpResponse
 from django.urls import reverse_lazy
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import (
     ListView,
@@ -68,3 +72,26 @@ class CompanyDeleteView(DeleteView):
     model = Companies
     template_name = "ancillary/company_delete.html"
     success_url = reverse_lazy('ancillary:company_list')
+
+
+def company_stats_update(request, pk):
+
+    error_message = None
+    # Get correct company name and tidm
+    company_name = Companies.objects.filter(id=pk).values()[0]["company_name"]
+    company_tidm = Companies.objects.filter(id=pk).values()[0]["tidm"]
+
+    try:
+        management.call_command('financial_reports_import', '--symbol', company_tidm)
+        context = {
+            "company_name": company_name,
+            "company_tidm": company_tidm,
+            "error_message": error_message,
+        }
+        messages.add_message(request, messages.SUCCESS, 'Company stats were successfully updated.')
+
+    except Exception as e:
+        messages.add_message(request, messages.ERROR, f"{str(e)}")
+        return render(request, "ancillary/company_stats_update.html")
+
+    return render(request, "ancillary/company_stats_update.html", context)

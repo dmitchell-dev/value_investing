@@ -10,3 +10,10 @@ h1 {
 .icon-blue {
     color: #4679BD;
   }
+
+/* Bootstrap does not have css for message.ERROR */
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
