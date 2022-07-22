@@ -113,7 +113,7 @@ def company_stats_update(request, pk):
         '--symbol', company_tidm
         )
 
-    (dash_created, dash_updated) = management.call_command(
+    dash_stats = management.call_command(
         'generate_dashboard'
         )
 
@@ -135,8 +135,7 @@ def company_stats_update(request, pk):
     print(f"Share Split: {share_split_num}")
     print(f"Default Variables: {default_var_num}")
     print(f"Calculate Stats: {calc_stats_num}")
-    print(f"Dashboard Created: {dash_created}")
-    print(f"Dashboard Updated: {dash_updated}")
+    print(f"Dashboard: {dash_stats}")
 
     # except Exception as e:
         # messages.add_message(request, messages.ERROR, f"{str(e)}")

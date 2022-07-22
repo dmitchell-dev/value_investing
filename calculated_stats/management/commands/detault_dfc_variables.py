@@ -78,7 +78,7 @@ class Command(BaseCommand):
 
             total_rows_added = total_rows_added + num_rows
 
-            return total_rows_added
+            return str(total_rows_added)
 
     @staticmethod
     def _generate_param_id(df_params, df_data):

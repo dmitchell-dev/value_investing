@@ -108,7 +108,7 @@ class Command(BaseCommand):
 
         print(f"{total_rows_added} saved to database")
 
-        return total_rows_added
+        return str(total_rows_added)
 
     @staticmethod
     def _import_reporting_data(current_company_filename):

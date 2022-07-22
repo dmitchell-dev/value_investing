@@ -195,7 +195,7 @@ class Command(BaseCommand):
 
         print(f"{total_rows_added} saved to database")
 
-        return total_rows_added
+        return str(total_rows_added)
 
     def _replace_with_id(self, df_calculated, company_tidm, df_params, df_companies):
         param_id_list = []

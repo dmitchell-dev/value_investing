@@ -16,6 +16,9 @@ class Command(BaseCommand):
         pd.set_option("display.max_rows", None)
         pd.set_option("display.max_columns", None)
 
+        num_rows_created = 0
+        num_rows_updated = 0
+
         # Companies
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
@@ -160,7 +163,7 @@ class Command(BaseCommand):
             num_rows_updated = self._update_rows(df_update, financial_latest_date)
             print(f"Dashboard Update Complete: {num_rows_updated} rows updated")
 
-        return num_rows_created, num_rows_updated
+        return f"Created: {str(num_rows_created)}, Updated: {str(num_rows_updated)}"
 
     def _create_update_split(self, new_df):
         existing_df = pd.DataFrame(list(DashboardCompany.objects.get_dash_joined()))
