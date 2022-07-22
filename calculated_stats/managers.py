@@ -32,6 +32,8 @@ class DcfVariablesQueryset(QuerySet):
     def get_table_joined_filtered(self, tidm):
         return self.values(
             "value",
+            "company_id",
+            "parameter_id",
             "company__tidm",
             "parameter__param_name",
         ).filter(company__tidm=tidm)

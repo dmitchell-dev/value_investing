@@ -40,9 +40,7 @@ class Command(BaseCommand):
         # Populate values for each company
         # Get list of companies
         num_companies = len(comp_list)
-        total_rows_added = 0
         company_num = 0
-        num_rows = 0
 
         for company_tidm in comp_list:
             company_num = company_num + 1
@@ -61,24 +59,41 @@ class Command(BaseCommand):
             # Generate parameter_id and replace index
             df_data = self._generate_param_id(df_params, df_data)
 
-            num_rows = df_data.shape[0]
+            # num_rows = df_data.shape[0]
 
-            # Save to database
-            reports = [
-                DcfVariables(
-                    company=Companies.objects.get(id=row["company_id"]),
-                    parameter=Params.objects.get(id=row["parameter_id"]),
-                    value=row["value"],
+            # # Save to database
+            # reports = [
+            #     DcfVariables(
+            #         company=Companies.objects.get(id=row["company_id"]),
+            #         parameter=Params.objects.get(id=row["parameter_id"]),
+            #         value=row["value"],
+            #     )
+            #     for i, row in df_data.iterrows()
+            # ]
+            # DcfVariables.objects.bulk_create(reports)
+
+            # print(f"Rows saved to database: {num_rows} for {company_tidm}")
+
+            # total_rows_added = total_rows_added + num_rows
+
+            # return str(total_rows_added)
+            # Split ready for create or update
+            (df_create, df_update) = self._create_update_split(
+                df_data,
+                company_tidm
                 )
-                for i, row in df_data.iterrows()
-            ]
-            DcfVariables.objects.bulk_create(reports)
 
-            print(f"Rows saved to database: {num_rows} for {company_tidm}")
+            # Create new companies
+            if not df_create.empty:
+                num_rows_created = self._create_rows(df_create)
+                print(f"Dashboard Create Complete: {num_rows_created} rows updated")
 
-            total_rows_added = total_rows_added + num_rows
+            # Update existing companies
+            if not df_update.empty:
+                num_rows_updated = self._update_rows(df_update, company_tidm)
+                print(f"Dashboard Update Complete: {num_rows_updated} rows updated")
 
-            return str(total_rows_added)
+            return f"Created: {str(num_rows_created)}, Updated: {str(num_rows_updated)}"
 
     @staticmethod
     def _generate_param_id(df_params, df_data):
@@ -95,3 +110,42 @@ class Command(BaseCommand):
         )
 
         return df_data
+
+    def _create_update_split(self, new_df, company_tidm):
+        existing_df = pd.DataFrame(list(DcfVariables.objects.get_table_joined_filtered(company_tidm)))
+
+        if not existing_df.empty:
+            df_new = pd.DataFrame()
+            df_existing = existing_df
+        else:
+            df_new = new_df
+            df_existing = pd.DataFrame()
+
+        return df_new, df_existing
+
+    def _create_rows(self, df_create):
+
+        # Save to database
+        reports = [
+            DcfVariables(
+                company=Companies.objects.get(id=row["company_id"]),
+                parameter=Params.objects.get(id=row["parameter_id"]),
+                value=row["value"],
+            )
+            for i, row in df_create.iterrows()
+        ]
+        list_of_objects = DcfVariables.objects.bulk_create(reports)
+
+        total_rows_added = len(list_of_objects)
+
+        return total_rows_added
+
+    def _update_rows(self, df_update, company_tidm):
+
+        extsting_qs = DcfVariables.objects.filter(company__tidm=company_tidm)
+
+        num_rows_updated = DcfVariables.objects.bulk_update(
+            extsting_qs, ["value"]
+        )
+
+        return num_rows_updated
