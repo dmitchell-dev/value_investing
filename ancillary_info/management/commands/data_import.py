@@ -26,12 +26,12 @@ class Command(BaseCommand):
         return_results = []
 
         # Specific symbols or all
-        if options["comp_pk"] is None:
+        if options["comp_pk"][0] == 'None':
             pk = None
+            company_tidm = None
         else:
             pk = int(options["comp_pk"][0])
-
-        company_tidm = Companies.objects.filter(id=pk).values()[0]["tidm"]
+            company_tidm = Companies.objects.filter(id=pk).values()[0]["tidm"]
 
         # try:
         # Ancillary Import if required
