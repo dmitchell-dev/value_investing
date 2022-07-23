@@ -8,7 +8,11 @@ class Command(BaseCommand):
     help = "populates and updates all tables"
 
     def add_arguments(self, parser):
-        parser.add_argument("--comp_pk", nargs="+", type=str)
+        parser.add_argument(
+            '--comp_pk',
+            nargs="+",
+            type=str
+            )
         parser.add_argument(
             '--from_scratch',
             type=str,
@@ -32,9 +36,11 @@ class Command(BaseCommand):
         # try:
         # Ancillary Import if required
         if options["from_scratch"]:
-            management.call_command(
+            ancillary_num = management.call_command(
                 'ancillary_import'
                 )
+            ancillary_result = f"Ancillary Tables; {ancillary_num}"
+            return_results.append(ancillary_result)
 
         # Financial Import
         reports_num = management.call_command(

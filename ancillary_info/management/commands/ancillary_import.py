@@ -42,6 +42,9 @@ class Command(BaseCommand):
     help = "Populates Static tables from csv files"
 
     def handle(self, *args, **kwargs):
+
+        results_list = []
+
         for table_object in object_list:
 
             table_name = table_object._meta.db_table
@@ -50,21 +53,30 @@ class Command(BaseCommand):
             for field in table_object._meta.fields:
                 if not isinstance(field, AutoField):
                     all_fields.append(field.attname)
-            print(all_fields)
 
             path = BASE_DIR_LOCAL / f"data/database_tables/{table_name}.csv"
 
             with open(path) as f:
                 reader = csv.reader(f)
                 next(reader, None)  # skip the header
-                for row in reader:
 
+                row_num = 0
+
+                for row in reader:
                     insert_dict = {}
-                    row_num = 0
+                    row_num = row_num + 1
+
                     # For cvs files with varying column numbers
                     for field in all_fields:
-                        row_num = row_num + 1
+
                         if field != "created_at" and field != "updated_at":
                             insert_dict[field] = row[row_num]
 
-                    _, created = table_object.objects.get_or_create(**insert_dict)
+                    _, created = table_object.objects.get_or_create(
+                        **insert_dict
+                        )
+
+            print(f"{table_name} Import Completed with {row_num} rows imported")
+            results_list.append(f"{table_name}; Created: {str(row_num)}")
+
+        return '-'.join(results_list)
