@@ -74,9 +74,13 @@ class CompanyDeleteView(DeleteView):
     success_url = reverse_lazy('ancillary:company_list')
 
 
-def company_stats_update(request, pk):
+def company_stats_update(request, **kwargs):
 
     error_message = None
+    pk = None
+
+    for arg in kwargs.values():
+        pk = arg
 
     # Import data for current company
     result_str = management.call_command(
