@@ -87,7 +87,7 @@ class Command(BaseCommand):
 
         print(f"{total_rows_added} saved to database")
 
-        return f"Created: {str(total_rows_added)}"
+        return f"Created: {str(total_rows_added)}, Updated: Not Implemented"
 
     def _format_dataframe(self, df, company_id):
         df.insert(0, "company_id", [company_id] * df.shape[0])

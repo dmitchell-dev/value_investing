@@ -30,57 +30,65 @@ class Command(BaseCommand):
         company_tidm = Companies.objects.filter(id=pk).values()[0]["tidm"]
 
         # try:
+        # Ancillary Import if required
         if options["from_scratch"]:
             management.call_command(
                 'ancillary_import'
                 )
 
+        # Financial Import
         reports_num = management.call_command(
             'financial_reports_import',
             '--symbol', company_tidm
             )
-        reports_result = f"Financial Reports: {reports_num}"
+        reports_result = f"Financial Reports; {reports_num}"
         return_results.append(reports_result)
 
+        # Financial Import Alpha Vantage
         reports_av_num = management.call_command(
             'financial_reports_import_av',
             '--symbol', company_tidm
             )
-        reports_av_result = f"Financial Reports Alpha Vantage: {reports_av_num}"
+        reports_av_result = f"Financial Reports Alpha Vantage; {reports_av_num}"
         return_results.append(reports_av_result)
 
+        # Share Price Import Alpha Vantage
         share_price_num = management.call_command(
             'share_price_import_av',
             '--symbol', company_tidm
             )
-        share_price_result = f"Share Price Alpha Vantage: {share_price_num}"
+        share_price_result = f"Share Price Alpha Vantage; {share_price_num}"
         return_results.append(share_price_result)
 
+        # Share split Calcs
         share_split_num = management.call_command(
             'share_split_calcs',
             '--symbol', company_tidm
             )
-        share_split_result = f"Share Split: {share_split_num}"
+        share_split_result = f"Share Split; {share_split_num}"
         return_results.append(share_split_result)
 
+        # Default Variables import
         default_var_num = management.call_command(
             'detault_dfc_variables',
             '--symbol', company_tidm
             )
-        default_var_result = f"Default Variables: {default_var_num}"
+        default_var_result = f"Default Variables; {default_var_num}"
         return_results.append(default_var_result)
 
+        # Calculate Stats
         calc_stats_num = management.call_command(
             'calculate_stats',
             '--symbol', company_tidm
             )
-        calc_stats_result = f"Calculate Stats: {calc_stats_num}"
+        calc_stats_result = f"Calculate Stats; {calc_stats_num}"
         return_results.append(calc_stats_result)
 
+        # Update Dashboard
         dash_stats = management.call_command(
             'generate_dashboard'
             )
-        dash_stats_result = f"Dashboard: {dash_stats}"
+        dash_stats_result = f"Dashboard; {dash_stats}"
         return_results.append(dash_stats_result)
 
         # Can only return strings from management commands
