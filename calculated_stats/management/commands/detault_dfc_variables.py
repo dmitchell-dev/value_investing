@@ -41,6 +41,8 @@ class Command(BaseCommand):
         # Get list of companies
         num_companies = len(comp_list)
         company_num = 0
+        num_rows_created = 0
+        num_rows_updated = 0
 
         for company_tidm in comp_list:
             company_num = company_num + 1
@@ -59,24 +61,6 @@ class Command(BaseCommand):
             # Generate parameter_id and replace index
             df_data = self._generate_param_id(df_params, df_data)
 
-            # num_rows = df_data.shape[0]
-
-            # # Save to database
-            # reports = [
-            #     DcfVariables(
-            #         company=Companies.objects.get(id=row["company_id"]),
-            #         parameter=Params.objects.get(id=row["parameter_id"]),
-            #         value=row["value"],
-            #     )
-            #     for i, row in df_data.iterrows()
-            # ]
-            # DcfVariables.objects.bulk_create(reports)
-
-            # print(f"Rows saved to database: {num_rows} for {company_tidm}")
-
-            # total_rows_added = total_rows_added + num_rows
-
-            # return str(total_rows_added)
             # Split ready for create or update
             (df_create, df_update) = self._create_update_split(
                 df_data,

@@ -12,5 +12,9 @@
         {% endfor %}
     {% endif %}
     <p>{{ company_name }}</p>
-    <p>{{ company_tidm }}</p>
+    {% if result_str %}
+        {% for status in result_str %}
+            <p>{{ status }}</p>
+        {% endfor %}
+    {% endif %}
 {% endblock content %}

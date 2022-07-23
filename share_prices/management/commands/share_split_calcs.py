@@ -79,4 +79,4 @@ class Command(BaseCommand):
 
         print(f"{total_rows_added} saved to database")
 
-        return str(total_rows_added)
+        return f"Created: {str(total_rows_added)}"

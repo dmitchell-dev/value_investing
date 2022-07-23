@@ -77,49 +77,19 @@ class CompanyDeleteView(DeleteView):
 def company_stats_update(request, pk):
 
     error_message = None
+
+    # Import data for current company
+    result_str = management.call_command(
+        'data_import',
+        '--comp_pk', pk
+        )
+
     # Get correct company name and tidm
     company_name = Companies.objects.filter(id=pk).values()[0]["company_name"]
-    company_tidm = Companies.objects.filter(id=pk).values()[0]["tidm"]
-
-    # try:
-
-    reports_num = management.call_command(
-        'financial_reports_import',
-        '--symbol', company_tidm
-        )
-
-    reports_av_num = management.call_command(
-        'financial_reports_import_av',
-        '--symbol', company_tidm
-        )
-
-    share_price_num = management.call_command(
-        'share_price_import_av',
-        '--symbol', company_tidm
-        )
-
-    share_split_num = management.call_command(
-        'share_split_calcs',
-        '--symbol', company_tidm
-        )
-
-    default_var_num = management.call_command(
-        'detault_dfc_variables',
-        '--symbol', company_tidm
-        )
-
-    calc_stats_num = management.call_command(
-        'calculate_stats',
-        '--symbol', company_tidm
-        )
-
-    dash_stats = management.call_command(
-        'generate_dashboard'
-        )
 
     context = {
         "company_name": company_name,
-        "company_tidm": company_tidm,
+        "result_str": result_str.split('-'),
         "error_message": error_message,
     }
     messages.add_message(
@@ -127,19 +97,5 @@ def company_stats_update(request, pk):
         messages.SUCCESS,
         'Company stats were successfully updated.'
         )
-
-    print("###### SUMMARY UPDATE STATS ROWS ADDED ######")
-    print(f"Financial Reports: {reports_num}")
-    print(f"Financial Reports Alpha Vantage: {reports_av_num}")
-    print(f"Share Price Alpha Vantage: {share_price_num}")
-    print(f"Share Split: {share_split_num}")
-    print(f"Default Variables: {default_var_num}")
-    print(f"Calculate Stats: {calc_stats_num}")
-    print(f"Dashboard: {dash_stats}")
-
-    # except Exception as e:
-        # messages.add_message(request, messages.ERROR, f"{str(e)}")
-
-        # return render(request, "ancillary/company_stats_update.html")
 
     return render(request, "ancillary/company_stats_update.html", context)
