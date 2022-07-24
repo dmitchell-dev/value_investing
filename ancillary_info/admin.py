@@ -67,6 +67,7 @@ class ParamsAdmin(admin.ModelAdmin):
     fields = [
         "param_name",
         "param_name_col",
+        "report_type",
         "limit_logic",
         "limit_value",
         "data_type",
