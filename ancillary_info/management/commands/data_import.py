@@ -26,7 +26,7 @@ class Command(BaseCommand):
         return_results = []
 
         # Specific symbols or all
-        if options["comp_pk"][0] == 'None':
+        if options["comp_pk"] is None:
             pk = None
             company_tidm = None
         else:
@@ -43,50 +43,80 @@ class Command(BaseCommand):
             return_results.append(ancillary_result)
 
         # Financial Import
-        reports_num = management.call_command(
-            'financial_reports_import',
-            '--symbol', company_tidm
-            )
+        if options["comp_pk"] is None:
+            reports_num = management.call_command(
+                'financial_reports_import',
+                )
+        else:
+            reports_num = management.call_command(
+                'financial_reports_import',
+                '--symbol', company_tidm
+                )
         reports_result = f"Financial Reports; {reports_num}"
         return_results.append(reports_result)
 
         # Financial Import Alpha Vantage
-        reports_av_num = management.call_command(
-            'financial_reports_import_av',
-            '--symbol', company_tidm
-            )
+        if options["comp_pk"] is None:
+            reports_av_num = management.call_command(
+                'financial_reports_import_av',
+                )
+        else:
+            reports_av_num = management.call_command(
+                'financial_reports_import_av',
+                '--symbol', company_tidm
+                )
         reports_av_result = f"Financial Reports Alpha Vantage; {reports_av_num}"
         return_results.append(reports_av_result)
 
         # Share Price Import Alpha Vantage
-        share_price_num = management.call_command(
-            'share_price_import_av',
-            '--symbol', company_tidm
-            )
+        if options["comp_pk"] is None:
+            share_price_num = management.call_command(
+                'share_price_import_av',
+                )
+        else:
+            share_price_num = management.call_command(
+                'share_price_import_av',
+                '--symbol', company_tidm
+                )
         share_price_result = f"Share Price Alpha Vantage; {share_price_num}"
         return_results.append(share_price_result)
 
         # Share split Calcs
-        share_split_num = management.call_command(
-            'share_split_calcs',
-            '--symbol', company_tidm
-            )
+        if options["comp_pk"] is None:
+            share_split_num = management.call_command(
+                'share_split_calcs',
+                )
+        else:
+            share_split_num = management.call_command(
+                'share_split_calcs',
+                '--symbol', company_tidm
+                )
         share_split_result = f"Share Split; {share_split_num}"
         return_results.append(share_split_result)
 
         # Default Variables import
-        default_var_num = management.call_command(
-            'detault_dfc_variables',
-            '--symbol', company_tidm
-            )
+        if options["comp_pk"] is None:
+            default_var_num = management.call_command(
+                'detault_dfc_variables',
+                )
+        else:
+            default_var_num = management.call_command(
+                'detault_dfc_variables',
+                '--symbol', company_tidm
+                )
         default_var_result = f"Default Variables; {default_var_num}"
         return_results.append(default_var_result)
 
         # Calculate Stats
-        calc_stats_num = management.call_command(
-            'calculate_stats',
-            '--symbol', company_tidm
-            )
+        if options["comp_pk"] is None:
+            calc_stats_num = management.call_command(
+                'calculate_stats',
+                )
+        else:
+            calc_stats_num = management.call_command(
+                'calculate_stats',
+                '--symbol', company_tidm
+                )
         calc_stats_result = f"Calculate Stats; {calc_stats_num}"
         return_results.append(calc_stats_result)
 

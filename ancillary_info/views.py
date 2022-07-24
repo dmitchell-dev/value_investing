@@ -83,10 +83,15 @@ def company_stats_update(request, **kwargs):
         pk = arg
 
     # Import data for current company
-    result_str = management.call_command(
-        'data_import',
-        '--comp_pk', pk
-        )
+    if pk:
+        result_str = management.call_command(
+            'data_import',
+            '--comp_pk', pk
+            )
+    else:
+        result_str = management.call_command(
+            'data_import',
+            )
 
     # Get correct company name and tidm
     company_name = Companies.objects.filter(id=pk).values()[0]["company_name"]
