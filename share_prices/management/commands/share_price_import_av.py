@@ -1,3 +1,4 @@
+import json
 from django.core.management.base import BaseCommand
 from ancillary_info.models import Companies
 from share_prices.models import SharePrices
@@ -42,12 +43,16 @@ class Command(BaseCommand):
             curr_comp_loc = df_companies["country__value"].iat[comp_idx]
 
             # AV API Share Import
-            av_import = AlphaVantageClient()
-            header, json_data = av_import.get_share_data(
-                location=curr_comp_loc,
-                symbol=current_company,
-                type="TIME_SERIES_WEEKLY_ADJUSTED",
-            )
+            try:
+                av_import = AlphaVantageClient()
+                header, json_data = av_import.get_share_data(
+                    location=curr_comp_loc,
+                    symbol=current_company,
+                    type="TIME_SERIES_WEEKLY_ADJUSTED",
+                )
+            except IndexError:
+                header = None
+                json_data = None
 
             # Convert to dataframe
             df_data = pd.DataFrame.from_dict(json_data[header], orient="index")
