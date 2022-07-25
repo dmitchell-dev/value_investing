@@ -4,57 +4,68 @@
 
 {% block content %}
 
-    <div class="row">
-        <div class="col">
-            <h2 class="text-info">{{company.company_name}}</h2>
-        </div>
-        <div class="col">
-            <h3 class="text-secondary">{{company.share_listing}} ({{ company.exchange_country }})</h3>
-            <h3 class="text-secondary"><span class="badge badge-secondary">{{company.tidm}}</span></h3>
-        </div>
-        <div class="col">
-            <p class="text-right px-2">Market Cap</p>
-            <p class="text-right"><h3 class="float-right bg-dark text-white rounded px-2 py-1">{{ company.currency_symbol }}{{company.market_cap|floatformat:"2g"}}</h3></p>
-        </div>
-        <div class="col">
-            <p class="text-right px-2">Share Price</p>
-            <p class="text-right"><h3 class="float-right bg-dark text-white rounded px-2 py-1">{{ company.currency_symbol }}{{company.share_price|floatformat:"2g"}}</h3></p>
-        </div>
-        <div class="col">
-            <p class="text-right px-2">Intrinsic Value</p>
-            <p class="text-right"><h3 class="float-right {% if company.dcf_intrinsic_value > company.share_price %}bg-success{% else %}bg-danger{% endif %} text-white rounded mx-2 px-2 py-1">{{ company.currency_symbol }}{{company.dcf_intrinsic_value|floatformat:"2g"}}</h3></p>
+<div class="container border shadow bg-light rounded py-2 mb-3">  
+        <div class="row">
+            <div class="col-8">
+                <h2 class="text-info">{{company.company_name}}</h2>
+            </div>
+            <div class="col-2">
+                <h3 class="text-secondary"><span class="badge badge-secondary">{{company.tidm}}</span></h3>
+            </div>
+            <div class="col-2">
+                <h3 class="text-secondary">{{company.share_listing}} ({{ company.exchange_country }})</h3>
+            </div>
         </div>
     </div>
-
-    <div class="container border rounded py-2 mb-3">    
+    <div class="container border shadow bg-light rounded py-2 mb-3">  
+        <div class="row">
+            <div class="col-3">
+                <p class="px-2">Market Cap</p>
+                <p><h3 class="float-left bg-dark text-white rounded px-2 py-1">{{ company.currency_symbol }}{{company.market_cap|floatformat:"2g"}}</h3></p>
+            </div>
+            <div class="col-3">
+                <p class="px-2">Share Price</p>
+                <p><h3 class="float-left bg-dark text-white rounded px-2 py-1">{{ company.currency_symbol }}{{company.share_price|floatformat:"2g"}}</h3></p>
+            </div>
+            <div class="col-3">
+                <p class="px-2">Intrinsic Value</p>
+                <p><h3 class="float-left {% if company.dcf_intrinsic_value > company.share_price %}bg-success{% else %}bg-danger{% endif %} text-white rounded mx-2 px-2 py-1">{{ company.currency_symbol }}{{company.dcf_intrinsic_value|floatformat:"2g"}}</h3></p>
+            </div>
+            <div class="col-3">
+                <p class="px-2">Margin Safety</p>
+                <p><h3 class="float-left {% if company.margin_safety <= 0.5 and company.margin_safety >= 0  %}bg-success{% else %}bg-danger{% endif %} text-white rounded mx-2 px-2 py-1">{{company.margin_safety|floatformat:"2g"}}</h3></p>
+            </div>
+        </div>
+    </div>
+    <div class="container border shadow bg-light rounded py-2 mb-3">    
         <div class="row">
             <div class="col">
                 <h5 class="text-secondary">Company Type: {{company.company_type}}</h5>
             </div>
             <div class="col">
-                <h5 class="float-right text-secondary">{{company.industry_name}}</h5>
+                <h5 class="float-right text-secondary">Industry Name: {{company.industry_name}}</h5>
             </div>
         </div>
     </div>
 
-    <div class="container border rounded py-2 mb-3">    
+    <div class="container border shadow bg-light rounded py-2 mb-3">    
         <div class="row">
-            <div class="col">
+            <div class="col-4">
                 <p class="float-left text-secondary px-2">Last Stock Split</p>
                 <h5 class="float-left text-secondary"> {% if share_splits %}{{ share_splits }} ({{ share_splits|timesince }}){% endif %}</h5>
             </div>
-            <div class="col">
+            <div class="col-4">
                 <p class="float-center text-secondary px-2">Last fundamentals</p>
                 <h5 class="float-center text-secondary">{{ company.latest_financial_date|date:"d M Y" }} ({{ company.latest_financial_date|timesince }})</h5>
             </div>
-            <div class="col">
+            <div class="col-4">
                 <p class="float-right text-secondary px-2">Last Share Price</p>
                 <h5 class="float-right text-secondary">{{ company.latest_share_price_date|date:"d M Y" }} ({{ company.latest_share_price_date|timesince }})</h5>
             </div>
         </div>
     </div>
 
-    <div class="container border rounded py-2 mb-3">    
+    <div class="container border shadow bg-light rounded py-2 mb-3">    
         <div class="row">
             <div class="col">
                 <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type='Income Statement' %}">Income Statement</a></p>
