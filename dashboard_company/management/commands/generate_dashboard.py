@@ -241,6 +241,41 @@ class Command(BaseCommand):
         company_num = 0
         total_rows = 0
 
+        param_dict = {
+            "industry_name": "industry__value",
+            "revenue": "Total Revenue",
+            "earnings": "Reported EPS",
+            "dividends": "Dividends Per Share",
+            "capital_expenditure": "Capital Expenditures",
+            "net_income": "Net Income",
+            "total_equity": "Total Equity",
+            "share_price": "Share Price",
+            "debt_to_equity": "Debt to Equity (D/E)",
+            "current_ratio": "Current Ratio",
+            "return_on_equity": "Return on Equity (ROE)",
+            "equity_per_share": "Equity (Book Value) Per Share",
+            "price_to_earnings": "Price to Earnings (P/E)",
+            "price_to_equity": "Price to Book Value (Equity)",
+            "earnings_yield": "Earnings Yield",
+            "annual_yield_return": "Annual Yield (Return)",
+            "fcf": "Free Cash Flow",
+            "dividend_cover": "Dividend Cover",
+            "capital_employed": "Capital Employed",
+            "roce": "Return on Capital Employed (ROCE)",
+            "dcf_intrinsic_value": "Intrinsic Value",
+            "margin_safety": "Margin of Safety",
+            "latest_margin_of_safety": "Latest Margin of Safety",
+            "estimated_growth_rate": "Estimated Growth Rate",
+            "estimated_discount_rate": "Estimated Discount Rate",
+            "estimated_long_term_growth_rate": "Estimated Long Term Growth Rate",
+            "market_cap": "Market Capitalisation",
+            "pick_source": "company_source__value",
+            "exchange_country": "country__value",
+            "currency_symbol": "currency__value",
+            "latest_share_price_date": "share_latest_date",
+            "latest_financial_date": "financial_latest_date",
+            }
+
         for index, company in enumerate(companies):
 
             # For each company, get the associated row in df
@@ -387,165 +422,11 @@ class Command(BaseCommand):
 
         print("Updating Dashboard Table")
 
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["industry_name"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["revenue"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["earnings"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["dividends"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["capital_expenditure"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["net_income"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["total_equity"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["share_price"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["debt_to_equity"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["current_ratio"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["return_on_equity"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["equity_per_share"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["price_to_earnings"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["price_to_equity"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["earnings_yield"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["annual_yield_return"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["fcf"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["dividend_cover"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["capital_employed"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["roce"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["dcf_intrinsic_value"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["margin_safety"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["latest_margin_of_safety"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["estimated_growth_rate"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["estimated_discount_rate"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["estimated_long_term_growth_rate"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["pick_source"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["exchange_country"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["currency_symbol"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["latest_financial_date"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["latest_share_price_date"]
-            )
-        total_rows = total_rows + num_rows_updated
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies,
-            ["market_cap"]
-            )
-        total_rows = total_rows + num_rows_updated
+        for key in param_dict:
+            num_rows_updated = DashboardCompany.objects.bulk_update(
+                companies,
+                [key]
+                )
+            total_rows = total_rows + num_rows_updated
 
         return total_rows
