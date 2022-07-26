@@ -169,16 +169,16 @@ class Command(BaseCommand):
         existing_df = pd.DataFrame(list(DashboardCompany.objects.get_dash_joined()))
 
         if not existing_df.empty:
-            test_index = np.where(
+            split_idx = np.where(
                 new_df["tidm"].isin(existing_df["tidm"]), "existing", "new"
             )
-            df_existing = new_df[test_index == "existing"]
-            df_new = new_df[test_index == "new"]
+            df_existing = new_df[split_idx == "existing"]
+            df_new = new_df[split_idx == "new"]
         else:
             df_new = new_df
             df_existing = None
 
-        return [df_new, df_existing]
+        return df_new, df_existing
 
     def _create_rows(self, df_create, financial_latest_date):
 

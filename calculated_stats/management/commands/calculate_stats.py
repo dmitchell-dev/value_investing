@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+
 from django.core.management.base import BaseCommand
 from ancillary_info.models import (
     Params,
@@ -178,11 +180,7 @@ class Command(BaseCommand):
             df_unpivot["value"] = df_unpivot["value"].replace(["inf", "-inf"], None)
 
             # Filter out prices already in DB
-            latest_data = CalculatedStats.objects.get_latest_date(company_tidm)
-            if latest_data:
-                latest_date = latest_data.time_stamp
-                mask = df_unpivot["time_stamp"] > pd.Timestamp(latest_date)
-                df_unpivot = df_unpivot.loc[mask]
+            df_unpivot = self._create_update_split(df_unpivot, company_tidm)
 
             num_rows = df_unpivot.shape[0]
 
@@ -238,3 +236,61 @@ class Command(BaseCommand):
                 pass
 
         return df
+
+    def _create_update_split(self, new_df, company_tidm):
+
+        existing_df = pd.DataFrame(
+            list(CalculatedStats.objects.get_table_filtered(company_tidm))
+            )
+
+        new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
+        existing_df['time_stamp_txt'] = existing_df['time_stamp'].astype(str)
+
+        if not existing_df.empty:
+
+            new_midx = pd.MultiIndex.from_arrays(
+                [new_df[col] for col in ['time_stamp_txt', 'parameter_id']]
+                )
+            existing_midx = pd.MultiIndex.from_arrays(
+                [existing_df[col] for col in ['time_stamp_txt', 'parameter']]
+                )
+            print(new_midx.isin(existing_midx))
+
+            split_idx = np.where(
+                new_midx.isin(existing_midx), "existing", "new"
+            )
+
+            df_existing = new_df[split_idx == "existing"]
+            df_new = new_df[split_idx == "new"]
+        else:
+            df_new = new_df
+            df_existing = None
+
+        return df_new, df_existing
+
+    def _create_rows(self, df_create):
+
+        # Save to database
+        reports = [
+            DcfVariables(
+                company=Companies.objects.get(id=row["company_id"]),
+                parameter=Params.objects.get(id=row["parameter_id"]),
+                value=row["value"],
+            )
+            for i, row in df_create.iterrows()
+        ]
+        list_of_objects = DcfVariables.objects.bulk_create(reports)
+
+        total_rows_added = len(list_of_objects)
+
+        return total_rows_added
+
+    def _update_rows(self, df_update, company_tidm):
+
+        extsting_qs = DcfVariables.objects.filter(company__tidm=company_tidm)
+
+        num_rows_updated = DcfVariables.objects.bulk_update(
+            extsting_qs, ["value"]
+        )
+
+        return num_rows_updated

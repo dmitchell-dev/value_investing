@@ -13,6 +13,14 @@ class CalculatedStatsQueryset(QuerySet):
             "parameter__param_name",
         ).filter(company__tidm=tidm)
 
+    def get_table_filtered(self, tidm):
+        return self.values(
+            "time_stamp",
+            "value",
+            "company",
+            "parameter",
+        ).filter(company__tidm=tidm)
+
     def get_table_joined(self):
         return self.values(
             "time_stamp",
