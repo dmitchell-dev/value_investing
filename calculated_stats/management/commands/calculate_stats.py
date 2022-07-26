@@ -28,6 +28,7 @@ from calculated_stats.managers import (
     dcf_intrinsic_value,
     roce,
     margin_of_safety,
+    latest_margin_of_safety,
 )
 
 
@@ -144,11 +145,19 @@ class Command(BaseCommand):
             df_roce = roce(df_pivot, df_c_e)
             calc_list.append(df_roce)
 
-            # Debt Ratio
+            # Margin of Safety
             df_margin_of_safety = margin_of_safety(
                 df_share_price_reduced, df_dcf_intrinsic_value
             )
             calc_list.append(df_margin_of_safety)
+
+            # Latest Margin of Safety
+            df_latest_margin_of_safety = latest_margin_of_safety(
+                df_dcf_intrinsic_value,
+                df_share_price_reduced,
+                df_share_price,
+            )
+            calc_list.append(df_latest_margin_of_safety)
 
             # Merge all dataframes
             df_calculated = pd.concat(calc_list)

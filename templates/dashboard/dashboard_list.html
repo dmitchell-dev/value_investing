@@ -8,13 +8,13 @@
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Exchange</th>
-            <th scope="col">Industry</th>
             <th scope="col">Market Cap</th>
             <th scope="col">Revenue</th>
             <th scope="col">FCF</th>
             <th scope="col">Share Price</th>
             <th scope="col">Intrinsic Value</th>
             <th scope="col">Margin Safety</th>
+            <th scope="col">Latest Margin Safety</th>
         </tr>
     </thead>
     <tbody>
@@ -22,13 +22,13 @@
             <tr>
                 <td><a href="{{ company.get_absolute_url }}">{{company.company_name}}</a></td>
                 <td>{{company.share_listing}}</td>
-                <td>{{company.industry_name}}</td>
                 <td>{{ company.currency_symbol }}{{company.market_cap|floatformat:"2g"}}</td>
                 <td>{{ company.currency_symbol }}{{company.revenue|floatformat:"2g"}}</td>
                 <td>{{ company.currency_symbol }}{{company.fcf|floatformat:"2g"}}</td>
                 <td>{{ company.currency_symbol }}{{company.share_price|floatformat:2}}</td>
                 <td>{{ company.currency_symbol }}{{company.dcf_intrinsic_value|floatformat:2}}</td>
                 <td>{{company.margin_safety}}</td>
+                <td>{{company.latest_margin_of_safety}}</td>
             </tr>
         {% endfor %}
     </tbody>

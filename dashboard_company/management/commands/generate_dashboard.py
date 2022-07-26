@@ -213,6 +213,7 @@ class Command(BaseCommand):
                 roce=float(row["Return on Capital Employed (ROCE)"]),
                 dcf_intrinsic_value=float(row["Intrinsic Value"]),
                 margin_safety=float(row["Margin of Safety"]),
+                latest_margin_of_safety=float(row["Latest Margin of Safety"]),
                 estimated_growth_rate=float(row["Estimated Growth Rate"]),
                 estimated_discount_rate=float(row["Estimated Discount Rate"]),
                 estimated_long_term_growth_rate=float(
@@ -235,149 +236,316 @@ class Command(BaseCommand):
 
     def _update_rows(self, df_update, financial_latest_date):
 
-        update_cols = [
-            "revenue",
-            "earnings",
-            "dividends",
-            "capital_expenditure",
-            "net_income",
-            "total_equity",
-            "share_price",
-            "debt_to_equity",
-            "current_ratio",
-            "return_on_equity",
-            "equity_per_share",
-            "price_to_earnings",
-            "price_to_equity",
-            "earnings_yield",
-            "annual_yield_return",
-            "fcf",
-            "dividend_cover",
-            "capital_employed",
-            "roce",
-            "dcf_intrinsic_value",
-            "margin_safety",
-            "estimated_growth_rate",
-            "estimated_discount_rate",
-            "estimated_long_term_growth_rate",
-            "pick_source",
-            "exchange_country",
-            "currency_symbol",
-            "latest_financial_date",
-            "latest_share_price_date",
-            "market_cap",
-        ]
-
         companies = list(DashboardCompany.objects.all())
+        num_companies = len(companies)
+        company_num = 0
+        total_rows = 0
+
         for index, company in enumerate(companies):
 
             # For each company, get the associated row in df
             df_update = df_update.reset_index(drop=True)
             cur_row = df_update[df_update["tidm"] == company.tidm].index[0]
 
+            company_num = company_num + 1
+            print(f"Company {company_num} of {num_companies}, {company.tidm}")
+
             if cur_row:
                 companies[index].industry_name = df_update.loc[
                     df_update.index[cur_row], "industry__value"
                 ]
+
                 companies[index].revenue = float(
                     df_update.loc[df_update.index[cur_row], "Total Revenue"]
                 )
+
                 companies[index].earnings = float(
                     df_update.loc[df_update.index[cur_row], "Reported EPS"]
                 )
+
                 companies[index].dividends = float(
                     df_update.loc[df_update.index[cur_row], "Dividends Per Share"]
                 )
+
                 companies[index].capital_expenditure = float(
                     df_update.loc[df_update.index[cur_row], "Capital Expenditures"]
                 )
+
                 companies[index].net_income = float(
                     df_update.loc[df_update.index[cur_row], "Net Income"]
                 )
+
                 companies[index].total_equity = float(
                     df_update.loc[df_update.index[cur_row], "Total Equity"]
                 )
+
                 companies[index].share_price = float(
                     df_update.loc[df_update.index[cur_row], "Share Price"]
                 )
+
                 companies[index].debt_to_equity = float(
                     df_update.loc[df_update.index[cur_row], "Debt to Equity (D/E)"]
                 )
+
                 companies[index].current_ratio = float(
                     df_update.loc[df_update.index[cur_row], "Current Ratio"]
                 )
+
                 companies[index].return_on_equity = float(
                     df_update.loc[df_update.index[cur_row], "Return on Equity (ROE)"]
                 )
+
                 companies[index].equity_per_share = float(
                     df_update.loc[
                         df_update.index[cur_row], "Equity (Book Value) Per Share"
                     ]
                 )
+
                 companies[index].price_to_earnings = float(
                     df_update.loc[df_update.index[cur_row], "Price to Earnings (P/E)"]
                 )
+
                 companies[index].price_to_equity = float(
                     df_update.loc[
                         df_update.index[cur_row], "Price to Book Value (Equity)"
                     ]
                 )
+
                 companies[index].earnings_yield = float(
                     df_update.loc[df_update.index[cur_row], "Earnings Yield"]
                 )
+
                 companies[index].annual_yield_return = float(
                     df_update.loc[df_update.index[cur_row], "Annual Yield (Return)"]
                 )
+
                 companies[index].fcf = float(
                     df_update.loc[df_update.index[cur_row], "Free Cash Flow"]
                 )
+
                 companies[index].dividend_cover = float(
                     df_update.loc[df_update.index[cur_row], "Dividend Cover"]
                 )
+
                 companies[index].capital_employed = float(
                     df_update.loc[df_update.index[cur_row], "Capital Employed"]
                 )
+
                 companies[index].roce = float(
                     df_update.loc[
                         df_update.index[cur_row], "Return on Capital Employed (ROCE)"
                     ]
                 )
+
                 companies[index].dcf_intrinsic_value = float(
                     df_update.loc[df_update.index[cur_row], "Intrinsic Value"]
                 )
+
                 companies[index].margin_safety = float(
                     df_update.loc[df_update.index[cur_row], "Margin of Safety"]
                 )
+
+                companies[index].latest_margin_of_safety = float(
+                    df_update.loc[df_update.index[cur_row], "Latest Margin of Safety"]
+                )
+
                 companies[index].estimated_growth_rate = float(
                     df_update.loc[df_update.index[cur_row], "Estimated Growth Rate"]
                 )
+
                 companies[index].estimated_discount_rate = float(
                     df_update.loc[df_update.index[cur_row], "Estimated Discount Rate"]
                 )
+
                 companies[index].estimated_long_term_growth_rate = float(
                     df_update.loc[
                         df_update.index[cur_row], "Estimated Long Term Growth Rate"
                     ]
                 )
+
                 companies[index].pick_source = df_update.loc[
                     df_update.index[cur_row], "company_source__value"
                 ]
+
                 companies[index].exchange_country = df_update.loc[
                     df_update.index[cur_row], "country__value"
                 ]
+
                 companies[index].currency_symbol = df_update.loc[
                     df_update.index[cur_row], "currency__value"
                 ]
-                companies[index].latest_financial_date = (financial_latest_date,)
+
+                companies[index].latest_financial_date = (str(financial_latest_date))
+
                 companies[index].latest_share_price_date = df_update.loc[
                     df_update.index[cur_row], "share_latest_date"
                 ]
+
                 companies[index].market_cap = float(
                     df_update.loc[df_update.index[cur_row], "Market Capitalisation"]
                 )
 
-        num_rows_updated = DashboardCompany.objects.bulk_update(
-            companies, ["industry_name"]
-        )
+        print("Updating Dashboard Table")
 
-        return num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["industry_name"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["revenue"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["earnings"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["dividends"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["capital_expenditure"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["net_income"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["total_equity"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["share_price"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["debt_to_equity"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["current_ratio"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["return_on_equity"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["equity_per_share"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["price_to_earnings"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["price_to_equity"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["earnings_yield"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["annual_yield_return"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["fcf"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["dividend_cover"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["capital_employed"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["roce"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["dcf_intrinsic_value"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["margin_safety"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["latest_margin_of_safety"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["estimated_growth_rate"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["estimated_discount_rate"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["estimated_long_term_growth_rate"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["pick_source"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["exchange_country"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["currency_symbol"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["latest_financial_date"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["latest_share_price_date"]
+            )
+        total_rows = total_rows + num_rows_updated
+        num_rows_updated = DashboardCompany.objects.bulk_update(
+            companies,
+            ["market_cap"]
+            )
+        total_rows = total_rows + num_rows_updated
+
+        return total_rows

@@ -20,10 +20,6 @@
     <div class="container border shadow bg-light rounded py-2 mb-3">  
         <div class="row">
             <div class="col-3">
-                <p class="px-2">Market Cap</p>
-                <p><h3 class="float-left bg-dark text-white rounded px-2 py-1">{{ company.currency_symbol }}{{company.market_cap|floatformat:"2g"}}</h3></p>
-            </div>
-            <div class="col-3">
                 <p class="px-2">Share Price</p>
                 <p><h3 class="float-left bg-dark text-white rounded px-2 py-1">{{ company.currency_symbol }}{{company.share_price|floatformat:"2g"}}</h3></p>
             </div>
@@ -34,6 +30,10 @@
             <div class="col-3">
                 <p class="px-2">Margin Safety</p>
                 <p><h3 class="float-left {% if company.margin_safety <= 0.5 and company.margin_safety >= 0  %}bg-success{% else %}bg-danger{% endif %} text-white rounded mx-2 px-2 py-1">{{company.margin_safety|floatformat:"2g"}}</h3></p>
+            </div>
+            <div class="col-3">
+                <p class="px-2">Latest Margin Safety</p>
+                <p><h3 class="float-left {% if company.latest_margin_of_safety <= 0.5 and company.latest_margin_of_safety >= 0  %}bg-success{% else %}bg-danger{% endif %} text-white rounded mx-2 px-2 py-1">{{company.latest_margin_of_safety|floatformat:"2g"}}</h3></p>
             </div>
         </div>
     </div>

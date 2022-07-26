@@ -454,6 +454,32 @@ def margin_of_safety(df_share_price_reduced, df_dcf_intrinsic_value):
     return df_margin_of_safety
 
 
+def latest_margin_of_safety(df_dcf_intrinsic_value, df_share_price_reduced, df_share_price):
+    """
+    Latest Margin of Safety =
+    Latest Share Price / Intrinsic Value
+    """
+
+    df_dcf_intrinsic_value = _dataframe_slice(
+        df_dcf_intrinsic_value, "Intrinsic Value"
+    ).reset_index(drop=True)
+    # latest_intrinsic_value = df_dcf_intrinsic_value.iloc[:, -1][0]
+
+    df_latest_share_price = df_share_price.iloc[-1:]
+    latest_share_price = df_latest_share_price["value_adjusted"]
+
+    # TODO populate row with latest share price
+    df_share_price_reduced.iloc[-1:] = latest_share_price
+
+    df_latest_margin_of_safety = df_share_price_reduced.reset_index(drop=True).div(
+        df_dcf_intrinsic_value
+    )
+
+    df_latest_margin_of_safety.index = ["Latest Margin of Safety"]
+
+    return df_latest_margin_of_safety
+
+
 def _dataframe_slice(df_input, row_title):
     try:
         result = df_input[row_title:row_title]
