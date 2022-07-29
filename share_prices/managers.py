@@ -24,6 +24,16 @@ class SharePricesQueryset(QuerySet):
             "company__tidm",
         ).filter(company__tidm=tidm)
 
+    def get_share_filtered(self, tidm):
+        return self.values(
+            "id",
+            "time_stamp",
+            "value",
+            "value_adjusted",
+            "volume",
+            "company",
+        ).filter(company__tidm=tidm)
+
     def get_latest_date(self, tidm):
         if self.filter(company__tidm=tidm):
             return self.filter(company__tidm=tidm).latest("time_stamp")

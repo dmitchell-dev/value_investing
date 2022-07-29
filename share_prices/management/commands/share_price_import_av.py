@@ -1,3 +1,4 @@
+from multiprocessing.sharedctypes import Value
 from django.core.management.base import BaseCommand
 from ancillary_info.models import Companies, Params
 from share_prices.models import SharePrices
@@ -141,25 +142,16 @@ class Command(BaseCommand):
     def _create_update_split(self, new_df, company_tidm):
 
         existing_df = pd.DataFrame(
-            list(SharePrices.objects.get_table_filtered(company_tidm))
+            list(SharePrices.objects.get_share_filtered(company_tidm))
             )
 
         new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
         existing_df['time_stamp_txt'] = existing_df['time_stamp'].astype(str)
 
         if not existing_df.empty:
-
-            new_midx = pd.MultiIndex.from_arrays(
-                [new_df[col] for col in ['time_stamp_txt', 'parameter_id']]
-                )
-            existing_midx = pd.MultiIndex.from_arrays(
-                [existing_df[col] for col in ['time_stamp_txt', 'parameter']]
-                )
-
             split_idx = np.where(
-                new_midx.isin(existing_midx), "existing", "new"
+                new_df["time_stamp_txt"].isin(existing_df["time_stamp_txt"]), "existing", "new"
             )
-
             df_existing = new_df[split_idx == "existing"]
             df_new = new_df[split_idx == "new"]
         else:
@@ -188,7 +180,7 @@ class Command(BaseCommand):
 
     def _update_rows(self, df_update, company_tidm):
 
-        df_update["mul_idx_col"] = df_update["parameter_id"].astype(str) + "_" + df_update["time_stamp_txt"]
+        param_list = ["value", "value_adjusted", "volume"]
 
         extsting_qs = SharePrices.objects.filter(
             company__tidm=company_tidm
@@ -196,16 +188,27 @@ class Command(BaseCommand):
 
         # For each item in the queryset, update with associated value in df
         for item in extsting_qs.iterator():
-            filter_mul_idx = str(item.parameter_id)+"_"+str(item.time_stamp)
+            filter_ts_idx = str(item.time_stamp)
+
             updated_value = df_update.query(
-                f'mul_idx_col == "{filter_mul_idx}"'
+                f'time_stamp_txt == "{filter_ts_idx}"'
                 )['value'].values[0]
+            item.value = float(updated_value)
 
-            item.value = updated_value
+            updated_value_adjusted = df_update.query(
+                f'time_stamp_txt == "{filter_ts_idx}"'
+                )['value_adjusted'].values[0]
+            item.value_adjusted = float(updated_value_adjusted)
 
-        num_rows_updated = SharePrices.objects.bulk_update(
-            extsting_qs,
-            ["value"]
-            )
+            updated_volume = df_update.query(
+                f'time_stamp_txt == "{filter_ts_idx}"'
+                )['volume'].values[0]
+            item.volume = float(updated_volume)
+
+        for param in param_list:
+            num_rows_updated = SharePrices.objects.bulk_update(
+                extsting_qs,
+                [param]
+                )
 
         return num_rows_updated
