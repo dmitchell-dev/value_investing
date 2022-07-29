@@ -55,7 +55,8 @@ class Command(BaseCommand):
         # Get list of companies
         num_companies = len(comp_list)
         company_num = 0
-        total_rows_added = 0
+        total_rows_created = 0
+        total_rows_updated = 0
 
         for company_tidm in comp_list:
             company_num = company_num + 1
@@ -179,35 +180,18 @@ class Command(BaseCommand):
             df_unpivot["value"] = df_unpivot["value"].astype(str)
             df_unpivot["value"] = df_unpivot["value"].replace(["inf", "-inf"], None)
 
-            # Filter out prices already in DB
+            # Update/Create split
             df_new, df_existing = self._create_update_split(df_unpivot, company_tidm)
 
-            # num_rows = df_unpivot.shape[0]
-
-            # num_rows_created = self._create_rows(df_new)
-
+            # Update existing rows
             num_rows_updated = self._update_rows(df_existing, company_tidm)
+            total_rows_updated = total_rows_updated + num_rows_updated
 
-            # # Save to database
-            # reports = [
-            #     CalculatedStats(
-            #         company=Companies.objects.get(id=row["company_id"]),
-            #         parameter=Params.objects.get(id=row["parameter_id"]),
-            #         time_stamp=row["time_stamp"],
-            #         value=row["value"],
-            #     )
-            #     for i, row in df_unpivot.iterrows()
-            # ]
-            # CalculatedStats.objects.bulk_create(reports)
+            # Create any new rows
+            num_rows_created = self._create_rows(df_new)
+            total_rows_created = total_rows_created + num_rows_created
 
-            # print(f"Rows saved to database: {num_rows}")
-
-            # total_rows_added = total_rows_added + num_rows
-
-        # print(f"{total_rows_added} saved to database")
-
-        # return f"Created: {str(total_rows_added)}, Updated: Not Implemented"
-        return f"Created: {str(num_rows_created)}, Updated: {str(num_rows_updated)}"
+        return f"Created: {str(total_rows_created)}, Updated: {str(total_rows_updated)}"
 
     def _replace_with_id(self, df_calculated, company_tidm, df_params, df_companies):
         param_id_list = []
@@ -294,9 +278,6 @@ class Command(BaseCommand):
 
         df_update["mul_idx_col"] = df_update["parameter_id"].astype(str) + "_" + df_update["time_stamp_txt"]
 
-        param_list = ["value", "time_stamp"]
-        total_rows = 0
-
         extsting_qs = CalculatedStats.objects.filter(
             company__tidm=company_tidm
             )
@@ -304,23 +285,15 @@ class Command(BaseCommand):
         # For each item in the queryset, update with associated value in df
         for item in extsting_qs.iterator():
             filter_mul_idx = str(item.parameter_id)+"_"+str(item.time_stamp)
-            query_string = f'mul_idx_col == "{filter_mul_idx}"'
-            updated_value = df_update.query(query_string)['value'].values[0]
-            print(updated_value)
-            print(item.value)
+            updated_value = df_update.query(
+                f'mul_idx_col == "{filter_mul_idx}"'
+                )['value'].values[0]
 
             item.value = updated_value
 
-            print("brake line")
-
-        extsting_qs.value = df_update["value"]
-        extsting_qs.time_stamp = df_update["times_tamp"]
-
-        for key in param_list:
-            num_rows_updated = CalculatedStats.objects.bulk_update(
-                extsting_qs,
-                [key]
-                )
-            total_rows = total_rows + num_rows_updated
+        num_rows_updated = CalculatedStats.objects.bulk_update(
+            extsting_qs,
+            ["value"]
+            )
 
         return num_rows_updated
