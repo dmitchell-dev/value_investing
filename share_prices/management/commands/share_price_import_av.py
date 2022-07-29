@@ -1,9 +1,9 @@
-import json
 from django.core.management.base import BaseCommand
-from ancillary_info.models import Companies
+from ancillary_info.models import Companies, Params
 from share_prices.models import SharePrices
 from api_import.vendors.alpha_vantage.client import AlphaVantageClient
 import pandas as pd
+import numpy as np
 from time import sleep
 
 
@@ -24,10 +24,11 @@ class Command(BaseCommand):
 
         num_comps = len(comp_list)
         comp_num = 0
-        total_rows_added = 0
+        total_rows_created = 0
+        total_rows_updated = 0
 
         # For each report import data
-        for current_company in comp_list:
+        for company_tidm in comp_list:
             comp_num = comp_num + 1
 
             # Alpha Vantage limits requests to 5 every minute
@@ -35,10 +36,10 @@ class Command(BaseCommand):
                 print("60 second delay")
                 sleep(65)
 
-            print(f"API Import {comp_num} of {num_comps}: {current_company}")
+            print(f"API Import {comp_num} of {num_comps}: {company_tidm}")
 
             # Get info oncurrent company
-            comp_idx = df_companies[df_companies['tidm'] == current_company].index[0]
+            comp_idx = df_companies[df_companies['tidm'] == company_tidm].index[0]
             curr_comp_id = df_companies["id"].iat[comp_idx]
             curr_comp_loc = df_companies["country__value"].iat[comp_idx]
 
@@ -47,7 +48,7 @@ class Command(BaseCommand):
                 av_import = AlphaVantageClient()
                 header, json_data = av_import.get_share_data(
                     location=curr_comp_loc,
-                    symbol=current_company,
+                    symbol=company_tidm,
                     type="TIME_SERIES_WEEKLY_ADJUSTED",
                 )
             except IndexError:
@@ -63,36 +64,49 @@ class Command(BaseCommand):
             # Check datetime format
             df_data = self._datetime_format(df_data)
 
-            # Filter out prices already in DB
-            latest_share_data = SharePrices.objects.get_latest_date(current_company)
+            # Update/Create split
+            df_new, df_existing = self._create_update_split(df_data, company_tidm)
 
-            if latest_share_data:
-                latest_date = latest_share_data.time_stamp
-                mask = df_data["time_stamp"] > pd.Timestamp(latest_date)
-                df_data = df_data.loc[mask]
+            # Update existing rows
+            num_rows_updated = self._update_rows(df_existing, company_tidm)
+            total_rows_updated = total_rows_updated + num_rows_updated
 
-            num_rows = df_data.shape[0]
+            # Create any new rows
+            num_rows_created = self._create_rows(df_new)
+            total_rows_created = total_rows_created + num_rows_created
 
-            # Save to database
-            reports = [
-                SharePrices(
-                    company=Companies.objects.get(id=row["company_id"]),
-                    time_stamp=row["time_stamp"],
-                    value=row["value"],
-                    value_adjusted=row["value_adjusted"],
-                    volume=row["volume"],
-                )
-                for i, row in df_data.iterrows()
-            ]
-            SharePrices.objects.bulk_create(reports)
+        return f"Created: {str(total_rows_created)}, Updated: {str(total_rows_updated)}"
 
-            print(f"Rows saved to database: {num_rows}")
+        #     # Filter out prices already in DB
+        #     latest_share_data = SharePrices.objects.get_latest_date(company_tidm)
 
-            total_rows_added = total_rows_added + num_rows
+        #     if latest_share_data:
+        #         latest_date = latest_share_data.time_stamp
+        #         mask = df_data["time_stamp"] > pd.Timestamp(latest_date)
+        #         df_data = df_data.loc[mask]
 
-        print(f"{total_rows_added} saved to database")
+        #     num_rows = df_data.shape[0]
 
-        return f"Created: {str(total_rows_added)}, Updated: Not Implemented"
+        #     # Save to database
+        #     reports = [
+        #         SharePrices(
+        #             company=Companies.objects.get(id=row["company_id"]),
+        #             time_stamp=row["time_stamp"],
+        #             value=row["value"],
+        #             value_adjusted=row["value_adjusted"],
+        #             volume=row["volume"],
+        #         )
+        #         for i, row in df_data.iterrows()
+        #     ]
+        #     SharePrices.objects.bulk_create(reports)
+
+        #     print(f"Rows saved to database: {num_rows}")
+
+        #     total_rows_added = total_rows_added + num_rows
+
+        # print(f"{total_rows_added} saved to database")
+
+        # return f"Created: {str(total_rows_added)}, Updated: Not Implemented"
 
     def _format_dataframe(self, df, company_id):
         df.insert(0, "company_id", [company_id] * df.shape[0])
@@ -123,3 +137,75 @@ class Command(BaseCommand):
         df.sort_values(by="time_stamp", inplace=True)
 
         return df
+
+    def _create_update_split(self, new_df, company_tidm):
+
+        existing_df = pd.DataFrame(
+            list(SharePrices.objects.get_table_filtered(company_tidm))
+            )
+
+        new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
+        existing_df['time_stamp_txt'] = existing_df['time_stamp'].astype(str)
+
+        if not existing_df.empty:
+
+            new_midx = pd.MultiIndex.from_arrays(
+                [new_df[col] for col in ['time_stamp_txt', 'parameter_id']]
+                )
+            existing_midx = pd.MultiIndex.from_arrays(
+                [existing_df[col] for col in ['time_stamp_txt', 'parameter']]
+                )
+
+            split_idx = np.where(
+                new_midx.isin(existing_midx), "existing", "new"
+            )
+
+            df_existing = new_df[split_idx == "existing"]
+            df_new = new_df[split_idx == "new"]
+        else:
+            df_new = new_df
+            df_existing = None
+
+        return df_new, df_existing
+
+    def _create_rows(self, df_create):
+
+        # Save to database
+        reports = [
+            SharePrices(
+                company=Companies.objects.get(id=row["company_id"]),
+                parameter=Params.objects.get(id=row["parameter_id"]),
+                time_stamp=row["time_stamp"],
+                value=row["value"],
+            )
+            for i, row in df_create.iterrows()
+        ]
+        list_of_objects = SharePrices.objects.bulk_create(reports)
+
+        total_rows_added = len(list_of_objects)
+
+        return total_rows_added
+
+    def _update_rows(self, df_update, company_tidm):
+
+        df_update["mul_idx_col"] = df_update["parameter_id"].astype(str) + "_" + df_update["time_stamp_txt"]
+
+        extsting_qs = SharePrices.objects.filter(
+            company__tidm=company_tidm
+            )
+
+        # For each item in the queryset, update with associated value in df
+        for item in extsting_qs.iterator():
+            filter_mul_idx = str(item.parameter_id)+"_"+str(item.time_stamp)
+            updated_value = df_update.query(
+                f'mul_idx_col == "{filter_mul_idx}"'
+                )['value'].values[0]
+
+            item.value = updated_value
+
+        num_rows_updated = SharePrices.objects.bulk_update(
+            extsting_qs,
+            ["value"]
+            )
+
+        return num_rows_updated
