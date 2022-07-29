@@ -78,37 +78,6 @@ class Command(BaseCommand):
 
         return f"Created: {str(total_rows_created)}, Updated: {str(total_rows_updated)}"
 
-        #     # Filter out prices already in DB
-        #     latest_share_data = SharePrices.objects.get_latest_date(company_tidm)
-
-        #     if latest_share_data:
-        #         latest_date = latest_share_data.time_stamp
-        #         mask = df_data["time_stamp"] > pd.Timestamp(latest_date)
-        #         df_data = df_data.loc[mask]
-
-        #     num_rows = df_data.shape[0]
-
-        #     # Save to database
-        #     reports = [
-        #         SharePrices(
-        #             company=Companies.objects.get(id=row["company_id"]),
-        #             time_stamp=row["time_stamp"],
-        #             value=row["value"],
-        #             value_adjusted=row["value_adjusted"],
-        #             volume=row["volume"],
-        #         )
-        #         for i, row in df_data.iterrows()
-        #     ]
-        #     SharePrices.objects.bulk_create(reports)
-
-        #     print(f"Rows saved to database: {num_rows}")
-
-        #     total_rows_added = total_rows_added + num_rows
-
-        # print(f"{total_rows_added} saved to database")
-
-        # return f"Created: {str(total_rows_added)}, Updated: Not Implemented"
-
     def _format_dataframe(self, df, company_id):
         df.insert(0, "company_id", [company_id] * df.shape[0])
         df = df.drop(["1. open", "2. high", "3. low", "7. dividend amount"], axis=1)
@@ -145,10 +114,9 @@ class Command(BaseCommand):
             list(SharePrices.objects.get_share_filtered(company_tidm))
             )
 
-        new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
-        existing_df['time_stamp_txt'] = existing_df['time_stamp'].astype(str)
-
         if not existing_df.empty:
+            new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
+            existing_df['time_stamp_txt'] = existing_df['time_stamp'].astype(str)
             split_idx = np.where(
                 new_df["time_stamp_txt"].isin(existing_df["time_stamp_txt"]), "existing", "new"
             )
@@ -166,9 +134,10 @@ class Command(BaseCommand):
         reports = [
             SharePrices(
                 company=Companies.objects.get(id=row["company_id"]),
-                parameter=Params.objects.get(id=row["parameter_id"]),
                 time_stamp=row["time_stamp"],
                 value=row["value"],
+                value_adjusted=row["value_adjusted"],
+                volume=row["volume"],
             )
             for i, row in df_create.iterrows()
         ]
