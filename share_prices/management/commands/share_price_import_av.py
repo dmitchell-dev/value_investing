@@ -65,6 +65,11 @@ class Command(BaseCommand):
             # Check datetime format
             df_data = self._datetime_format(df_data)
 
+            # Remove last row of dataframe due to not trusting AV
+            # API. This often shows incorrect latest date and updates
+            # when the full week elapses
+            df_data.drop(df_data.tail(1).index, inplace=True)
+
             # Update/Create split
             df_new, df_existing = self._create_update_split(df_data, company_tidm)
 
