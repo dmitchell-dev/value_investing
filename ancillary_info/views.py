@@ -113,7 +113,36 @@ def company_stats_update(request, **kwargs):
     return render(request, "ancillary/company_stats_update.html", context)
 
 
-def company_dcf_update(request, **kwargs):
+class DCFDetailView(DetailView):
+    model = DcfVariables
+    context_object_name = "DCFVariables"
+    template_name = "ancillary/dcf_var_detail.html"
+
+
+def dcf_var_detail(request, **kwargs):
+
+    error_message = None
+    pk = None
+
+    for arg in kwargs.values():
+        pk = arg
+
+    # Get correct company name and tidm
+    company_name = Companies.objects.filter(id=pk).values()[0]["company_name"]
+    company_tidm = Companies.objects.filter(id=pk).values()[0]["tidm"]
+
+    data_df = pd.DataFrame(list(DcfVariables.objects.get_table_joined_filtered(tidm=company_tidm)))
+
+    context = {
+        "company_name": company_name,
+        "data": data_df,
+        "error_message": error_message,
+    }
+
+    return render(request, "ancillary/dcf_var_detail.html", context)
+
+
+def dcf_var_update(request, **kwargs):
 
     error_message = None
     pk = None
@@ -134,4 +163,4 @@ def company_dcf_update(request, **kwargs):
         'Company stats were successfully updated.'
         )
 
-    return render(request, "ancillary/company_dcf_update.html", context)
+    return render(request, "ancillary/dcf_var_update.html", context)

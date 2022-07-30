@@ -1,0 +1,47 @@
+{% extends '_base.html' %}
+
+{% block title %}Companies Stats Update{% endblock title %}
+
+{% block content %}
+    <h1>Company Stats Update</h1>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="text-center alert alert-{{ message.tags }}">
+                {{ message|safe }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <p>{{ company_name }}</p>
+
+    {% comment %} <a class="btn btn-primary" href="{% url 'ancillary:dcf_var_update' company.pk %}">Update DCF</a> {% endcomment %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Name</h5>
+                        <p class="card-text">{{ data.value }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">TIDM</h5>
+                        <p class="card-text">{{ data.param }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">TIDM</h5>
+                        <p class="card-text">{{ company.tidm }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock content %}
