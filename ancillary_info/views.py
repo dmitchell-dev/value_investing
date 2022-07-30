@@ -12,6 +12,9 @@ from django.views.generic import (
     DeleteView
     )
 from .models import Companies
+from calculated_stats.models import DcfVariables
+
+import pandas as pd
 
 
 class CompanyListView(ListView):
@@ -108,3 +111,27 @@ def company_stats_update(request, **kwargs):
         )
 
     return render(request, "ancillary/company_stats_update.html", context)
+
+
+def company_dcf_update(request, **kwargs):
+
+    error_message = None
+    pk = None
+
+    for arg in kwargs.values():
+        pk = arg
+
+    # Get correct company name and tidm
+    company_name = Companies.objects.filter(id=pk).values()[0]["company_name"]
+
+    context = {
+        "company_name": company_name,
+        "error_message": error_message,
+    }
+    messages.add_message(
+        request,
+        messages.SUCCESS,
+        'Company stats were successfully updated.'
+        )
+
+    return render(request, "ancillary/company_dcf_update.html", context)

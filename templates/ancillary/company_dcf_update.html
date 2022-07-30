@@ -1,0 +1,23 @@
+{% extends '_base.html' %}
+
+{% block title %}Companies DCF Variables Update{% endblock title %}
+
+{% block content %}
+    <h1>TODO - Company Stats Update</h1>
+    <h2>This is a placeholder for custom form to update DCF values</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="text-center alert alert-{{ message.tags }}">
+                {{ message|safe }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <p>{{ company_name }}</p>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save" />
+    </form>
+
+{% endblock content %}
