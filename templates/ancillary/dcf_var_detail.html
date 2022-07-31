@@ -1,9 +1,10 @@
 {% extends '_base.html' %}
+{% load render_table from django_tables2 %}
 
-{% block title %}Companies Stats Update{% endblock title %}
+{% block title %}DCF Variables{% endblock title %}
 
 {% block content %}
-    <h1>Company Stats Update</h1>
+    <h1>DCF Variables</h1>
     {% if messages %}
         {% for message in messages %}
             <div class="text-center alert alert-{{ message.tags }}">
@@ -11,17 +12,23 @@
             </div>
         {% endfor %}
     {% endif %}
+
+    <a class="btn btn-primary" href="{% url 'ancillary:dcf_var_update' company.pk %}">Update DCF</a>
+
     <p>{{ company_name }}</p>
+    <p>{{ company.pk }}</p>
 
     {% comment %} <a class="btn btn-primary" href="{% url 'ancillary:dcf_var_update' company.pk %}">Update DCF</a> {% endcomment %}
 
-    <div class="container">
+    {% render_table data %}
+
+    {% comment %} <div class="container">
         <div class="row">
             <div class="col-4">
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Name</h5>
-                        <p class="card-text">{{ data.value }}</p>
+                        <p class="card-text">{{ data }}</p>
                     </div>
                 </div>
             </div>
@@ -42,6 +49,6 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> {% endcomment %}
     
 {% endblock content %}

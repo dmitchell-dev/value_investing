@@ -6,6 +6,7 @@ SQLAlchemy
 mysql-connector-python
 Psycopg2
 django-htmx
+django-tables2
 
 # API Import
 httpx

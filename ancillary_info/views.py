@@ -12,6 +12,7 @@ from django.views.generic import (
     DeleteView
     )
 from .models import Companies
+from .tables import DCFTable
 from calculated_stats.models import DcfVariables
 
 import pandas as pd
@@ -131,11 +132,13 @@ def dcf_var_detail(request, **kwargs):
     company_name = Companies.objects.filter(id=pk).values()[0]["company_name"]
     company_tidm = Companies.objects.filter(id=pk).values()[0]["tidm"]
 
-    data_df = pd.DataFrame(list(DcfVariables.objects.get_table_joined_filtered(tidm=company_tidm)))
+    table = DCFTable(DcfVariables.objects.all().filter(company__tidm=company_tidm))
+    company = Companies.objects.all().filter(tidm=company_tidm)
 
     context = {
         "company_name": company_name,
-        "data": data_df,
+        "data": table,
+        "company": company[0],
         "error_message": error_message,
     }
 

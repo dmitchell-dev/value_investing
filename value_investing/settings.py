@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "rest_framework",
     "django_htmx",
+    "django_tables2",
     # Local
     "users.apps.UsersConfig",
     "pages.apps.PagesConfig",

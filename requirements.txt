@@ -82,6 +82,7 @@ django==4.0.4
     #   django-google-analytics-app
     #   django-htmx
     #   django-mysql
+    #   django-tables2
 django-allauth==0.50.0
     # via -r requirements.in
 django-cacheops==6.0
@@ -103,6 +104,8 @@ django-google-analytics-app==5.0.5
 django-htmx==1.12.0
     # via -r requirements.in
 django-mysql==4.5.0
+    # via -r requirements.in
+django-tables2==2.4.1
     # via -r requirements.in
 entrypoints==0.4
     # via jupyter-client
