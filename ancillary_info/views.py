@@ -13,6 +13,7 @@ from django.views.generic import (
     )
 from .models import Companies
 from .tables import DCFTable
+from .forms import DCFForm
 from calculated_stats.models import DcfVariables
 
 import pandas as pd
@@ -155,10 +156,16 @@ def dcf_var_update(request, **kwargs):
 
     # Get correct company name and tidm
     company_name = Companies.objects.filter(id=pk).values()[0]["company_name"]
+    company_tidm = Companies.objects.filter(id=pk).values()[0]["tidm"]
+
+    form = DCFForm(DcfVariables.objects.all().filter(company__tidm=company_tidm))
+    company = Companies.objects.all().filter(tidm=company_tidm)
 
     context = {
         "company_name": company_name,
         "error_message": error_message,
+        "company": company,
+        "form": form,
     }
     messages.add_message(
         request,
