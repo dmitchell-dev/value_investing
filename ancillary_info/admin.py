@@ -12,6 +12,7 @@ from .models import (
     CompSource,
     Companies,
     DecisionType,
+    DcfVariables,
 )
 
 
@@ -53,6 +54,16 @@ class CompSourceAdmin(admin.ModelAdmin):
 
 class DecisionTypeAdmin(admin.ModelAdmin):
     fields = ["value"]
+
+
+class DcfVariablesAdmin(admin.ModelAdmin):
+    fields = [
+        "company_name",
+        "param_name",
+        "est_growth_rate",
+        "est_disc_rate",
+        "est_ltg_rate",
+        ]
 
 
 class ParamsApiAdmin(admin.ModelAdmin):
@@ -111,3 +122,4 @@ admin.site.register(Params, ParamsAdmin)
 admin.site.register(CompSource, CompSourceAdmin)
 admin.site.register(Companies, CompaniesAdmin)
 admin.site.register(DecisionType, DecisionTypeAdmin)
+admin.site.register(DcfVariables, DcfVariablesAdmin)

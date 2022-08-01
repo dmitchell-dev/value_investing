@@ -11,10 +11,9 @@ from django.views.generic import (
     UpdateView,
     DeleteView
     )
-from .models import Companies
+from .models import Companies, DcfVariables
 from .tables import DCFTable
 from .forms import DCFForm
-from calculated_stats.models import DcfVariables
 
 import pandas as pd
 

@@ -1,8 +1,12 @@
 from django.forms import ModelForm
-from calculated_stats.models import DcfVariables
+from .models import DcfVariables
 
 
 class DCFForm(ModelForm):
     class Meta:
         model = DcfVariables
-        fields = ['value']
+        fields = [
+            "est_growth_rate",
+            "est_disc_rate",
+            "est_ltg_rate",
+            ]

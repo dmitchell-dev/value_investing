@@ -1,6 +1,6 @@
 import django_tables2 as tables
 
-from calculated_stats.models import DcfVariables
+from .models import DcfVariables
 
 
 class DCFTable(tables.Table):

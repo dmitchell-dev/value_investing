@@ -3,6 +3,7 @@ from .managers import (
     CompaniesQueryset,
     ParamsQueryset,
     ParamsApiQueryset,
+    DcfVariablesQueryset,
 )
 from django.urls import reverse
 
@@ -181,3 +182,22 @@ class Companies(models.Model):
 
     def get_absolute_url(self):
         return reverse("ancillary:company_detail", kwargs={"pk": self.pk})
+
+
+class DcfVariables(models.Model):
+    company = models.ForeignKey(Companies, on_delete=models.CASCADE)
+    parameter = models.ForeignKey(Params, on_delete=models.CASCADE)
+    est_growth_rate = models.FloatField()
+    est_disc_rate = models.FloatField()
+    est_ltg_rate = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    objects = DcfVariablesQueryset.as_manager()
+
+    class Meta:
+        db_table = "dcf_variables"
+        verbose_name_plural = "DCF Variables"
+
+    def __str__(self):
+        return f"{self.company} - {self.parameter}"
