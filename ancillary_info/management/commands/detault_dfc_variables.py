@@ -4,8 +4,8 @@ from django.core.management.base import BaseCommand
 from ancillary_info.models import (
     Params,
     Companies,
+    DcfVariables,
 )
-from calculated_stats.models import DcfVariables
 
 import pandas as pd
 
