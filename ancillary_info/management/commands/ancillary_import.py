@@ -56,19 +56,17 @@ class Command(BaseCommand):
 
             path = BASE_DIR_LOCAL / f"data/database_tables/{table_name}.csv"
 
-            with open(path) as f:
+            with open(path, encoding='utf-8') as f:
                 reader = csv.reader(f)
                 next(reader, None)  # skip the header
 
-                row_num = 0
-
                 for row in reader:
                     insert_dict = {}
-                    row_num = row_num + 1
+                    row_num = 0
 
                     # For cvs files with varying column numbers
                     for field in all_fields:
-
+                        row_num = row_num + 1
                         if field != "created_at" and field != "updated_at":
                             insert_dict[field] = row[row_num]
 

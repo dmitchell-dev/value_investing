@@ -167,7 +167,7 @@ class Companies(models.Model):
     tidm = models.CharField(max_length=10)
     company_name = models.CharField(max_length=255)
     company_summary = models.TextField()
-    wish_list = models.BooleanField(default=False)
+    wish_list = models.CharField(max_length=5)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
