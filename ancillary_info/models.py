@@ -186,7 +186,6 @@ class Companies(models.Model):
 
 class DcfVariables(models.Model):
     company = models.ForeignKey(Companies, on_delete=models.CASCADE)
-    parameter = models.ForeignKey(Params, on_delete=models.CASCADE)
     est_growth_rate = models.FloatField()
     est_disc_rate = models.FloatField()
     est_ltg_rate = models.FloatField()

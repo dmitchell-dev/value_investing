@@ -52,14 +52,12 @@ class Command(BaseCommand):
             company_id = df_companies[df_companies["tidm"] == company_tidm].id.values[0]
 
             data_dict = {
-                "parameter_id": [dcf_key_list[0], dcf_key_list[1], dcf_key_list[2]],
-                "company_id": [company_id, company_id, company_id],
-                "value": [dcf_value_list[0], dcf_value_list[1], dcf_value_list[2]],
+                "company_id": [company_id],
+                "est_growth_rate": [dcf_value_list[0]],
+                "est_disc_rate": [dcf_value_list[1]],
+                "est_ltg_rate": [dcf_value_list[2]],
             }
             df_data = pd.DataFrame(data_dict)
-
-            # Generate parameter_id and replace index
-            df_data = self._generate_param_id(df_params, df_data)
 
             # Split ready for create or update
             (df_create, df_update) = self._create_update_split(
@@ -72,28 +70,7 @@ class Command(BaseCommand):
                 num_rows_created = self._create_rows(df_create)
                 print(f"Dashboard Create Complete: {num_rows_created} rows updated")
 
-            # Update existing companies
-            if not df_update.empty:
-                num_rows_updated = self._update_rows(df_update, company_tidm)
-                print(f"Dashboard Update Complete: {num_rows_updated} rows updated")
-
-            return f"Created: {str(num_rows_created)}, Updated: {str(num_rows_updated)}"
-
-    @staticmethod
-    def _generate_param_id(df_params, df_data):
-
-        param_id_list = []
-
-        param_name_list = df_params["param_name"].tolist()
-        param_id_list = df_params["id"].tolist()
-
-        # Replace index with id
-        df_data = df_data.reset_index()
-        df_data["parameter_id"] = df_data["parameter_id"].replace(
-            param_name_list, param_id_list
-        )
-
-        return df_data
+            return f"Created: {str(num_rows_created)}, Updated: Not Implemented"
 
     def _create_update_split(self, new_df, company_tidm):
         existing_df = pd.DataFrame(list(DcfVariables.objects.get_table_joined_filtered(company_tidm)))
@@ -113,8 +90,9 @@ class Command(BaseCommand):
         reports = [
             DcfVariables(
                 company=Companies.objects.get(id=row["company_id"]),
-                parameter=Params.objects.get(id=row["parameter_id"]),
-                value=row["value"],
+                est_growth_rate=row["est_growth_rate"],
+                est_disc_rate=row["est_disc_rate"],
+                est_ltg_rate=row["est_ltg_rate"],
             )
             for i, row in df_create.iterrows()
         ]
@@ -123,13 +101,3 @@ class Command(BaseCommand):
         total_rows_added = len(list_of_objects)
 
         return total_rows_added
-
-    def _update_rows(self, df_update, company_tidm):
-
-        extsting_qs = DcfVariables.objects.filter(company__tidm=company_tidm)
-
-        num_rows_updated = DcfVariables.objects.bulk_update(
-            extsting_qs, ["value"]
-        )
-
-        return num_rows_updated

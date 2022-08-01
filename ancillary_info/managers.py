@@ -56,16 +56,17 @@ class CalcVariablesQueryset(QuerySet):
 class DcfVariablesQueryset(QuerySet):
     def get_table_joined_filtered(self, tidm):
         return self.values(
-            "value",
+            "est_growth_rate",
+            "est_disc_rate",
+            "est_ltg_rate",
             "company_id",
-            "parameter_id",
             "company__tidm",
-            "parameter__param_name",
         ).filter(company__tidm=tidm)
 
     def get_table_joined(self):
         return self.values(
-            "value",
+            "est_growth_rate",
+            "est_disc_rate",
+            "est_ltg_rate",
             "company__tidm",
-            "parameter__param_name",
         )
