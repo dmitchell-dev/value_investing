@@ -176,7 +176,7 @@ class Command(BaseCommand):
             df_new = new_df[split_idx == "new"]
         else:
             df_new = new_df
-            df_existing = None
+            df_existing = pd.DataFrame()
 
         return df_new, df_existing
 
