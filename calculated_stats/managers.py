@@ -331,20 +331,9 @@ def dcf_intrinsic_value(df_pivot, df_dcf_variables, df_fcf):
     base_year_fcf = df_fcf.reset_index(drop=True)
     shares_outstanding = df_s_o.reset_index(drop=True)
 
-    growth_rate = df_dcf_variables[
-        df_dcf_variables.parameter__param_name == "Estimated Growth Rate"
-    ]["value"].iloc[0]
-    growth_rate_value = pd.to_numeric(growth_rate)
-
-    longterm_growth_rate = df_dcf_variables[
-        df_dcf_variables.parameter__param_name == "Estimated Long Term Growth Rate"
-    ]["value"].iloc[0]
-    longterm_growth_rate_value = pd.to_numeric(longterm_growth_rate)
-
-    discount_rate = df_dcf_variables[
-        df_dcf_variables.parameter__param_name == "Estimated Discount Rate"
-    ]["value"].iloc[0]
-    discount_rate_value = pd.to_numeric(discount_rate)
+    growth_rate_value = df_dcf_variables.est_growth_rate[0]
+    longterm_growth_rate_value = df_dcf_variables.est_ltg_rate[0]
+    discount_rate_value = df_dcf_variables.est_disc_rate[0]
 
     for col in range(0, df_pivot.shape[1]):
         # Company report values

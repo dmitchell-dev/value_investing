@@ -5,10 +5,11 @@ from django.core.management.base import BaseCommand
 from ancillary_info.models import (
     Params,
     Companies,
+    DcfVariables,
 )
 from share_prices.models import SharePrices
 from financial_reports.models import FinancialReports
-from calculated_stats.models import CalculatedStats, DcfVariables
+from calculated_stats.models import CalculatedStats
 
 from calculated_stats.managers import (
     total_equity,
@@ -184,12 +185,14 @@ class Command(BaseCommand):
             df_new, df_existing = self._create_update_split(df_unpivot, company_tidm)
 
             # Update existing rows
-            num_rows_updated = self._update_rows(df_existing, company_tidm)
-            total_rows_updated = total_rows_updated + num_rows_updated
+            if not df_existing.empty:
+                num_rows_updated = self._update_rows(df_existing, company_tidm)
+                total_rows_updated = total_rows_updated + num_rows_updated
 
             # Create any new rows
-            num_rows_created = self._create_rows(df_new)
-            total_rows_created = total_rows_created + num_rows_created
+            if not df_new.empty:
+                num_rows_created = self._create_rows(df_new)
+                total_rows_created = total_rows_created + num_rows_created
 
         return f"Created: {str(total_rows_created)}, Updated: {str(total_rows_updated)}"
 
@@ -232,10 +235,11 @@ class Command(BaseCommand):
             list(CalculatedStats.objects.get_table_filtered(company_tidm))
             )
 
-        new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
-        existing_df['time_stamp_txt'] = existing_df['time_stamp'].astype(str)
+        if not new_df.empty:
+            new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
 
         if not existing_df.empty:
+            existing_df['time_stamp_txt'] = existing_df['time_stamp'].astype(str)
 
             new_midx = pd.MultiIndex.from_arrays(
                 [new_df[col] for col in ['time_stamp_txt', 'parameter_id']]
@@ -252,7 +256,7 @@ class Command(BaseCommand):
             df_new = new_df[split_idx == "new"]
         else:
             df_new = new_df
-            df_existing = None
+            df_existing = pd.DataFrame()
 
         return df_new, df_existing
 
