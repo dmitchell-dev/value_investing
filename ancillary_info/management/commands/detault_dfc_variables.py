@@ -24,11 +24,9 @@ class Command(BaseCommand):
             "Estimated Long Term Growth Rate": 0.03,
         }
 
-        dcf_key_list = list(dcf_dict.keys())
         dcf_value_list = list(dcf_dict.values())
 
         # Get ancillary data
-        df_params = pd.DataFrame(list(Params.objects.get_params_joined()))
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
 
         # Specific symbols or all
@@ -42,7 +40,6 @@ class Command(BaseCommand):
         num_companies = len(comp_list)
         company_num = 0
         num_rows_created = 0
-        num_rows_updated = 0
 
         for company_tidm in comp_list:
             company_num = company_num + 1
@@ -68,9 +65,9 @@ class Command(BaseCommand):
             # Create new companies
             if not df_create.empty:
                 num_rows_created = self._create_rows(df_create)
-                print(f"Dashboard Create Complete: {num_rows_created} rows updated")
+                print(f"Default DCF Import Create Complete: {num_rows_created} rows updated")
 
-            return f"Created: {str(num_rows_created)}, Updated: Not Implemented"
+        return f"Created: {str(num_rows_created)}, Updated: Not Implemented"
 
     def _create_update_split(self, new_df, company_tidm):
         existing_df = pd.DataFrame(list(DcfVariables.objects.get_table_joined_filtered(company_tidm)))
