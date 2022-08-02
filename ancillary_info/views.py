@@ -1,6 +1,5 @@
 from django.core import management
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -13,9 +12,6 @@ from django.views.generic import (
     )
 from .models import Companies, DcfVariables
 from .tables import DCFTable
-from .forms import DCFForm
-
-import pandas as pd
 
 
 class CompanyListView(ListView):
@@ -145,31 +141,20 @@ def dcf_var_detail(request, **kwargs):
     return render(request, "ancillary/dcf_var_detail.html", context)
 
 
-def dcf_var_update(request, **kwargs):
+class DcfVariablesUpdateView(SuccessMessageMixin, UpdateView):
+    model = DcfVariables
+    template_name = "ancillary/dcf_var_update.html"
+    fields = [
+        "est_growth_rate",
+        "est_disc_rate",
+        "est_ltg_rate",
+    ]
 
-    error_message = None
-    pk = None
+    def get_success_url(self):
+        companyid = self.kwargs['pk']
+        return reverse_lazy(
+            'ancillary:dcf_var_detail',
+            kwargs={'pk': companyid}
+            )
 
-    for arg in kwargs.values():
-        pk = arg
-
-    # Get correct company name and tidm
-    company_name = Companies.objects.filter(id=pk).values()[0]["company_name"]
-    company_tidm = Companies.objects.filter(id=pk).values()[0]["tidm"]
-
-    form = DCFForm(DcfVariables.objects.all().filter(company__tidm=company_tidm))
-    company = Companies.objects.all().filter(tidm=company_tidm)
-
-    context = {
-        "company_name": company_name,
-        "error_message": error_message,
-        "company": company,
-        "form": form,
-    }
-    messages.add_message(
-        request,
-        messages.SUCCESS,
-        'Company stats were successfully updated.'
-        )
-
-    return render(request, "ancillary/dcf_var_update.html", context)
+    success_message = "Company was updated successfully"

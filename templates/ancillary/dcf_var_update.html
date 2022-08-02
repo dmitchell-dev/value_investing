@@ -1,10 +1,10 @@
 {% extends '_base.html' %}
+{% load crispy_forms_tags %}
 
 {% block title %}Companies DCF Variables Update{% endblock title %}
 
 {% block content %}
-    <h1>TODO - Company Stats Update</h1>
-    <h2>This is a placeholder for custom form to update DCF values</h2>
+    <h1>DCF Variables Update</h1>
     {% if messages %}
         {% for message in messages %}
             <div class="text-center alert alert-{{ message.tags }}">
@@ -14,10 +14,10 @@
     {% endif %}
     <p>{{ company_name }}</p>
 
-    {% comment %} <form action="" method="post">
+    <form action="" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form|crispy }}
         <input type="submit" value="Save" />
-    </form> {% endcomment %}
+    </form>
 
 {% endblock content %}
