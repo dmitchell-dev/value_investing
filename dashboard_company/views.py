@@ -6,14 +6,14 @@ from django.core.paginator import Paginator
 
 import pandas as pd
 
-# import plotly.graph_objects as go
-from plotly.offline import plot
 import plotly.express as px
 
 from django.http import JsonResponse
 from django.views import View
 
 from .models import DashboardCompany
+from .tables import FinancialReportsTable
+
 from ancillary_info.models import Params, Companies
 from share_prices.models import SharePrices, ShareSplits
 from financial_reports.models import FinancialReports
@@ -117,7 +117,7 @@ def dashboard_table(request, pk, report_type):
     # Get financial data
     finance_qs = FinancialReports.objects.select_related("parameter_id").filter(
         company_id=company_id,
-        parameter_id__report_section_id__report_type_id__report_name=report_type,
+        parameter_id__report_type_id__value=report_type,
     )
 
     finance_data = finance_qs.values(
@@ -136,8 +136,11 @@ def dashboard_table(request, pk, report_type):
         values="value",
     )
 
+    table = FinancialReportsTable(finance_df_pivot.to_dict('records'))
+
     context = {
         "finance_table": finance_df_pivot.to_html(classes="table", border=0),
+        "table": table,
         "report_type": report_type,
         "error_message": error_message,
     }
