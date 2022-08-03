@@ -8,4 +8,27 @@
     <h1>{{ report_type }}</h1>
     {{ finance_table | safe }}
 
+    <table>
+        <thead>
+            <tr>
+            {% for item in table_data %}
+                {% if forloop.first %}
+                    {% for h in item %}
+                        <th>{{ h }}</th>
+                    {% endfor %}
+                {% endif%}
+            {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in table_data %}
+                <tr>
+                    {% for key,value in item.items %}
+                        <td>{{ value}}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 {% endblock content %}

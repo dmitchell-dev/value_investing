@@ -136,11 +136,11 @@ def dashboard_table(request, pk, report_type):
         values="value",
     )
 
-    table = FinancialReportsTable(finance_df_pivot.to_dict('records'))
+    table_data = finance_df_pivot.to_dict('records')
 
     context = {
         "finance_table": finance_df_pivot.to_html(classes="table", border=0),
-        "table": table,
+        "table_data": table_data,
         "report_type": report_type,
         "error_message": error_message,
     }
