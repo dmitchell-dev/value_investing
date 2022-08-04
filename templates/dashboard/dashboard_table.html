@@ -8,15 +8,18 @@
     <h1>{{ report_type }}</h1>
     {{ finance_table | safe }}
 
-    <table>
+    <table class="table">
         <thead>
             <tr>
             {% for item in table_data %}
                 {% if forloop.first %}
                     {% for h in item %}
+                        {% if forloop.first %}
+                            <th>first column</th>
+                        {% endif %}
                         <th>{{ h }}</th>
                     {% endfor %}
-                {% endif%}
+                {% endif %}
             {% endfor %}
             </tr>
         </thead>
@@ -24,7 +27,10 @@
             {% for item in table_data %}
                 <tr>
                     {% for key,value in item.items %}
-                        <td>{{ value}}</td>
+                        {% if forloop.first %}
+                            <td>first column</td>
+                        {% endif %}
+                        <td>£{{ value|floatformat:"2g" }}</td>
                     {% endfor %}
                 </tr>
             {% endfor %}
