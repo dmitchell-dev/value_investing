@@ -16,6 +16,20 @@ class CompaniesQueryset(QuerySet):
             "currency__value",
         )
 
+    def get_companies_joined_filtered(self, tidm):
+        return self.values(
+            "id",
+            "tidm",
+            "company_name",
+            "company_summary",
+            "industry__value",
+            "comp_type__value",
+            "exchange__value",
+            "country__value",
+            "company_source__value",
+            "currency__value",
+        ).filter(company__tidm=tidm)
+
 
 class ParamsQueryset(QuerySet):
     def get_params_joined(self):

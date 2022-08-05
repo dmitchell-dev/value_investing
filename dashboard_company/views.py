@@ -113,6 +113,8 @@ def dashboard_table(request, pk, report_type):
     # Get correct company id
     company_name = DashboardCompany.objects.filter(id=pk).values()[0]["company_name"]
     company_id = Companies.objects.filter(company_name=company_name).values()[0]["id"]
+    company_tidm = Companies.objects.filter(company_name=company_name).values()[0]["tidm"]
+    # company_currency = Companies.objects.get_companies_joined_filtered(company_tidm)
 
     # Get financial data
     finance_qs = FinancialReports.objects.select_related("parameter_id").filter(

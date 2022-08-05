@@ -27,7 +27,7 @@
                         {% if forloop.first %}
                             <td>{{ key }}</td>
                         {% endif %}
-                        <td>{{ value2 }}</td>
+                        <td>${{ value2|floatformat:"2g" }}</td>
                     {% endfor %}
                 </tr>
             {% endfor %}
