@@ -138,11 +138,6 @@ def dashboard_table(request, pk, report_type):
 
     table_data = finance_df_pivot.to_dict('index').items()
 
-    for key, value in table_data:
-        print(key)
-        for key2, value2 in value.items():
-            print(key2,'->',value2)
-
     context = {
         "finance_table": finance_df_pivot.to_html(classes="table", border=0),
         "table_data": table_data,
