@@ -1,24 +1,24 @@
 {% extends '_base.html' %}
 {% load render_table from django_tables2 %}
 
-{% block title %}Dashboard{% endblock title %}
+{% block title %}Financial Data{% endblock title %}
 
 {% block content %}
 
     <h1>{{ report_type }}</h1>
-    {{ finance_table | safe }}
 
     <table class="table">
         <thead>
-            <tr>
             {% for key, value in table_data %}
-                {% for key2, value2 in value.items %}
-                    {% comment %} {% if forloop.first %} {% endcomment %}
+                {% if forloop.first %}
+                    {% for key2, value2 in value.items %}
+                        {% if forloop.first %}
+                            <th></th>
+                        {% endif %}
                         <th>{{ key2 }}</th>
-                    {% comment %} {% endif %} {% endcomment %}
-                {% endfor %}
+                    {% endfor %}
+                {% endif %}
             {% endfor %}
-            </tr>
         </thead>
         <tbody>
             {% for key, value in table_data %}
@@ -32,40 +32,6 @@
                 </tr>
             {% endfor %}
         </tbody>
-    </table> 
-
-    {% comment %} for key, value in table_data:
-        print(key)
-        for key2, value2 in value.items():
-            print(key2,'->',value2) {% endcomment %}
-
-    {% comment %} <table class="table">
-        <thead>
-            <tr>
-            {% for item in table_data %}
-                {% if forloop.first %}
-                    {% for h in item %}
-                        {% if forloop.first %}
-                            <th>first column</th>
-                        {% endif %}
-                        <th>{{ h }}</th>
-                    {% endfor %}
-                {% endif %}
-            {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in table_data %}
-                <tr>
-                    {% for key,value in item.items %}
-                        {% if forloop.first %}
-                            <td>first column</td>
-                        {% endif %}
-                        <td>£{{ value|floatformat:"2g" }}</td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table> {% endcomment %}
+    </table>
 
 {% endblock content %}
