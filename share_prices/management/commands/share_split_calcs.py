@@ -1,7 +1,9 @@
 from django.core.management.base import BaseCommand
 from ancillary_info.models import Companies
 from share_prices.models import SharePrices, ShareSplits
+
 import pandas as pd
+import numpy as np
 
 
 class Command(BaseCommand):
@@ -21,20 +23,21 @@ class Command(BaseCommand):
 
         num_comps = len(comp_list)
         comp_num = 0
-        total_rows_added = 0
-        num_rows = 0
+        total_rows_created = 0
+        total_rows_updated = 0
 
         # For each report import data
-        for current_company in comp_list:
+        for company_tidm in comp_list:
             comp_num = comp_num + 1
 
-            print(f"API Import {comp_num} of {num_comps}: {current_company}")
+            print(f"API Import {comp_num} of {num_comps}: {company_tidm}")
 
             # Get info oncurrent company
-            curr_comp_id = df_companies["id"].iat[comp_num - 1]
+            comp_idx = df_companies[df_companies['tidm'] == company_tidm].index[0]
+            curr_comp_id = df_companies["id"].iat[comp_idx]
 
             df_data = pd.DataFrame(
-                list(SharePrices.objects.get_share_joined_filtered(current_company))
+                list(SharePrices.objects.get_share_joined_filtered(company_tidm))
             )
 
             # Detect and calculate stock splits
@@ -48,35 +51,83 @@ class Command(BaseCommand):
 
             if not df_data_filtered.empty:
 
-                # Filter out prices already in DB
-                latest_share_data = ShareSplits.objects.get_latest_date(current_company)
-
                 df_data_filtered.insert(
                     0, "company_id", [curr_comp_id] * df_data_filtered.shape[0]
                 )
 
-                if latest_share_data:
-                    latest_date = latest_share_data.time_stamp
-                    mask = df_data_filtered["time_stamp"] > pd.Timestamp(latest_date)
-                    df_data_filtered = df_data_filtered.loc[mask]
+                # Update/Create split
+                df_new, df_existing = self._create_update_split(df_data_filtered, company_tidm)
 
-                num_rows = df_data_filtered.shape[0]
+                # Update existing rows
+                if not df_existing.empty:
+                    num_rows_updated = self._update_rows(df_existing, company_tidm)
+                    total_rows_updated = total_rows_updated + num_rows_updated
 
-                # Save to database
-                reports = [
-                    ShareSplits(
-                        company=Companies.objects.get(id=row["company_id"]),
-                        time_stamp=row["time_stamp"],
-                        value=row["share_split"],
-                    )
-                    for i, row in df_data_filtered.iterrows()
-                ]
-                ShareSplits.objects.bulk_create(reports)
+                # Create any new rows
+                if not df_new.empty:
+                    num_rows_created = self._create_rows(df_new)
+                    total_rows_created = total_rows_created + num_rows_created
 
-            print(f"Rows saved to database: {num_rows}")
+        return f"Created: {str(total_rows_created)}, Updated: {str(total_rows_updated)}"
 
-            total_rows_added = total_rows_added + num_rows
+    def _create_update_split(self, new_df, company_tidm):
 
-        print(f"{total_rows_added} saved to database")
+        existing_df = pd.DataFrame(
+            list(ShareSplits.objects.get_share_filtered(company_tidm))
+            )
 
-        return f"Created: {str(total_rows_added)}, Updated: Not Implemented"
+        if not existing_df.empty:
+            new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
+            existing_df['time_stamp_txt'] = existing_df['time_stamp'].astype(str)
+            split_idx = np.where(
+                new_df["time_stamp_txt"].isin(existing_df["time_stamp_txt"]), "existing", "new"
+            )
+            df_existing = new_df[split_idx == "existing"]
+            df_new = new_df[split_idx == "new"]
+        else:
+            df_new = new_df
+            df_existing = pd.DataFrame()
+
+        return df_new, df_existing
+
+    def _create_rows(self, df_create):
+
+        # Save to database
+        reports = [
+            ShareSplits(
+                company=Companies.objects.get(id=row["company_id"]),
+                time_stamp=row["time_stamp"],
+                value=row["value"],
+            )
+            for i, row in df_create.iterrows()
+        ]
+        list_of_objects = ShareSplits.objects.bulk_create(reports)
+
+        total_rows_added = len(list_of_objects)
+
+        return total_rows_added
+
+    def _update_rows(self, df_update, company_tidm):
+
+        param_list = ["value"]
+
+        extsting_qs = ShareSplits.objects.filter(
+            company__tidm=company_tidm
+            )
+
+        # For each item in the queryset, update with associated value in df
+        for item in extsting_qs.iterator():
+            filter_ts_idx = str(item.time_stamp)
+
+            updated_value = df_update.query(
+                f'time_stamp_txt == "{filter_ts_idx}"'
+                )['value'].values[0]
+            item.value = float(updated_value)
+
+        for param in param_list:
+            num_rows_updated = ShareSplits.objects.bulk_update(
+                extsting_qs,
+                [param]
+                )
+
+        return num_rows_updated
