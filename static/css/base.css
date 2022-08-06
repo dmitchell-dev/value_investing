@@ -17,3 +17,13 @@ h1 {
     background-color: #f8d7da;
     border-color: #f5c6cb;
 }
+
+.table_wide {
+    position: absolute; 
+    left: 25px;
+    width: 95%;
+}
+
+.table_small_font{
+    font-size: 12px;
+}

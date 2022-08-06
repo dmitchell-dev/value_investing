@@ -5,33 +5,33 @@
 
 {% block content %}
 
-    <h1>{{ report_type }} - {{ company_name }}</h1>
-
-    <table class="table">
-        <thead>
-            {% for key, value in table_data %}
-                {% if forloop.first %}
-                    {% for key2, value2 in value.items %}
-                        {% if forloop.first %}
-                            <th></th>
-                        {% endif %}
-                        <th>{{ key2 }}</th>
-                    {% endfor %}
-                {% endif %}
-            {% endfor %}
-        </thead>
-        <tbody>
-            {% for key, value in table_data %}
-                <tr>
-                    {% for key2, value2 in value.items %}
-                        {% if forloop.first %}
-                            <td>{{ key }}</td>
-                        {% endif %}
-                        <td>{{ company_currency }}{{ value2|floatformat:"2g" }}</td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
+    <div class="table_wide table_small_font">
+        <h1>{{ report_type }} - {{ company_name }}</h1>
+        <table class="table table-striped table-sm">
+            <thead>
+                {% for key, value in table_data %}
+                    {% if forloop.first %}
+                        {% for key2, value2 in value.items %}
+                            {% if forloop.first %}
+                                <th></th>
+                            {% endif %}
+                            <th>{{ key2 }}</th>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </thead>
+            <tbody>
+                {% for key, value in table_data %}
+                    <tr>
+                        {% for key2, value2 in value.items %}
+                            {% if forloop.first %}
+                                <td><b>{{ key }}</b></td>
+                            {% endif %}
+                            <td>{{ company_currency }}{{ value2|floatformat:"2g" }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock content %}
