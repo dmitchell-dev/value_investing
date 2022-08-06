@@ -80,6 +80,8 @@ class Command(BaseCommand):
             # Check datetime format
             df_unpivot = self._datetime_format(df_unpivot)
 
+            df_unpivot = df_unpivot.replace(to_replace='None', value=None)
+
             # Update/Create split
             df_new, df_existing = self._create_update_split(df_unpivot, company_tidm)
 
@@ -273,11 +275,16 @@ class Command(BaseCommand):
         # For each item in the queryset, update with associated value in df
         for item in extsting_qs.iterator():
             filter_mul_idx = str(item.parameter_id)+"_"+str(item.time_stamp)
-            updated_value = df_update.query(
-                f'mul_idx_col == "{filter_mul_idx}"'
-                )['value'].values[0]
 
-            item.value = updated_value
+            # Check if date exists in df_update
+            # AV does not go back as far as TIKR
+            if not df_update[df_update['mul_idx_col'].isin([filter_mul_idx])].empty:
+
+                updated_value = df_update.query(
+                    f'mul_idx_col == "{filter_mul_idx}"'
+                    )['value'].values[0]
+
+                item.value = updated_value
 
         num_rows_updated = FinancialReports.objects.bulk_update(
             extsting_qs,

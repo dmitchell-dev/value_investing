@@ -73,6 +73,8 @@ class Command(BaseCommand):
                     # Check datetime format
                     df_data = self._datetime_format(df_data)
 
+                    df_data = df_data.replace(to_replace='None', value=None)
+
                     # Update/Create split
                     df_new, df_existing = self._create_update_split(df_data, company_tidm)
 
