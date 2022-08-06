@@ -45,11 +45,11 @@ class Command(BaseCommand):
         # Financial Import
         if options["comp_pk"] is None:
             reports_num = management.call_command(
-                'financial_reports_import',
+                'financial_reports_import_tikr',
                 )
         else:
             reports_num = management.call_command(
-                'financial_reports_import',
+                'financial_reports_import_tikr',
                 '--symbol', company_tidm
                 )
         reports_result = f"Financial Reports; {reports_num}"
