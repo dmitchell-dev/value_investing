@@ -111,10 +111,11 @@ def dashboard_table(request, pk, report_type):
 
     error_message = None
     # Get correct company id
-    company_name = DashboardCompany.objects.filter(id=pk).values()[0]["company_name"]
-    company_id = Companies.objects.filter(company_name=company_name).values()[0]["id"]
-    company_tidm = Companies.objects.filter(company_name=company_name).values()[0]["tidm"]
-    # company_currency = Companies.objects.get_companies_joined_filtered(company_tidm)
+    company_tidm = DashboardCompany.objects.filter(id=pk).values()[0]["tidm"]
+    company_data = Companies.objects.get_companies_joined_filtered(company_tidm)
+    company_name = company_data[0]['company_name']
+    company_id = company_data[0]['id']
+    company_currency = company_data[0]['currency__value']
 
     # Get financial data
     finance_qs = FinancialReports.objects.select_related("parameter_id").filter(
@@ -142,6 +143,8 @@ def dashboard_table(request, pk, report_type):
 
     context = {
         "finance_table": finance_df_pivot.to_html(classes="table", border=0),
+        "company_name": company_name,
+        "company_currency": company_currency,
         "table_data": table_data,
         "report_type": report_type,
         "error_message": error_message,

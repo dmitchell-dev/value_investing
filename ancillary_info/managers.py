@@ -28,7 +28,7 @@ class CompaniesQueryset(QuerySet):
             "country__value",
             "company_source__value",
             "currency__value",
-        ).filter(company__tidm=tidm)
+        ).filter(tidm=tidm)
 
 
 class ParamsQueryset(QuerySet):
