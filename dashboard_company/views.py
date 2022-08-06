@@ -205,7 +205,7 @@ def _param_chart(company_id, DataSource, param_name):
     param_id = Params.objects.filter(param_name=param_name).values()[0]["id"]
 
     df = pd.DataFrame(
-        DataSource.objects.filter(company_id=company_id, parameter_id=param_id).values()
+        DataSource.objects.order_by('time_stamp').filter(company_id=company_id, parameter_id=param_id).values()
     )
     df["value"] = df["value"].astype(float)
 
@@ -236,17 +236,17 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
     param_id_3 = Params.objects.filter(param_name=param_name_3).values()[0]["id"]
 
     df_1 = pd.DataFrame(
-        DataSource.objects.filter(
+        DataSource.objects.order_by('time_stamp').filter(
             company_id=company_id, parameter_id=param_id_1
         ).values()
     )
     df_2 = pd.DataFrame(
-        DataSource.objects.filter(
+        DataSource.objects.order_by('time_stamp').filter(
             company_id=company_id, parameter_id=param_id_2
         ).values()
     )
     df_3 = pd.DataFrame(
-        DataSource.objects.filter(
+        DataSource.objects.order_by('time_stamp').filter(
             company_id=company_id, parameter_id=param_id_3
         ).values()
     )
@@ -300,7 +300,7 @@ class ShareChartDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        share_qs = SharePrices.objects.filter(company_id=company_id).values()
+        share_qs = SharePrices.objects.order_by('time_stamp').filter(company_id=company_id).values()
 
         y_data = []
         x_data = []
