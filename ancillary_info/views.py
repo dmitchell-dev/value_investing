@@ -96,9 +96,15 @@ def company_stats_update(request, **kwargs):
     # Get correct company name and tidm
     company_name = Companies.objects.filter(id=pk).values()[0]["company_name"]
 
+    # Change to dict of dicts
+    table_data = dict(x.split("; ") for x in result_str.split("-"))
+    for key, value in table_data.items():
+        table_data[key] = dict(x.split(": ") for x in value.split(", "))
+
     context = {
         "company_name": company_name,
         "result_str": result_str.split('-'),
+        "table_data": table_data,
         "error_message": error_message,
     }
     messages.add_message(
