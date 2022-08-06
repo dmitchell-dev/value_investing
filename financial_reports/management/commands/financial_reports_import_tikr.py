@@ -25,7 +25,8 @@ class Command(BaseCommand):
 
         num_files = len(file_list)
         file_num = 0
-        total_rows_added = 0
+        total_rows_created = 0
+        total_rows_updated = 0
 
         # For each report import data
         for current_company_filename in file_list:
@@ -34,10 +35,10 @@ class Command(BaseCommand):
 
             # Process filename
             if options["symbol"] is None:
-                current_company_tidm = self._process_filename(current_company_filename)
+                company_tidm = self._process_filename(current_company_filename)
             else:
-                current_company_tidm = options["symbol"][0]
-                current_company_filename = self._get_filename(file_list_single, current_company_tidm)
+                company_tidm = options["symbol"][0]
+                current_company_filename = self._get_filename(file_list_single, company_tidm)
 
             # Get company report data
             df_data = self._import_reporting_data(current_company_filename)
@@ -47,7 +48,7 @@ class Command(BaseCommand):
 
             # company id
             company_id = df_companies[
-                df_companies["tidm"] == current_company_tidm
+                df_companies["tidm"] == company_tidm
             ].id.values[0]
 
             # Create list of columns
@@ -79,36 +80,20 @@ class Command(BaseCommand):
             # Check datetime format
             df_unpivot = self._datetime_format(df_unpivot)
 
-            # Filter out prices already in DB
-            latest_share_data = FinancialReports.objects.get_latest_date(
-                current_company_tidm
-            )
-            if latest_share_data:
-                latest_date = latest_share_data.time_stamp
-                mask = df_unpivot["time_stamp"] > pd.Timestamp(latest_date)
-                df_unpivot = df_unpivot.loc[mask]
+            # Update/Create split
+            df_new, df_existing = self._create_update_split(df_unpivot, company_tidm)
 
-            num_rows = df_unpivot.shape[0]
+            # Update existing rows
+            if not df_existing.empty:
+                num_rows_updated = self._update_rows(df_existing, company_tidm)
+                total_rows_updated = total_rows_updated + num_rows_updated
 
-            # Populate database
-            reports = [
-                FinancialReports(
-                    company=Companies.objects.get(id=row["company_id"]),
-                    parameter=Params.objects.get(id=row["parameter_id"]),
-                    time_stamp=row["time_stamp"],
-                    value=row["value"],
-                )
-                for i, row in df_unpivot.iterrows()
-            ]
-            FinancialReports.objects.bulk_create(reports)
+            # Create any new rows
+            if not df_new.empty:
+                num_rows_created = self._create_rows(df_new)
+                total_rows_created = total_rows_created + num_rows_created
 
-            print(f"Rows saved to database: {num_rows}")
-
-            total_rows_added = total_rows_added + num_rows
-
-        print(f"{total_rows_added} saved to database")
-
-        return f"Created: {str(total_rows_added)}, Updated: Not Implemented"
+        return f"Created: {str(total_rows_created)}, Updated: {str(total_rows_updated)}"
 
     @staticmethod
     def _import_reporting_data(current_company_filename):
@@ -173,16 +158,16 @@ class Command(BaseCommand):
     def _process_filename(current_company_filename):
 
         # Get company tidm for associated id
-        current_company_tidm = current_company_filename.split("_")[0]
+        company_tidm = current_company_filename.split("_")[0]
 
-        return current_company_tidm
+        return company_tidm
 
     @staticmethod
-    def _get_filename(file_list_single, current_company_tidm):
+    def _get_filename(file_list_single, company_tidm):
 
         # Get company tidm for associated id
         tidm_list = [tidm.split('_', 1)[0] for tidm in file_list_single]
-        tidm_idx = tidm_list.index(current_company_tidm)
+        tidm_idx = tidm_list.index(company_tidm)
         current_company_filename = file_list_single[tidm_idx]
 
         return current_company_filename
@@ -227,3 +212,76 @@ class Command(BaseCommand):
                 pass
 
         return df
+
+    def _create_update_split(self, new_df, company_tidm):
+
+        existing_df = pd.DataFrame(
+            list(FinancialReports.objects.get_financial_data_filtered(company_tidm))
+            )
+
+        if not new_df.empty:
+            new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
+
+        if not existing_df.empty:
+            existing_df['time_stamp_txt'] = existing_df['time_stamp'].astype(str)
+
+            new_midx = pd.MultiIndex.from_arrays(
+                [new_df[col] for col in ['time_stamp_txt', 'parameter_id']]
+                )
+            existing_midx = pd.MultiIndex.from_arrays(
+                [existing_df[col] for col in ['time_stamp_txt', 'parameter']]
+                )
+
+            split_idx = np.where(
+                new_midx.isin(existing_midx), "existing", "new"
+            )
+
+            df_existing = new_df[split_idx == "existing"]
+            df_new = new_df[split_idx == "new"]
+        else:
+            df_new = new_df
+            df_existing = pd.DataFrame()
+
+        return df_new, df_existing
+
+    def _create_rows(self, df_create):
+
+        # Save to database
+        reports = [
+            FinancialReports(
+                company=Companies.objects.get(id=row["company_id"]),
+                parameter=Params.objects.get(id=row["parameter_id"]),
+                time_stamp=row["time_stamp"],
+                value=row["value"],
+            )
+            for i, row in df_create.iterrows()
+        ]
+        list_of_objects = FinancialReports.objects.bulk_create(reports)
+
+        total_rows_added = len(list_of_objects)
+
+        return total_rows_added
+
+    def _update_rows(self, df_update, company_tidm):
+
+        df_update["mul_idx_col"] = df_update["parameter_id"].astype(str) + "_" + df_update["time_stamp_txt"]
+
+        extsting_qs = FinancialReports.objects.filter(
+            company__tidm=company_tidm
+            )
+
+        # For each item in the queryset, update with associated value in df
+        for item in extsting_qs.iterator():
+            filter_mul_idx = str(item.parameter_id)+"_"+str(item.time_stamp)
+            updated_value = df_update.query(
+                f'mul_idx_col == "{filter_mul_idx}"'
+                )['value'].values[0]
+
+            item.value = updated_value
+
+        num_rows_updated = FinancialReports.objects.bulk_update(
+            extsting_qs,
+            ["value"]
+            )
+
+        return num_rows_updated

@@ -74,12 +74,14 @@ class Command(BaseCommand):
             df_new, df_existing = self._create_update_split(df_data, company_tidm)
 
             # Update existing rows
-            num_rows_updated = self._update_rows(df_existing, company_tidm)
-            total_rows_updated = total_rows_updated + num_rows_updated
+            if not df_existing.empty:
+                num_rows_updated = self._update_rows(df_existing, company_tidm)
+                total_rows_updated = total_rows_updated + num_rows_updated
 
             # Create any new rows
-            num_rows_created = self._create_rows(df_new)
-            total_rows_created = total_rows_created + num_rows_created
+            if not df_new.empty:
+                num_rows_created = self._create_rows(df_new)
+                total_rows_created = total_rows_created + num_rows_created
 
         return f"Created: {str(total_rows_created)}, Updated: {str(total_rows_updated)}"
 
@@ -129,7 +131,7 @@ class Command(BaseCommand):
             df_new = new_df[split_idx == "new"]
         else:
             df_new = new_df
-            df_existing = None
+            df_existing = pd.DataFrame()
 
         return df_new, df_existing
 
