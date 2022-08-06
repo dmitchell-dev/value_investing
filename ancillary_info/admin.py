@@ -58,8 +58,6 @@ class DecisionTypeAdmin(admin.ModelAdmin):
 
 class DcfVariablesAdmin(admin.ModelAdmin):
     fields = [
-        "company_name",
-        "param_name",
         "est_growth_rate",
         "est_disc_rate",
         "est_ltg_rate",

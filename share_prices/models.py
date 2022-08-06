@@ -17,7 +17,7 @@ class SharePrices(models.Model):
         verbose_name_plural = "Share Prices"
 
     def __str__(self):
-        return self.company
+        return str(self.company)
 
 
 class ShareSplits(models.Model):
@@ -34,4 +34,4 @@ class ShareSplits(models.Model):
         verbose_name_plural = "Share Splits"
 
     def __str__(self):
-        return self.company
+        return str(self.company)

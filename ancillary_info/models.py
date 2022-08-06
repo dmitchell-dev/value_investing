@@ -199,4 +199,4 @@ class DcfVariables(models.Model):
         verbose_name_plural = "DCF Variables"
 
     def __str__(self):
-        return f"{self.company} - {self.parameter}"
+        return f"{self.company}"

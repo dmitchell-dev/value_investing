@@ -7,7 +7,7 @@ class SharePricesAdmin(admin.ModelAdmin):
 
 
 class ShareSplitsAdmin(admin.ModelAdmin):
-    fields = ["company", "time_stamp", "value", "created_at", "updated_at"]
+    fields = ["company", "time_stamp", "value"]
 
 
 admin.site.register(SharePrices, SharePricesAdmin)

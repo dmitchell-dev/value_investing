@@ -3,7 +3,7 @@ from .models import CalculatedStats
 
 
 class CalculatedStatsAdmin(admin.ModelAdmin):
-    fields = ["company_name", "param_name", "value", "timestamp"]
+    fields = ["company", "parameter", "value", "time_stamp"]
 
 
 admin.site.register(CalculatedStats, CalculatedStatsAdmin)
