@@ -182,11 +182,11 @@ class Command(BaseCommand):
             df_unpivot["value"] = df_unpivot["value"].replace(["inf", "-inf"], None)
 
             # Update/Create split
-            df_new, df_existing = self._create_update_split(df_unpivot, company_tidm)
+            df_new, df_new_existing, df_old_existing = self._create_update_split(df_unpivot, company_tidm)
 
             # Update existing rows
-            if not df_existing.empty:
-                num_rows_updated = self._update_rows(df_existing, company_tidm)
+            if not df_new_existing.empty:
+                num_rows_updated = self._update_rows(df_new_existing, df_old_existing)
                 total_rows_updated = total_rows_updated + num_rows_updated
 
             # Create any new rows
@@ -278,26 +278,78 @@ class Command(BaseCommand):
 
         return total_rows_added
 
-    def _update_rows(self, df_update, company_tidm):
+    def _update_rows(self, df_new_existing, df_old_existing):
+        """Checks if the values in the new df are different from the old df,
+        if yes, updates the database"""
 
-        df_update["mul_idx_col"] = df_update["parameter_id"].astype(str) + "_" + df_update["time_stamp_txt"]
+        num_rows_updated = 0
 
-        extsting_qs = CalculatedStats.objects.filter(
-            company__tidm=company_tidm
+        # Format value columns correctly
+        df_new_existing['value'] = df_new_existing['value'].astype('float')
+        df_new_existing['value'] = df_new_existing['value'].map('{:.2f}'.format)
+        df_old_existing['value'] = df_old_existing['value'].map('{:.2f}'.format)
+
+        # Create multi columnindexes for both with and without value
+        new_midx_value = pd.MultiIndex.from_arrays(
+            [df_new_existing[col] for col in ['time_stamp_txt', 'parameter_id', 'value']]
             )
-
-        # For each item in the queryset, update with associated value in df
-        for item in extsting_qs.iterator():
-            filter_mul_idx = str(item.parameter_id)+"_"+str(item.time_stamp)
-            updated_value = df_update.query(
-                f'mul_idx_col == "{filter_mul_idx}"'
-                )['value'].values[0]
-
-            item.value = updated_value
-
-        num_rows_updated = CalculatedStats.objects.bulk_update(
-            extsting_qs,
-            ["value"]
+        new_midx = pd.MultiIndex.from_arrays(
+            [df_new_existing[col] for col in ['time_stamp_txt', 'parameter_id']]
             )
+        df_new_existing['mul_col_idx'] = new_midx
+
+        existing_midx_value = pd.MultiIndex.from_arrays(
+            [df_old_existing[col] for col in ['time_stamp_txt', 'parameter', 'value']]
+            )
+        existing_midx = pd.MultiIndex.from_arrays(
+            [df_old_existing[col] for col in ['time_stamp_txt', 'parameter']]
+            )
+        df_old_existing['mul_col_idx'] = existing_midx
+
+        split_idx = np.where(
+            new_midx_value.isin(existing_midx_value), "existing", "new"
+        )
+
+        # Only values to update
+        df_to_update = df_new_existing[split_idx == "new"]
+        df_to_update['id'] = np.nan
+
+        df_to_update = df_to_update.reset_index()
+
+        # Transfer row id across to new df
+        for index, row in df_to_update.iterrows():
+            df_to_update.at[index, 'id'] = df_old_existing[df_old_existing['mul_col_idx'].isin([row['mul_col_idx']])]['id'].values[0]
+        df_to_update = df_to_update.set_index('id')
+
+        # Update Database
+        with transaction.atomic():
+            for index, row in df_to_update.iterrows():
+                print(index, row['value'])
+                FinancialReports.objects.filter(id=index).update(value=row['value'])
+                num_rows_updated = num_rows_updated + 1
 
         return num_rows_updated
+
+    # def _update_rows(self, df_update, company_tidm):
+
+        # df_update["mul_idx_col"] = df_update["parameter_id"].astype(str) + "_" + df_update["time_stamp_txt"]
+
+        # extsting_qs = CalculatedStats.objects.filter(
+        #     company__tidm=company_tidm
+        #     )
+
+        # # For each item in the queryset, update with associated value in df
+        # for item in extsting_qs.iterator():
+        #     filter_mul_idx = str(item.parameter_id)+"_"+str(item.time_stamp)
+        #     updated_value = df_update.query(
+        #         f'mul_idx_col == "{filter_mul_idx}"'
+        #         )['value'].values[0]
+
+        #     item.value = updated_value
+
+        # num_rows_updated = CalculatedStats.objects.bulk_update(
+        #     extsting_qs,
+        #     ["value"]
+        #     )
+
+        # return num_rows_updated

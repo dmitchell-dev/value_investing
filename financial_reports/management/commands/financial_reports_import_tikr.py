@@ -91,7 +91,7 @@ class Command(BaseCommand):
 
             # Update existing rows
             if not df_new_existing.empty:
-                num_rows_updated = self._update_rows(df_new_existing, df_old_existing, company_tidm)
+                num_rows_updated = self._update_rows(df_new_existing, df_old_existing)
                 total_rows_updated = total_rows_updated + num_rows_updated
 
             # Create any new rows
@@ -270,7 +270,7 @@ class Command(BaseCommand):
 
         return total_rows_added
 
-    def _update_rows(self, df_new_existing, df_old_existing, company_tidm):
+    def _update_rows(self, df_new_existing, df_old_existing):
         """Checks if the values in the new df are different from the old df,
         if yes, updates the database"""
 
