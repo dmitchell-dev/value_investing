@@ -19,7 +19,7 @@ class CompanyListView(ListView):
     context_object_name = "company_list"
     template_name = "ancillary/company_list.html"
 
-    ordering = ["tidm"]
+    ordering = ["company_name"]
 
 
 class CompanyDetailView(DetailView):
