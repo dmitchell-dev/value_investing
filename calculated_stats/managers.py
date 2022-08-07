@@ -7,6 +7,7 @@ from datetime import timedelta
 class CalculatedStatsQueryset(QuerySet):
     def get_table_joined_filtered(self, tidm):
         return self.values(
+            "id",
             "time_stamp",
             "value",
             "company__tidm",
@@ -15,6 +16,7 @@ class CalculatedStatsQueryset(QuerySet):
 
     def get_table_filtered(self, tidm):
         return self.values(
+            "id",
             "time_stamp",
             "value",
             "company",
@@ -23,6 +25,7 @@ class CalculatedStatsQueryset(QuerySet):
 
     def get_table_joined(self):
         return self.values(
+            "id",
             "time_stamp",
             "value",
             "company__tidm",

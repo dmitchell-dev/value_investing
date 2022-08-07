@@ -278,6 +278,7 @@ class Command(BaseCommand):
 
         # Format value columns correctly
         df_new_existing['value'] = df_new_existing['value'].astype('float')
+        df_old_existing['value'] = df_old_existing['value'].astype('float')
         df_new_existing['value'] = df_new_existing['value'].map('{:.2f}'.format)
         df_old_existing['value'] = df_old_existing['value'].map('{:.2f}'.format)
 
@@ -316,7 +317,7 @@ class Command(BaseCommand):
         # Update Database
         with transaction.atomic():
             for index, row in df_to_update.iterrows():
-                print(index, row['value'])
+                # print(index, row['value'])
                 FinancialReports.objects.filter(id=index).update(value=row['value'])
                 num_rows_updated = num_rows_updated + 1
 

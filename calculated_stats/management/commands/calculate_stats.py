@@ -11,6 +11,8 @@ from share_prices.models import SharePrices
 from financial_reports.models import FinancialReports
 from calculated_stats.models import CalculatedStats
 
+from django.db import transaction
+
 from calculated_stats.managers import (
     total_equity,
     share_price,
@@ -231,34 +233,36 @@ class Command(BaseCommand):
 
     def _create_update_split(self, new_df, company_tidm):
 
-        existing_df = pd.DataFrame(
+        existing_old_df = pd.DataFrame(
             list(CalculatedStats.objects.get_table_filtered(company_tidm))
             )
 
         if not new_df.empty:
             new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
 
-        if not existing_df.empty:
-            existing_df['time_stamp_txt'] = existing_df['time_stamp'].astype(str)
+        if not existing_old_df.empty:
+            existing_old_df['time_stamp_txt'] = existing_old_df['time_stamp'].astype(str)
 
             new_midx = pd.MultiIndex.from_arrays(
                 [new_df[col] for col in ['time_stamp_txt', 'parameter_id']]
                 )
             existing_midx = pd.MultiIndex.from_arrays(
-                [existing_df[col] for col in ['time_stamp_txt', 'parameter']]
+                [existing_old_df[col] for col in ['time_stamp_txt', 'parameter']]
                 )
 
             split_idx = np.where(
                 new_midx.isin(existing_midx), "existing", "new"
             )
 
-            df_existing = new_df[split_idx == "existing"]
+            df_new_existing = new_df[split_idx == "existing"]
+            df_old_existing = existing_old_df
             df_new = new_df[split_idx == "new"]
         else:
             df_new = new_df
-            df_existing = pd.DataFrame()
+            df_new_existing = pd.DataFrame()
+            df_old_existing = pd.DataFrame()
 
-        return df_new, df_existing
+        return df_new, df_new_existing, df_old_existing
 
     def _create_rows(self, df_create):
 
@@ -286,6 +290,7 @@ class Command(BaseCommand):
 
         # Format value columns correctly
         df_new_existing['value'] = df_new_existing['value'].astype('float')
+        df_old_existing['value'] = df_old_existing['value'].astype('float')
         df_new_existing['value'] = df_new_existing['value'].map('{:.2f}'.format)
         df_old_existing['value'] = df_old_existing['value'].map('{:.2f}'.format)
 
@@ -324,32 +329,8 @@ class Command(BaseCommand):
         # Update Database
         with transaction.atomic():
             for index, row in df_to_update.iterrows():
-                print(index, row['value'])
-                FinancialReports.objects.filter(id=index).update(value=row['value'])
+                # print(index, row['value'])
+                CalculatedStats.objects.filter(id=index).update(value=row['value'])
                 num_rows_updated = num_rows_updated + 1
 
         return num_rows_updated
-
-    # def _update_rows(self, df_update, company_tidm):
-
-        # df_update["mul_idx_col"] = df_update["parameter_id"].astype(str) + "_" + df_update["time_stamp_txt"]
-
-        # extsting_qs = CalculatedStats.objects.filter(
-        #     company__tidm=company_tidm
-        #     )
-
-        # # For each item in the queryset, update with associated value in df
-        # for item in extsting_qs.iterator():
-        #     filter_mul_idx = str(item.parameter_id)+"_"+str(item.time_stamp)
-        #     updated_value = df_update.query(
-        #         f'mul_idx_col == "{filter_mul_idx}"'
-        #         )['value'].values[0]
-
-        #     item.value = updated_value
-
-        # num_rows_updated = CalculatedStats.objects.bulk_update(
-        #     extsting_qs,
-        #     ["value"]
-        #     )
-
-        # return num_rows_updated
