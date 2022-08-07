@@ -2,6 +2,8 @@ from django.core.management.base import BaseCommand
 from ancillary_info.models import Companies
 from share_prices.models import SharePrices, ShareSplits
 
+from django.db import transaction
+
 import pandas as pd
 import numpy as np
 
@@ -56,11 +58,11 @@ class Command(BaseCommand):
                 )
 
                 # Update/Create split
-                df_new, df_existing = self._create_update_split(df_data_filtered, company_tidm)
+                df_new, df_new_existing, df_old_existing = self._create_update_split(df_data_filtered, company_tidm)
 
                 # Update existing rows
-                if not df_existing.empty:
-                    num_rows_updated = self._update_rows(df_existing, company_tidm)
+                if not df_new_existing.empty:
+                    num_rows_updated = self._update_rows(df_new_existing, df_old_existing)
                     total_rows_updated = total_rows_updated + num_rows_updated
 
                 # Create any new rows
@@ -72,23 +74,29 @@ class Command(BaseCommand):
 
     def _create_update_split(self, new_df, company_tidm):
 
-        existing_df = pd.DataFrame(
+        existing_old_df = pd.DataFrame(
             list(ShareSplits.objects.get_share_filtered(company_tidm))
             )
 
-        if not existing_df.empty:
+        if not new_df.empty:
             new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
-            existing_df['time_stamp_txt'] = existing_df['time_stamp'].astype(str)
+
+        if not existing_old_df.empty:
+            existing_old_df['time_stamp_txt'] = existing_old_df['time_stamp'].astype(str)
+
             split_idx = np.where(
-                new_df["time_stamp_txt"].isin(existing_df["time_stamp_txt"]), "existing", "new"
+                new_df["time_stamp_txt"].isin(existing_old_df["time_stamp_txt"]), "existing", "new"
             )
-            df_existing = new_df[split_idx == "existing"]
+
+            df_new_existing = new_df[split_idx == "existing"]
+            df_old_existing = existing_old_df
             df_new = new_df[split_idx == "new"]
         else:
             df_new = new_df
-            df_existing = pd.DataFrame()
+            df_new_existing = pd.DataFrame()
+            df_old_existing = pd.DataFrame()
 
-        return df_new, df_existing
+        return df_new, df_new_existing, df_old_existing
 
     def _create_rows(self, df_create):
 
@@ -107,27 +115,48 @@ class Command(BaseCommand):
 
         return total_rows_added
 
-    def _update_rows(self, df_update, company_tidm):
+    def _update_rows(self, df_new_existing, df_old_existing):
+        """Checks if the values in the new df are different from the old df,
+        if yes, updates the database"""
 
-        param_list = ["value"]
+        num_rows_updated = 0
 
-        extsting_qs = ShareSplits.objects.filter(
-            company__tidm=company_tidm
+        # Format value columns correctly
+        df_new_existing['value'] = df_new_existing['value'].astype('float').map('{:.2f}'.format)
+        df_old_existing['value'] = df_old_existing['value'].astype('float').map('{:.2f}'.format)
+
+        new_midx = pd.MultiIndex.from_arrays(
+            [df_new_existing[col] for col in ['time_stamp_txt', 'value']]
             )
+        df_new_existing['mul_col_idx'] = new_midx
 
-        # For each item in the queryset, update with associated value in df
-        for item in extsting_qs.iterator():
-            filter_ts_idx = str(item.time_stamp)
+        existing_midx = pd.MultiIndex.from_arrays(
+            [df_old_existing[col] for col in ['time_stamp_txt', 'value']]
+            )
+        df_old_existing['mul_col_idx'] = existing_midx
 
-            updated_value = df_update.query(
-                f'time_stamp_txt == "{filter_ts_idx}"'
-                )['value'].values[0]
-            item.value = float(updated_value)
+        split_idx = np.where(
+            new_midx.isin(existing_midx), "existing", "new"
+        )
 
-        for param in param_list:
-            num_rows_updated = ShareSplits.objects.bulk_update(
-                extsting_qs,
-                [param]
-                )
+        # Only values to update
+        df_to_update = df_new_existing[split_idx == "new"]
+
+        if not df_to_update.empty:
+            df_to_update['id'] = np.nan
+
+            df_to_update = df_to_update.reset_index()
+
+            # Transfer row id across to new df
+            for index, row in df_to_update.iterrows():
+                df_to_update.at[index, 'id'] = df_old_existing[df_old_existing['time_stamp_txt'].isin([row['time_stamp_txt']])]['id'].values[0]
+            df_to_update = df_to_update.set_index('id')
+
+            # Update Database
+            with transaction.atomic():
+                for index, row in df_to_update.iterrows():
+                    # print(index, row['value'])
+                    ShareSplits.objects.filter(id=index).update(value=row['value'])
+                    num_rows_updated = num_rows_updated + 1
 
         return num_rows_updated

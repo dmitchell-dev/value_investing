@@ -226,39 +226,3 @@ class Command(BaseCommand):
                     num_rows_updated = num_rows_updated + 1
 
         return num_rows_updated
-
-
-    # def _update_rows(self, df_update, company_tidm):
-
-    #     param_list = ["value", "value_adjusted", "volume"]
-
-    #     extsting_qs = SharePrices.objects.filter(
-    #         company__tidm=company_tidm
-    #         )
-
-    #     # For each item in the queryset, update with associated value in df
-    #     for item in extsting_qs.iterator():
-    #         filter_ts_idx = str(item.time_stamp)
-
-    #         updated_value = df_update.query(
-    #             f'time_stamp_txt == "{filter_ts_idx}"'
-    #             )['value'].values[0]
-    #         item.value = float(updated_value)
-
-    #         updated_value_adjusted = df_update.query(
-    #             f'time_stamp_txt == "{filter_ts_idx}"'
-    #             )['value_adjusted'].values[0]
-    #         item.value_adjusted = float(updated_value_adjusted)
-
-    #         updated_volume = df_update.query(
-    #             f'time_stamp_txt == "{filter_ts_idx}"'
-    #             )['volume'].values[0]
-    #         item.volume = float(updated_volume)
-
-    #     for param in param_list:
-    #         num_rows_updated = SharePrices.objects.bulk_update(
-    #             extsting_qs,
-    #             [param]
-    #             )
-
-    #     return num_rows_updated
