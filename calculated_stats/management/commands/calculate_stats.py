@@ -317,20 +317,22 @@ class Command(BaseCommand):
 
         # Only values to update
         df_to_update = df_new_existing[split_idx == "new"]
-        df_to_update['id'] = np.nan
 
-        df_to_update = df_to_update.reset_index()
+        if not df_to_update.empty:
+            df_to_update['id'] = np.nan
 
-        # Transfer row id across to new df
-        for index, row in df_to_update.iterrows():
-            df_to_update.at[index, 'id'] = df_old_existing[df_old_existing['mul_col_idx'].isin([row['mul_col_idx']])]['id'].values[0]
-        df_to_update = df_to_update.set_index('id')
+            df_to_update = df_to_update.reset_index()
 
-        # Update Database
-        with transaction.atomic():
+            # Transfer row id across to new df
             for index, row in df_to_update.iterrows():
-                # print(index, row['value'])
-                CalculatedStats.objects.filter(id=index).update(value=row['value'])
-                num_rows_updated = num_rows_updated + 1
+                df_to_update.at[index, 'id'] = df_old_existing[df_old_existing['mul_col_idx'].isin([row['mul_col_idx']])]['id'].values[0]
+            df_to_update = df_to_update.set_index('id')
+
+            # Update Database
+            with transaction.atomic():
+                for index, row in df_to_update.iterrows():
+                    # print(index, row['value'])
+                    CalculatedStats.objects.filter(id=index).update(value=row['value'])
+                    num_rows_updated = num_rows_updated + 1
 
         return num_rows_updated
