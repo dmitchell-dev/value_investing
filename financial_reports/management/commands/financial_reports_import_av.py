@@ -74,7 +74,10 @@ class Command(BaseCommand):
                     # Check datetime format
                     df_data = self._datetime_format(df_data)
 
+                    # Update values
                     df_data = df_data.replace(to_replace='None', value=None)
+                    df_data['value'] = df_data['value'].astype('float')
+                    df_data['value'] = df_data['value']/1000000
 
                     # Update/Create split
                     df_new, df_new_existing, df_old_existing = self._create_update_split(df_data, company_tidm)
