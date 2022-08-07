@@ -1,3 +1,4 @@
+from turtle import update
 from django.core.management.base import BaseCommand
 from financial_reports.models import FinancialReports
 from ancillary_info.models import Params, Companies, ParamsApi
@@ -273,64 +274,50 @@ class Command(BaseCommand):
         """Checks if the values in the new df are different from the old df,
         if yes, updates the database"""
 
-        df_new_existing['value'] = df_new_existing['value'].astype('float')
+        num_rows_updated = 0
 
+        # Format value columns correctly
+        df_new_existing['value'] = df_new_existing['value'].astype('float')
         df_new_existing['value'] = df_new_existing['value'].map('{:.2f}'.format)
         df_old_existing['value'] = df_old_existing['value'].map('{:.2f}'.format)
 
-        new_midx = pd.MultiIndex.from_arrays(
+        # Create multi columnindexes for both with and without value
+        new_midx_value = pd.MultiIndex.from_arrays(
             [df_new_existing[col] for col in ['time_stamp_txt', 'parameter_id', 'value']]
             )
-        existing_midx = pd.MultiIndex.from_arrays(
+        new_midx = pd.MultiIndex.from_arrays(
+            [df_new_existing[col] for col in ['time_stamp_txt', 'parameter_id']]
+            )
+        df_new_existing['mul_col_idx'] = new_midx
+
+        existing_midx_value = pd.MultiIndex.from_arrays(
             [df_old_existing[col] for col in ['time_stamp_txt', 'parameter', 'value']]
             )
+        existing_midx = pd.MultiIndex.from_arrays(
+            [df_old_existing[col] for col in ['time_stamp_txt', 'parameter']]
+            )
+        df_old_existing['mul_col_idx'] = existing_midx
 
         split_idx = np.where(
-            new_midx.isin(existing_midx), "existing", "new"
+            new_midx_value.isin(existing_midx_value), "existing", "new"
         )
 
+        # Only values to update
         df_to_update = df_new_existing[split_idx == "new"]
+        df_to_update['id'] = np.nan
 
-        # TODO why are existing new and old different row lengths?
-        # TODO either transfer new values to old df, or id across to new df
+        df_to_update = df_to_update.reset_index()
 
-        print('STOP')
+        # Transfer row id across to new df
+        for index, row in df_to_update.iterrows():
+            df_to_update.at[index, 'id'] = df_old_existing[df_old_existing['mul_col_idx'].isin([row['mul_col_idx']])]['id'].values[0]
+        df_to_update = df_to_update.set_index('id')
 
         # Update Database
         with transaction.atomic():
             for index, row in df_to_update.iterrows():
-                print(row['id'], row['value'])
-                FinancialReports.objects.filter(id=row['id']).update(value=row['value'])
-
-        # extsting_qs = FinancialReports.objects.filter(
-        #     company__tidm=company_tidm
-        #     )
-
-        # # For each item in the queryset, update with associated value in df
-        # for item in extsting_qs.iterator():
-        #     filter_mul_idx = str(item.parameter_id)+"_"+str(item.time_stamp)
-
-        #     # Check if date exists in df_new_existing
-        #     # AV does not go back as far as TIKR
-        #     if not df_new_existing[df_new_existing['mul_idx_col'].isin([filter_mul_idx])].empty:
-
-        #         updated_value = df_new_existing.query(
-        #             f'mul_idx_col == "{filter_mul_idx}"'
-        #             )['value'].values[0]
-
-        #         if updated_value is None:
-        #             item.value = None
-        #         else:
-        #             if item.parameter_id == 29:
-        #                 print(f"Old Value; {item.value}")
-        #             item.value = float(updated_value)
-        #             if item.parameter_id == 29:
-        #                 print(f"New Value; {item.value}")
-        #                 print('STOP')
-
-        # num_rows_updated = FinancialReports.objects.bulk_update(
-        #     extsting_qs,
-        #     ["value"]
-        #     )
+                print(index, row['value'])
+                FinancialReports.objects.filter(id=index).update(value=row['value'])
+                num_rows_updated = num_rows_updated + 1
 
         return num_rows_updated
