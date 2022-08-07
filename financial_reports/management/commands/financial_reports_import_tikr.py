@@ -1,8 +1,11 @@
 from django.core.management.base import BaseCommand
 from financial_reports.models import FinancialReports
 from ancillary_info.models import Params, Companies, ParamsApi
+from django.db import transaction
+
 import pandas as pd
 import numpy as np
+
 import os
 
 
@@ -83,11 +86,11 @@ class Command(BaseCommand):
             df_unpivot = df_unpivot.replace(to_replace='None', value=None)
 
             # Update/Create split
-            df_new, df_existing = self._create_update_split(df_unpivot, company_tidm)
+            df_new, df_new_existing, df_old_existing = self._create_update_split(df_unpivot, company_tidm)
 
             # Update existing rows
-            if not df_existing.empty:
-                num_rows_updated = self._update_rows(df_existing, company_tidm)
+            if not df_new_existing.empty:
+                num_rows_updated = self._update_rows(df_new_existing, df_old_existing, company_tidm)
                 total_rows_updated = total_rows_updated + num_rows_updated
 
             # Create any new rows
@@ -217,34 +220,36 @@ class Command(BaseCommand):
 
     def _create_update_split(self, new_df, company_tidm):
 
-        existing_df = pd.DataFrame(
+        existing_old_df = pd.DataFrame(
             list(FinancialReports.objects.get_financial_data_filtered(company_tidm))
             )
 
         if not new_df.empty:
             new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
 
-        if not existing_df.empty:
-            existing_df['time_stamp_txt'] = existing_df['time_stamp'].astype(str)
+        if not existing_old_df.empty:
+            existing_old_df['time_stamp_txt'] = existing_old_df['time_stamp'].astype(str)
 
             new_midx = pd.MultiIndex.from_arrays(
                 [new_df[col] for col in ['time_stamp_txt', 'parameter_id']]
                 )
             existing_midx = pd.MultiIndex.from_arrays(
-                [existing_df[col] for col in ['time_stamp_txt', 'parameter']]
+                [existing_old_df[col] for col in ['time_stamp_txt', 'parameter']]
                 )
 
             split_idx = np.where(
                 new_midx.isin(existing_midx), "existing", "new"
             )
 
-            df_existing = new_df[split_idx == "existing"]
+            df_new_existing = new_df[split_idx == "existing"]
+            df_old_existing = existing_old_df
             df_new = new_df[split_idx == "new"]
         else:
             df_new = new_df
-            df_existing = pd.DataFrame()
+            df_new_existing = pd.DataFrame()
+            df_old_existing = pd.DataFrame()
 
-        return df_new, df_existing
+        return df_new, df_new_existing, df_old_existing
 
     def _create_rows(self, df_create):
 
@@ -264,31 +269,68 @@ class Command(BaseCommand):
 
         return total_rows_added
 
-    def _update_rows(self, df_update, company_tidm):
+    def _update_rows(self, df_new_existing, df_old_existing, company_tidm):
+        """Checks if the values in the new df are different from the old df,
+        if yes, updates the database"""
 
-        df_update["mul_idx_col"] = df_update["parameter_id"].astype(str) + "_" + df_update["time_stamp_txt"]
+        df_new_existing['value'] = df_new_existing['value'].astype('float')
 
-        extsting_qs = FinancialReports.objects.filter(
-            company__tidm=company_tidm
+        df_new_existing['value'] = df_new_existing['value'].map('{:.2f}'.format)
+        df_old_existing['value'] = df_old_existing['value'].map('{:.2f}'.format)
+
+        new_midx = pd.MultiIndex.from_arrays(
+            [df_new_existing[col] for col in ['time_stamp_txt', 'parameter_id', 'value']]
+            )
+        existing_midx = pd.MultiIndex.from_arrays(
+            [df_old_existing[col] for col in ['time_stamp_txt', 'parameter', 'value']]
             )
 
-        # For each item in the queryset, update with associated value in df
-        for item in extsting_qs.iterator():
-            filter_mul_idx = str(item.parameter_id)+"_"+str(item.time_stamp)
+        split_idx = np.where(
+            new_midx.isin(existing_midx), "existing", "new"
+        )
 
-            # Check if date exists in df_update
-            # AV does not go back as far as TIKR
-            if not df_update[df_update['mul_idx_col'].isin([filter_mul_idx])].empty:
+        df_to_update = df_new_existing[split_idx == "new"]
 
-                updated_value = df_update.query(
-                    f'mul_idx_col == "{filter_mul_idx}"'
-                    )['value'].values[0]
+        # TODO why are existing new and old different row lengths?
+        # TODO either transfer new values to old df, or id across to new df
 
-                item.value = updated_value
+        print('STOP')
 
-        num_rows_updated = FinancialReports.objects.bulk_update(
-            extsting_qs,
-            ["value"]
-            )
+        # Update Database
+        with transaction.atomic():
+            for index, row in df_to_update.iterrows():
+                print(row['id'], row['value'])
+                FinancialReports.objects.filter(id=row['id']).update(value=row['value'])
+
+        # extsting_qs = FinancialReports.objects.filter(
+        #     company__tidm=company_tidm
+        #     )
+
+        # # For each item in the queryset, update with associated value in df
+        # for item in extsting_qs.iterator():
+        #     filter_mul_idx = str(item.parameter_id)+"_"+str(item.time_stamp)
+
+        #     # Check if date exists in df_new_existing
+        #     # AV does not go back as far as TIKR
+        #     if not df_new_existing[df_new_existing['mul_idx_col'].isin([filter_mul_idx])].empty:
+
+        #         updated_value = df_new_existing.query(
+        #             f'mul_idx_col == "{filter_mul_idx}"'
+        #             )['value'].values[0]
+
+        #         if updated_value is None:
+        #             item.value = None
+        #         else:
+        #             if item.parameter_id == 29:
+        #                 print(f"Old Value; {item.value}")
+        #             item.value = float(updated_value)
+        #             if item.parameter_id == 29:
+        #                 print(f"New Value; {item.value}")
+        #                 print('STOP')
+
+        # num_rows_updated = FinancialReports.objects.bulk_update(
+        #     extsting_qs,
+        #     ["value"]
+        #     )
 
         return num_rows_updated
