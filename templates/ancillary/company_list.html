@@ -1,4 +1,5 @@
 {% extends '_base.html' %}
+{% load render_table from django_tables2 %}
 
 {% block title %}Companies{% endblock title %}
 
@@ -14,33 +15,6 @@
     </div>
 </div>
 
+{% render_table table %}
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">TIDM</th>
-            <th scope="col">Type</th>
-            <th scope="col">Sector</th>
-            <th scope="col">Industry</th>
-            <th scope="col">Exchange</th>
-            <th scope="col">Source</th>
-            <th scope="col">Wish List</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for company in company_list %}
-            <tr>
-                <td><a href="{{ company.get_absolute_url }}">{{ company.company_name }}</a></td>
-                <td>{{ company.tidm }}</td>
-                <td>{{ company.comp_type }}</td> 
-                <td>{{ company.sector }}</td>
-                <td>{{ company.industry }}</td>
-                <td>{{ company.exchange }}</td>
-                <td>{{ company.company_source }}</td>
-                <td>{{ company.wish_list }}</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
 {% endblock content %}

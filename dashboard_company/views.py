@@ -2,6 +2,8 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
 
+from django_tables2 import SingleTableView
+
 from django.core.paginator import Paginator
 
 import pandas as pd
@@ -12,20 +14,21 @@ from django.http import JsonResponse
 from django.views import View
 
 from .models import DashboardCompany
-from .tables import FinancialReportsTable
 
 from ancillary_info.models import Params, Companies
 from share_prices.models import SharePrices, ShareSplits
 from financial_reports.models import FinancialReports
 from calculated_stats.models import CalculatedStats
 
+from .tables import DashboardCompanyTable
+
 
 pd.options.plotting.backend = "plotly"
 
 
-class DashboardListView(ListView):
+class DashboardListView(SingleTableView):
     model = DashboardCompany
-    context_object_name = "company_list"
+    table_class = DashboardCompanyTable
     template_name = "dashboard/dashboard_list.html"
 
     ordering = ["margin_safety"]

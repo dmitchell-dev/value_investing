@@ -3,6 +3,9 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+
+from django_tables2 import SingleTableView
+
 from django.views.generic import (
     ListView,
     DetailView,
@@ -11,12 +14,12 @@ from django.views.generic import (
     DeleteView
     )
 from .models import Companies, DcfVariables
-from .tables import DCFTable
+from .tables import DCFTable, CompaniesTable
 
 
-class CompanyListView(ListView):
+class CompanyListView(SingleTableView):
     model = Companies
-    context_object_name = "company_list"
+    table_class = CompaniesTable
     template_name = "ancillary/company_list.html"
 
     ordering = ["company_name"]

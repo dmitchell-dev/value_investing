@@ -1,10 +1,24 @@
 import django_tables2 as tables
 
-from financial_reports.models import FinancialReports
+from django_tables2.utils import A
+
+from .models import DashboardCompany
 
 
-class FinancialReportsTable(tables.Table):
+class DashboardCompanyTable(tables.Table):
+    company_name = tables.LinkColumn('dashboard_company:dashboard_detail', args=[A("pk")])
+
     class Meta:
-        model = FinancialReports
+        model = DashboardCompany
         attrs = {"class": "table thead-light table-striped table-hover"}
-        # fields = (...)
+        fields = (
+            "company_name",
+            "share_listing",
+            "market_cap",
+            "revenue",
+            "fcf",
+            "share_price",
+            "dcf_intrinsic_value",
+            "margin_safety",
+            "latest_margin_of_safety",
+        )
