@@ -23,8 +23,8 @@ The aim of this site is to not only help with value investing, it will also impr
 ## Initialising Project with initial data
 * python manage.py ancillary_import
 
-* python manage.py financial_reports_import_tikr --symbol AAPL_Apple.xlsx
-* python manage.py financial_reports_import_av --symbol AAPL_Apple.xlsx
+* python manage.py financial_reports_import_tikr --symbol AAPL
+* python manage.py financial_reports_import_av --symbol AAPL
 
 * python manage.py share_price_import_av --symbol AAPL
 
