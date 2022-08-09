@@ -1,0 +1,82 @@
+{% extends '_base.html' %}
+
+{% block title %}Investments{% endblock title %}
+
+<!--
+date_dealt = models.DateField(blank=False)
+reference = models.CharField(max_length=255)
+created_at = models.DateTimeField(auto_now_add=True)
+updated_at = models.DateTimeField(auto_now=True)
+-->
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Company</h5>
+                        <p class="card-text">{{ investment.company }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Decision</h5>
+                        <p class="card-text">{{ investment.decision }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Number of Stock</h5>
+                        <p class="card-text">{{ investment.num_stock }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Investment Price</h5>
+                        <p class="card-text">£{{ investment.price }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Investment fees</h5>
+                        <p class="card-text">£{{ investment.fees }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Date Dealt</h5>
+                        <p class="card-text">{{ investment.date_dealt }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Reference</h5>
+                        <p class="card-text">{{ investment.reference }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a class="btn btn-primary" href="{% url 'portfolio:investment_update' investment.pk %}">Edit</a>
+        <a class="btn btn-danger" href="{% url 'portfolio:investment_delete' investment.pk %}">Delete</a>
+
+    </div>
+
+{% endblock content %}

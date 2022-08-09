@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 
 from .views import (
     InvestmentListView,
@@ -8,6 +8,8 @@ from .views import (
     InvestmentDeleteView,
     PortfolioOverviewView,
     portfolio_overview_charts,
+    portfolio_single_chart,
+    portfolio_single_chart2,
     )
 
 app_name = "portfolio"
@@ -20,4 +22,6 @@ urlpatterns = [
     path("investments/", InvestmentListView.as_view(), name="investment_list"),
     path("overview/", PortfolioOverviewView.as_view(), name="portfolio_overview"),
     path("overview/charts/", portfolio_overview_charts, name="portfolio_charts"),
+    path("overview/single-chart/", portfolio_single_chart, name="portfolio_single_chart"),
+    path("overview/single-chart2/", portfolio_single_chart2, name="portfolio_single_chart2"),
 ]

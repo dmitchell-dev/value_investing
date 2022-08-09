@@ -171,3 +171,33 @@ def portfolio_overview_charts(request):
         }
 
     return render(request, 'portfolio/partials/charts.html', context)
+
+
+def portfolio_single_chart(request):
+
+    fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])
+
+    # plot_div = fig.to_html(full_html=False, include_plotlyjs='cdn')
+
+    plot_div = plot(fig, output_type='div')
+
+    context = {
+        "graph": plot_div,
+        }
+
+    return render(request, 'portfolio/partials/single-chart.html', context)
+
+
+def portfolio_single_chart2(request):
+
+    fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])
+
+    # plot_div = fig.to_html(full_html=False, include_plotlyjs='cdn')
+
+    plot_div = plot(fig, output_type='div')
+
+    context = {
+        "graph2": plot_div,
+        }
+
+    return render(request, 'portfolio/partials/single-chart2.html', context)
