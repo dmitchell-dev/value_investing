@@ -175,7 +175,7 @@ def portfolio_overview_charts(request):
 
 def portfolio_single_chart(request):
 
-    fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])
+    fig = px.bar(x=["a", "b", "c"], y=[1, 2, 3])
 
     # plot_div = fig.to_html(full_html=False, include_plotlyjs='cdn')
 
@@ -190,11 +190,13 @@ def portfolio_single_chart(request):
 
 def portfolio_single_chart2(request):
 
-    fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])
+    fig = px.bar(x=["a", "b", "c"], y=[3, 2, 1])
 
     # plot_div = fig.to_html(full_html=False, include_plotlyjs='cdn')
 
     plot_div = plot(fig, output_type='div')
+
+    print(plot_div)
 
     context = {
         "graph2": plot_div,
