@@ -95,29 +95,41 @@ class PortfolioOverviewView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         portfolio_df = self._get_portfolio_data()
+        portfolio_sum_df = portfolio_df.groupby(['company__tidm']).sum()
 
-        # TODO get list of company ids
+        # List of company ids
         comp_list = pd.unique(portfolio_df.company).tolist()
-
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
-
         tidm_list = []
         for comp in comp_list:
             comp_idx = df_companies[df_companies['id'] == comp].index[0]
             curr_tidm = df_companies["tidm"].iat[comp_idx]
             tidm_list.append(curr_tidm)
 
-        # TODO get current price
+        # Current price
         price_list = []
         for tidm in tidm_list:
             df_share_price = SharePrices.objects.get_latest_share_price(tidm).value
             price_list.append(df_share_price)
 
-        # TODO get cost
+        # Info on cost and fees
+        cost_list = []
+        fees_list = []
 
-        # TODO get fees
+        for tidm in tidm_list:
+            fee = portfolio_sum_df[portfolio_sum_df.index == tidm].fees[0]
+            fees_list.append(fee)
+
+            cost = portfolio_sum_df[portfolio_sum_df.index == tidm].price[0]
+            cost_list.append(cost)
+
+        total_cost = portfolio_df.price.sum()
+        total_fees = portfolio_df.fees.sum()
+        pct_fees = (total_fees / (total_cost + total_fees)) * 100
 
         # TODO calculate total % and value decrease/increase
+        # pct_change = price_list - cost_list
+        pct_change = [a - b for a, b in zip(price_list, cost_list)]
 
         # TODO calculate individual % and value decrease/increase
 
