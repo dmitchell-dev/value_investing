@@ -1,4 +1,6 @@
 from django.urls import reverse_lazy
+from django.shortcuts import render
+
 from django.views.generic.base import TemplateView
 from django.views.generic import (
     ListView,
@@ -7,8 +9,25 @@ from django.views.generic import (
     UpdateView,
     DeleteView
     )
-from django.shortcuts import render
-from .models import Investments, WishList, Portfolio
+
+from ancillary_info.models import (
+    Companies
+)
+
+from share_prices.models import (
+    SharePrices
+)
+
+from .models import (
+    Investments,
+    WishList,
+    Portfolio
+    )
+
+from .managers import (
+    cost_pie_chart,
+    get_chart_2,
+    )
 
 import plotly.express as px
 from plotly.offline import plot
@@ -77,8 +96,42 @@ class PortfolioOverviewView(TemplateView):
 
         portfolio_df = self._get_portfolio_data()
 
-        # Add context data
+        # TODO get list of company ids
+        comp_list = pd.unique(portfolio_df.company).tolist()
+
+        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
+
+        tidm_list = []
+        for comp in comp_list:
+            comp_idx = df_companies[df_companies['id'] == comp].index[0]
+            curr_tidm = df_companies["tidm"].iat[comp_idx]
+            tidm_list.append(curr_tidm)
+
+        # TODO get current price
+        price_list = []
+        for tidm in tidm_list:
+            df_share_price = SharePrices.objects.get_latest_share_price(tidm).value
+            price_list.append(df_share_price)
+
+        # TODO get cost
+
+        # TODO get fees
+
+        # TODO calculate total % and value decrease/increase
+
+        # TODO calculate individual % and value decrease/increase
+
+        # TODO get share price modal for selected company
+
+        # Chart 1
+        plot_div = cost_pie_chart(portfolio_df)
+
+        # Chart 2
+        plot_div2 = get_chart_2(portfolio_df)
+
         context["investments"] = portfolio_df
+        context["graph"] = plot_div
+        context["graph2"] = plot_div2
 
         return context
 
@@ -86,6 +139,9 @@ class PortfolioOverviewView(TemplateView):
         test_df = pd.DataFrame(
             list(Investments.objects.get_table_joined())
             )
+
+        test_df["price"] = test_df["price"].astype(float)
+        test_df["fees"] = test_df["fees"].astype(float)
 
         return test_df
 

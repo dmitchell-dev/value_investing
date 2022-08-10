@@ -40,6 +40,12 @@ class SharePricesQueryset(QuerySet):
         else:
             return []
 
+    def get_latest_share_price(self, tidm):
+        if self.filter(company__tidm=tidm):
+            return self.filter(company__tidm=tidm).latest("value_adjusted")
+        else:
+            return []
+
 
 class ShareSplitsQueryset(QuerySet):
     def get_share_joined(self):
