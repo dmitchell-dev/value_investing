@@ -132,10 +132,13 @@ class PortfolioOverviewView(TemplateView):
             # TODO this is a short term fudge
             # AV does not say if it is in £ or p
             # Need to fix properly
+            # TODO Also get exchange latest rate from API
             if idx == 0 or idx == 3:
                 df_share_price = df_share_price / 100
+            elif idx == 1 or idx == 2:
+                df_share_price = df_share_price * 0.82
             share_price_list.append(df_share_price)
-            results_list[idx].update({"latest_share_price": f"{currency_list[idx]}{df_share_price:.2f}"})
+            results_list[idx].update({"latest_share_price": f"£{df_share_price:.2f}"})
             idx = idx + 1
 
         # Info on cost and fees
@@ -166,14 +169,14 @@ class PortfolioOverviewView(TemplateView):
         total_value_list = [a * b for a, b in zip(share_price_list, num_shares_list)]
         idx = 0
         for item in total_value_list:
-            results_list[idx].update({"latest_total_value": f"{currency_list[idx]}{item:.2f}"})
+            results_list[idx].update({"latest_total_value": f"£{item:.2f}"})
             idx = idx + 1
 
         # pct_change = (total_value - cost_list) / cost_list
         value_change_list = [a - b for a, b in zip(total_value_list, total_cost_list)]
         idx = 0
         for item in value_change_list:
-            results_list[idx].update({"value_change": f"{currency_list[idx]}{item:.2f}"})
+            results_list[idx].update({"value_change": f"£{item:.2f}"})
             idx = idx + 1
 
         pct_change_list = [(a / b)*100 for a, b in zip(value_change_list, total_cost_list)]
@@ -194,7 +197,7 @@ class PortfolioOverviewView(TemplateView):
         total_dict["total_value"] = f"£{total_value:.2f}"
         total_value_change = sum(value_change_list)
         total_dict["total_value_change"] = f"£{total_value_change:.2f}"
-        total_pct_value_change = sum(pct_change_list)
+        total_pct_value_change = ((total_value - total_cost) / total_cost)* 100
         total_dict["total_pct_value_change"] = f"{total_pct_value_change:.2f}%"
 
         # TODO get share price modal for selected company
