@@ -190,10 +190,12 @@ class PortfolioOverviewView(TemplateView):
         total_dict["total_fees"] = f"£{total_fees:.2f}"
         pct_fees = (total_fees / (total_cost + total_fees)) * 100
         total_dict["total_pct_fees"] = f"{pct_fees:.2f}%"
+        total_value = sum(total_value_list)
+        total_dict["total_value"] = f"£{total_value:.2f}"
         total_value_change = sum(value_change_list)
         total_dict["total_value_change"] = f"£{total_value_change:.2f}"
         total_pct_value_change = sum(pct_change_list)
-        total_dict["total_pct_value_change"] = f"£{total_pct_value_change:.2f}"
+        total_dict["total_pct_value_change"] = f"{total_pct_value_change:.2f}%"
 
         # TODO get share price modal for selected company
 

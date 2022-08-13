@@ -8,7 +8,7 @@
     <h1>Portfolio Overview</h1>
     <div class="container border shadow bg-light rounded py-2 mb-3">
         <div class="row">
-            <div class="col-6">
+            <div class="col-4">
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Total Shares Cost</h5>
@@ -16,11 +16,37 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-4">
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Total Fees</h5>
                         <p class="card-text">{{ total_dict.total_fees }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Value</h5>
+                        <p class="card-text">{{ total_dict.total_value }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Value Change</h5>
+                        <p class="card-text">{{ total_dict.total_value_change }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">% Value Change</h5>
+                        <p class="card-text">{{ total_dict.total_pct_value_change }}</p>
                     </div>
                 </div>
             </div>
