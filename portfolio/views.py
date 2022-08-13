@@ -1,6 +1,8 @@
 from django.urls import reverse_lazy
 from django.shortcuts import render
 
+import django_tables2 as tables
+
 from django.views.generic.base import TemplateView
 from django.views.generic import (
     ListView,
@@ -35,6 +37,16 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd
 
+
+class NameTable(tables.Table):
+    tidm = tables.Column()
+    fees_paid = tables.Column()
+    share_price_paid = tables.Column()
+    latest_share_price = tables.Column()
+    number_shares_held = tables.Column()
+    latest_total_value = tables.Column()
+    value_change = tables.Column()
+    pct_value_change = tables.Column()
 
 class InvestmentListView(ListView):
     model = Investments
@@ -100,65 +112,80 @@ class PortfolioOverviewView(TemplateView):
         # List of company ids
         comp_list = pd.unique(portfolio_df.company).tolist()
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
+        results_list = []
         tidm_list = []
+        currency_list = []
         for comp in comp_list:
             comp_idx = df_companies[df_companies['id'] == comp].index[0]
             curr_tidm = df_companies["tidm"].iat[comp_idx]
+            curr_currency = df_companies["currency__value"].iat[comp_idx]
             tidm_list.append(curr_tidm)
+            currency_list.append(curr_currency)
+            results_list.append({'tidm': curr_tidm})
 
         # Current price
-        price_list = []
+        share_price_list = []
+        idx = 0
         for tidm in tidm_list:
             df_share_price = SharePrices.objects.get_latest_date(tidm).value_adjusted
-            price_list.append(df_share_price)
+            # TODO this is a short term fudge
+            # AV does not say if it is in £ or p
+            # Need to fix properly
+            if idx == 0 or idx == 3:
+                df_share_price = df_share_price / 100
+            share_price_list.append(df_share_price)
+            results_list[idx].update({"latest_share_price": f"{currency_list[idx]}{df_share_price:.2f}"})
+            idx = idx + 1
 
         # Info on cost and fees
         share_cost_list = []
         fees_list = []
         num_shares_list = []
+        idx = 0
 
         for tidm in tidm_list:
             fee = portfolio_sum_df[portfolio_sum_df.index == tidm].fees[0]
             fees_list.append(fee)
+            results_list[idx].update({"fees_paid": f"{currency_list[idx]}{fee:.2f}"})
 
             share_cost = portfolio_sum_df[portfolio_sum_df.index == tidm].price[0]
             share_cost_list.append(share_cost)
+            results_list[idx].update({"share_price_paid": f"{currency_list[idx]}{share_cost:.2f}"})
 
             total_cost_list = [a + b for a, b in zip(share_cost_list, fees_list)]
 
             num_shares = portfolio_sum_df[portfolio_sum_df.index == tidm].num_stock[0]
             num_shares_list.append(num_shares)
-        num_shares_list[0] /= 100
-        num_shares_list[3] /= 100
+            results_list[idx].update({"number_shares_held": f"{num_shares}"})
+
+            idx = idx + 1
 
         total_cost = portfolio_df.price.sum()
         total_fees = portfolio_df.fees.sum()
         pct_fees = (total_fees / (total_cost + total_fees)) * 100
 
-        # TODO calculate total % and value decrease/increase
+        # calculate total % and value decrease/increase
         # total_value = price_list * num_shares
-        total_value_list = [a * b for a, b in zip(price_list, num_shares_list)]
+        total_value_list = [a * b for a, b in zip(share_price_list, num_shares_list)]
+        idx = 0
+        for item in total_value_list:
+            results_list[idx].update({"latest_total_value": f"{currency_list[idx]}{item:.2f}"})
+            idx = idx + 1
 
         # pct_change = (total_value - cost_list) / cost_list
         value_change_list = [a - b for a, b in zip(total_value_list, total_cost_list)]
-        pct_change_list = [(a / b)*100 for a, b in zip(value_change_list, total_cost_list)]
+        idx = 0
+        for item in value_change_list:
+            results_list[idx].update({"value_change": f"{currency_list[idx]}{item:.2f}"})
+            idx = idx + 1
 
-        # TODO calculate individual % and value decrease/increase
+        pct_change_list = [(a / b)*100 for a, b in zip(value_change_list, total_cost_list)]
+        idx = 0
+        for item in pct_change_list:
+            results_list[idx].update({"pct_value_change": f"{item:.2f}%"})
+            idx = idx + 1
 
         # TODO get share price modal for selected company
-
-        print(f"TIDM - {tidm_list}")
-        print(f"Prices - {price_list}")
-        print(f"Fees - {fees_list}")
-        print(f"Share Cost - {share_cost_list}")
-        print(f"Total Cost - {total_cost_list}")
-        print(f"Num Shares - {num_shares_list}")
-        print(f"Total Value - {total_value_list}")
-        print(f"Value Change - {value_change_list}")
-        print(f"% Change - {pct_change_list}")
-        print(f"Total Cost - {total_cost}")
-        print(f"Total Fees - {total_fees}")
-        print(f"% Fees - {pct_fees}")
 
         # Chart 1
         plot_div = cost_pie_chart(portfolio_df)
@@ -166,7 +193,12 @@ class PortfolioOverviewView(TemplateView):
         # Chart 2
         plot_div2 = get_chart_2(portfolio_df)
 
+        # Results Table
+        results_table = NameTable(results_list)
+        print(results_table)
+
         context["investments"] = portfolio_df
+        context["results_table"] = results_table
         context["graph"] = plot_div
         context["graph2"] = plot_div2
 
