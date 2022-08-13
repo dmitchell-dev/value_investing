@@ -109,6 +109,7 @@ class PortfolioOverviewView(TemplateView):
         portfolio_df = self._get_portfolio_data()
         portfolio_sum_df = portfolio_df.groupby(['company__tidm']).sum()
 
+        # Per Share Calculations
         # List of company ids
         comp_list = pd.unique(portfolio_df.company).tolist()
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
@@ -160,10 +161,6 @@ class PortfolioOverviewView(TemplateView):
 
             idx = idx + 1
 
-        total_cost = portfolio_df.price.sum()
-        total_fees = portfolio_df.fees.sum()
-        pct_fees = (total_fees / (total_cost + total_fees)) * 100
-
         # calculate total % and value decrease/increase
         # total_value = price_list * num_shares
         total_value_list = [a * b for a, b in zip(share_price_list, num_shares_list)]
@@ -185,6 +182,19 @@ class PortfolioOverviewView(TemplateView):
             results_list[idx].update({"pct_value_change": f"{item:.2f}%"})
             idx = idx + 1
 
+        # Total Calculations
+        total_dict = {}
+        total_cost = portfolio_df.price.sum()
+        total_dict["total_cost"] = f"£{total_cost:.2f}"
+        total_fees = portfolio_df.fees.sum()
+        total_dict["total_fees"] = f"£{total_fees:.2f}"
+        pct_fees = (total_fees / (total_cost + total_fees)) * 100
+        total_dict["total_pct_fees"] = f"{pct_fees:.2f}%"
+        total_value_change = sum(value_change_list)
+        total_dict["total_value_change"] = f"£{total_value_change:.2f}"
+        total_pct_value_change = sum(pct_change_list)
+        total_dict["total_pct_value_change"] = f"£{total_pct_value_change:.2f}"
+
         # TODO get share price modal for selected company
 
         # Chart 1
@@ -197,8 +207,9 @@ class PortfolioOverviewView(TemplateView):
         results_table = NameTable(results_list)
         print(results_table)
 
-        context["investments"] = portfolio_df
+        # context["investments"] = portfolio_df
         context["results_table"] = results_table
+        context["total_dict"] = total_dict
         context["graph"] = plot_div
         context["graph2"] = plot_div2
 
