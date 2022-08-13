@@ -6,26 +6,26 @@
 
 {% block content %}
     <h1>Portfolio Overview</h1>
-
-    <div class="row">
-        <div class="col">
-            {% if graph %}
-                {{ graph|safe }}
-            {% endif %}
-        <div>
-        <div class="col">
-            {% if results_table %}
-                {% render_table results_table %}
-            {% endif %}
-        <div>
-    </div>
-    <div class="row">
-        <div class="col">
-            {% if graph2 %}
-                {{ graph2|safe }}
-            {% endif %}
-
-        <div>
+    <div class="container border shadow bg-light rounded py-2 mb-3">
+        <div class="row">
+            <div class="col">
+                {% if results_table %}
+                    {% render_table results_table %}
+                {% endif %}
+            <div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                {% if graph %}
+                    {{ graph|safe }}
+                {% endif %}
+            </div>
+            <div class="col-6">
+                {% if graph2 %}
+                    {{ graph2|safe }}
+                {% endif %}
+            </div>
+        </div>
     </div>
 
     

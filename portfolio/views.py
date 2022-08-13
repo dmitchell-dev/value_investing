@@ -146,11 +146,11 @@ class PortfolioOverviewView(TemplateView):
         for tidm in tidm_list:
             fee = portfolio_sum_df[portfolio_sum_df.index == tidm].fees[0]
             fees_list.append(fee)
-            results_list[idx].update({"fees_paid": f"{currency_list[idx]}{fee:.2f}"})
+            results_list[idx].update({"fees_paid": f"£{fee:.2f}"})
 
             share_cost = portfolio_sum_df[portfolio_sum_df.index == tidm].price[0]
             share_cost_list.append(share_cost)
-            results_list[idx].update({"share_price_paid": f"{currency_list[idx]}{share_cost:.2f}"})
+            results_list[idx].update({"share_price_paid": f"£{share_cost:.2f}"})
 
             total_cost_list = [a + b for a, b in zip(share_cost_list, fees_list)]
 
