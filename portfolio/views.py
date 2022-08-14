@@ -31,22 +31,16 @@ from .managers import (
     perf_bar_chart,
     )
 
+from .tables import (
+    NameTable,
+)
+
 import plotly.express as px
 from plotly.offline import plot
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd
 
-
-class NameTable(tables.Table):
-    tidm = tables.Column()
-    fees_paid = tables.Column()
-    share_price_paid = tables.Column()
-    latest_share_price = tables.Column()
-    number_shares_held = tables.Column()
-    latest_total_value = tables.Column()
-    value_change = tables.Column()
-    pct_value_change = tables.Column()
 
 class InvestmentListView(ListView):
     model = Investments
@@ -119,10 +113,13 @@ class PortfolioOverviewView(TemplateView):
         for comp in comp_list:
             comp_idx = df_companies[df_companies['id'] == comp].index[0]
             curr_tidm = df_companies["tidm"].iat[comp_idx]
+            curr_comp_name = df_companies["company_name"].iat[comp_idx]
             curr_currency = df_companies["currency__value"].iat[comp_idx]
             tidm_list.append(curr_tidm)
             currency_list.append(curr_currency)
-            results_list.append({'tidm': curr_tidm})
+            results_list.append({'tidm': curr_tidm, 'company_name': curr_comp_name, 'pk': comp_idx})
+            # results_list.append({'company_name': curr_comp_name})
+            # results_list.append({'pk': comp_idx})
 
         # Current price
         share_price_list = []

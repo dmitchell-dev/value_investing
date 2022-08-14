@@ -4,6 +4,9 @@
 
 {% block content %}
 
+<a class="btn btn-primary" href="{% url 'ancillary:dcf_var_detail' company.company_id %}">DCF Detail</a>
+<a class="btn btn-primary" href="{% url 'ancillary:company_stats_update' company.company_id %}">Update Stats</a>
+
 <div class="container border shadow bg-light rounded py-2 mb-3">  
         <div class="row">
             <div class="col-8">
