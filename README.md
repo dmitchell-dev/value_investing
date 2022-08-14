@@ -26,6 +26,7 @@ The aim of this site is to not only help with value investing, it will also impr
 * python manage.py financial_reports_import_tikr --symbol AAPL
 * python manage.py financial_reports_import_av --symbol AAPL
 
+* python manage.py share_price_import_tikr --symbol AAPL
 * python manage.py share_price_import_av --symbol AAPL
 
 * python manage.py share_split_calcs --symbol AAPL

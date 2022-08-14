@@ -68,6 +68,19 @@ class Command(BaseCommand):
         # reports_av_result = f"Financial Reports Alpha Vantage; {reports_av_num}"
         # return_results.append(reports_av_result)
 
+        # Share Price Import TIKR
+        if options["comp_pk"] is None:
+            share_price_num = management.call_command(
+                'share_price_import_tikr',
+                )
+        else:
+            share_price_num = management.call_command(
+                'share_price_import_tikr',
+                '--symbol', company_tidm
+                )
+        share_price_result = f"Share Price TIKR; {share_price_num}"
+        return_results.append(share_price_result)
+
         # # Share Price Import Alpha Vantage
         # if options["comp_pk"] is None:
         #     share_price_num = management.call_command(
