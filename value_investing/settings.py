@@ -96,7 +96,7 @@ SITE_ID = 1
 
 # django-crispy-forms
 CRISPY_TEMPLATE_PACK = "bootstrap4"
-DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
+# DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

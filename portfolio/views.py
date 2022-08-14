@@ -27,8 +27,8 @@ from .models import (
     )
 
 from .managers import (
-    cost_pie_chart,
-    get_chart_2,
+    value_pie_chart,
+    perf_bar_chart,
     )
 
 import plotly.express as px
@@ -203,10 +203,10 @@ class PortfolioOverviewView(TemplateView):
         # TODO get share price modal for selected company
 
         # Chart 1
-        plot_div = cost_pie_chart(portfolio_df)
+        plot_div = value_pie_chart(portfolio_df)
 
         # Chart 2
-        plot_div2 = get_chart_2(portfolio_df)
+        plot_div2 = perf_bar_chart(tidm_list, pct_change_list)
 
         # Results Table
         results_table = NameTable(results_list)

@@ -49,15 +49,20 @@ class PortfolioQueryset(QuerySet):
         )
 
 
-def cost_pie_chart(portfolio_df):
+def value_pie_chart(portfolio_df):
     fig = px.pie(portfolio_df, values='price', names='company__company_name')
     plot_div = plot(fig, output_type='div')
 
     return plot_div
 
 
-def get_chart_2(portfolio_df):
-    fig2 = px.bar(x=["a", "b", "c"], y=[1, 2, 3])
-    plot_div2 = plot(fig2, output_type='div')
+def perf_bar_chart(tidm_list, pct_change_list):
+
+    chart_dict = {}
+    chart_dict['tidm'] = tidm_list
+    chart_dict['pct_value_change'] = pct_change_list
+    fig = px.bar(chart_dict, x='tidm', y='pct_value_change')
+
+    plot_div2 = plot(fig, output_type='div')
 
     return plot_div2
