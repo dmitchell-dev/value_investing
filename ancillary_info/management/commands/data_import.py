@@ -55,31 +55,31 @@ class Command(BaseCommand):
         reports_result = f"Financial Reports; {reports_num}"
         return_results.append(reports_result)
 
-        # Financial Import Alpha Vantage
-        if options["comp_pk"] is None:
-            reports_av_num = management.call_command(
-                'financial_reports_import_av',
-                )
-        else:
-            reports_av_num = management.call_command(
-                'financial_reports_import_av',
-                '--symbol', company_tidm
-                )
-        reports_av_result = f"Financial Reports Alpha Vantage; {reports_av_num}"
-        return_results.append(reports_av_result)
+        # # Financial Import Alpha Vantage
+        # if options["comp_pk"] is None:
+        #     reports_av_num = management.call_command(
+        #         'financial_reports_import_av',
+        #         )
+        # else:
+        #     reports_av_num = management.call_command(
+        #         'financial_reports_import_av',
+        #         '--symbol', company_tidm
+        #         )
+        # reports_av_result = f"Financial Reports Alpha Vantage; {reports_av_num}"
+        # return_results.append(reports_av_result)
 
-        # Share Price Import Alpha Vantage
-        if options["comp_pk"] is None:
-            share_price_num = management.call_command(
-                'share_price_import_av',
-                )
-        else:
-            share_price_num = management.call_command(
-                'share_price_import_av',
-                '--symbol', company_tidm
-                )
-        share_price_result = f"Share Price Alpha Vantage; {share_price_num}"
-        return_results.append(share_price_result)
+        # # Share Price Import Alpha Vantage
+        # if options["comp_pk"] is None:
+        #     share_price_num = management.call_command(
+        #         'share_price_import_av',
+        #         )
+        # else:
+        #     share_price_num = management.call_command(
+        #         'share_price_import_av',
+        #         '--symbol', company_tidm
+        #         )
+        # share_price_result = f"Share Price Alpha Vantage; {share_price_num}"
+        # return_results.append(share_price_result)
 
         # Share split Calcs
         if options["comp_pk"] is None:
@@ -132,8 +132,8 @@ class Command(BaseCommand):
 
         print("###### SUMMARY UPDATE STATS ROWS ADDED ######")
         print(reports_result)
-        print(reports_av_result)
-        print(share_price_result)
+        # print(reports_av_result)
+        # print(share_price_result)
         print(share_split_result)
         print(default_var_result)
         print(calc_stats_result)
