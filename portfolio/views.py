@@ -126,13 +126,9 @@ class PortfolioOverviewView(TemplateView):
         idx = 0
         for tidm in tidm_list:
             df_share_price = SharePrices.objects.get_latest_date(tidm).value_adjusted
-            # TODO this is a short term fudge
-            # AV does not say if it is in £ or p
             # Need to fix properly
             # TODO Also get exchange latest rate from API
-            if idx == 0 or idx == 3:
-                df_share_price = df_share_price / 100
-            elif idx == 1 or idx == 2:
+            if idx == 1 or idx == 2:
                 df_share_price = df_share_price * 0.82
             share_price_list.append(df_share_price)
             results_list[idx].update({"latest_share_price": f"£{df_share_price:.2f}"})

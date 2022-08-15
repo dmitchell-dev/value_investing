@@ -154,6 +154,8 @@ class Command(BaseCommand):
         # Delete Columns
         df = df.drop(['OHLC (open)', 'OHLC (high)', 'OHLC (low)', 'OHLC (close)'], axis=1)
 
+        df = df.astype(object).where(pd.notnull(df), None)
+
         return df
 
     def _create_update_split(self, new_df, company_tidm):
