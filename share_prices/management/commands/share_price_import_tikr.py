@@ -166,6 +166,7 @@ class Command(BaseCommand):
 
         if not new_df.empty:
             new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
+            new_df['time_stamp_txt'] = new_df['time_stamp_txt'].str.replace(' 00:00:00','')
 
         if not existing_old_df.empty:
             existing_old_df['time_stamp_txt'] = existing_old_df['time_stamp'].astype(str)
