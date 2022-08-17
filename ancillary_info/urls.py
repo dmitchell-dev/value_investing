@@ -9,6 +9,7 @@ from .views import (
     DcfVariablesUpdateView,
     dcf_var_detail,
     company_stats_update,
+    company_all_stats_update,
     )
 
 app_name = "ancillary"
@@ -21,6 +22,6 @@ urlpatterns = [
     path("companies/<int:pk>/stats-update/", company_stats_update, name="company_stats_update"),
     path("companies/<int:pk>/dcf-update/", DcfVariablesUpdateView.as_view(), name="dcf_var_update"),
     path("companies/<int:pk>/dcf-detail/", dcf_var_detail, name="dcf_var_detail"),
-    path("companies/ind-stats-update/", company_stats_update, name="company_ind_stats_update"),
+    path("companies/all-stats-update/", company_all_stats_update, name="company_all_stats_update"),
     path("companies/", CompanyListView.as_view(), name="company_list"),
 ]

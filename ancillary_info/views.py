@@ -119,6 +119,34 @@ def company_stats_update(request, **kwargs):
     return render(request, "ancillary/company_stats_update.html", context)
 
 
+def company_all_stats_update(request, **kwargs):
+
+    error_message = None
+
+    result_str = management.call_command(
+        'data_import',
+        )
+
+    # Change to dict of dicts
+    table_data = dict(x.split("; ") for x in result_str.split("-"))
+    for key, value in table_data.items():
+        table_data[key] = dict(x.split(": ") for x in value.split(", "))
+
+    context = {
+        "result_str": result_str.split('-'),
+        "table_data": table_data,
+        "error_message": error_message,
+    }
+
+    messages.add_message(
+        request,
+        messages.SUCCESS,
+        'Company stats were successfully updated.'
+        )
+
+    return render(request, "ancillary/company_stats_update.html", context)
+
+
 class DCFDetailView(DetailView):
     model = DcfVariables
     context_object_name = "DCFVariables"
