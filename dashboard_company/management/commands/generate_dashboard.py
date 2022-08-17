@@ -148,7 +148,8 @@ class Command(BaseCommand):
         )
 
         # Replace NaN for mySQL compatability
-        df_merged = df_merged.replace([np.nan, "NaN", "nan", "None"], "-9999")
+        df_merged = df_merged.replace(["NaN", "nan", "None"], np.nan)
+        df_merged = df_merged.astype(object).where(pd.notnull(df_merged), None)
 
         # Split ready for create or update
         [df_create, df_update] = self._create_update_split(df_merged)
@@ -290,109 +291,109 @@ class Command(BaseCommand):
                     df_update.index[cur_row], "industry__value"
                 ]
 
-                companies[index].revenue = float(
+                companies[index].revenue = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Total Revenue"]
                 )
 
-                companies[index].earnings = float(
+                companies[index].earnings = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Reported EPS"]
                 )
 
-                companies[index].dividends = float(
+                companies[index].dividends = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Dividends Per Share"]
                 )
 
-                companies[index].capital_expenditure = float(
+                companies[index].capital_expenditure = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Capital Expenditures"]
                 )
 
-                companies[index].net_income = float(
+                companies[index].net_income = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Net Income"]
                 )
 
-                companies[index].total_equity = float(
+                companies[index].total_equity = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Total Equity"]
                 )
 
-                companies[index].share_price = float(
+                companies[index].share_price = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Share Price"]
                 )
 
-                companies[index].debt_to_equity = float(
+                companies[index].debt_to_equity = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Debt to Equity (D/E)"]
                 )
 
-                companies[index].current_ratio = float(
+                companies[index].current_ratio = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Current Ratio"]
                 )
 
-                companies[index].return_on_equity = float(
+                companies[index].return_on_equity = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Return on Equity (ROE)"]
                 )
 
-                companies[index].equity_per_share = float(
+                companies[index].equity_per_share = self._convert_float(
                     df_update.loc[
                         df_update.index[cur_row], "Equity (Book Value) Per Share"
                     ]
                 )
 
-                companies[index].price_to_earnings = float(
+                companies[index].price_to_earnings = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Price to Earnings (P/E)"]
                 )
 
-                companies[index].price_to_equity = float(
+                companies[index].price_to_equity = self._convert_float(
                     df_update.loc[
                         df_update.index[cur_row], "Price to Book Value (Equity)"
                     ]
                 )
 
-                companies[index].earnings_yield = float(
+                companies[index].earnings_yield = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Earnings Yield"]
                 )
 
-                companies[index].annual_yield_return = float(
+                companies[index].annual_yield_return = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Annual Yield (Return)"]
                 )
 
-                companies[index].fcf = float(
+                companies[index].fcf = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Free Cash Flow"]
                 )
 
-                companies[index].dividend_cover = float(
+                companies[index].dividend_cover = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Dividend Cover"]
                 )
 
-                companies[index].capital_employed = float(
+                companies[index].capital_employed = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Capital Employed"]
                 )
 
-                companies[index].roce = float(
+                companies[index].roce = self._convert_float(
                     df_update.loc[
                         df_update.index[cur_row], "Return on Capital Employed (ROCE)"
                     ]
                 )
 
-                companies[index].dcf_intrinsic_value = float(
+                companies[index].dcf_intrinsic_value = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Intrinsic Value"]
                 )
 
-                companies[index].margin_safety = float(
+                companies[index].margin_safety = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Margin of Safety"]
                 )
 
-                companies[index].latest_margin_of_safety = float(
+                companies[index].latest_margin_of_safety = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Latest Margin of Safety"]
                 )
 
-                companies[index].estimated_growth_rate = float(
+                companies[index].estimated_growth_rate = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Estimated Growth Rate"]
                 )
 
-                companies[index].estimated_discount_rate = float(
+                companies[index].estimated_discount_rate = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Estimated Discount Rate"]
                 )
 
-                companies[index].estimated_long_term_growth_rate = float(
+                companies[index].estimated_long_term_growth_rate = self._convert_float(
                     df_update.loc[
                         df_update.index[cur_row], "Estimated Long Term Growth Rate"
                     ]
@@ -416,7 +417,7 @@ class Command(BaseCommand):
                     df_update.index[cur_row], "share_latest_date"
                 ]
 
-                companies[index].market_cap = float(
+                companies[index].market_cap = self._convert_float(
                     df_update.loc[df_update.index[cur_row], "Market Capitalisation"]
                 )
 
@@ -430,3 +431,12 @@ class Command(BaseCommand):
             total_rows = total_rows + num_rows_updated
 
         return total_rows
+
+    def _convert_float(self, input):
+
+        if pd.notnull(input):
+            output = float(input)
+        else:
+            output = input
+
+        return output
