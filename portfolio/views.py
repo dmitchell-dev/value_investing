@@ -114,16 +114,19 @@ class PortfolioOverviewView(TemplateView):
         df_dashboard = pd.DataFrame(list(DashboardCompany.objects.get_table_joined()))
         results_list = []
         tidm_list = []
-        currency_list = []
+        currency_symbol_list = []
+        currency_value_list = []
         for comp in comp_list:
             comp_idx = df_companies[df_companies['id'] == comp].index[0]
             curr_tidm = df_companies["tidm"].iat[comp_idx]
             dash_idx = df_dashboard[df_dashboard['tidm'] == curr_tidm].index[0]
             comp_id = df_dashboard["id"].iat[dash_idx]
             curr_comp_name = df_companies["company_name"].iat[comp_idx]
-            curr_currency = df_companies["currency__symbol"].iat[comp_idx]
+            curr_currency_symbol = df_companies["currency__symbol"].iat[comp_idx]
+            curr_currency_value = df_companies["currency__value"].iat[comp_idx]
             tidm_list.append(curr_tidm)
-            currency_list.append(curr_currency)
+            currency_symbol_list.append(curr_currency_symbol)
+            currency_value_list.append(curr_currency_value)
             results_list.append({'tidm': curr_tidm, 'company_name': curr_comp_name, 'pk': comp_id})
             # results_list.append({'company_name': curr_comp_name})
             # results_list.append({'pk': comp_idx})
@@ -133,10 +136,8 @@ class PortfolioOverviewView(TemplateView):
         idx = 0
         for tidm in tidm_list:
             df_share_price = SharePrices.objects.get_latest_date(tidm).value_adjusted
-            # Need to fix properly
-            # TODO Also get exchange latest rate from API
-            if idx == 1 or idx == 2:
-                df_share_price = df_share_price * 0.82
+            # Convert to GBP
+            df_share_price = df_share_price * currency_value_list[idx]
             share_price_list.append(df_share_price)
             results_list[idx].update({"latest_share_price": f"£{df_share_price:.2f}"})
             idx = idx + 1
