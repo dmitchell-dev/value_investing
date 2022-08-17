@@ -221,7 +221,7 @@ class Command(BaseCommand):
                 ),
                 pick_source=row["company_source__value"],
                 exchange_country=row["country__value"],
-                currency_symbol=row["currency__value"],
+                currency_symbol=row["currency__symbol"],
                 latest_financial_date=financial_latest_date,
                 latest_share_price_date=row["share_latest_date"],
                 market_cap=float(row["Market Capitalisation"]),
@@ -271,7 +271,7 @@ class Command(BaseCommand):
             "market_cap": "Market Capitalisation",
             "pick_source": "company_source__value",
             "exchange_country": "country__value",
-            "currency_symbol": "currency__value",
+            "currency_symbol": "currency__symbol",
             "latest_share_price_date": "share_latest_date",
             "latest_financial_date": "financial_latest_date",
             }
@@ -407,7 +407,7 @@ class Command(BaseCommand):
                 ]
 
                 companies[index].currency_symbol = df_update.loc[
-                    df_update.index[cur_row], "currency__value"
+                    df_update.index[cur_row], "currency__symbol"
                 ]
 
                 companies[index].latest_financial_date = (str(financial_latest_date))

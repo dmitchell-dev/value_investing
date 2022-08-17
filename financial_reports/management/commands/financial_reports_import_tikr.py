@@ -77,14 +77,13 @@ class Command(BaseCommand):
             )
 
             # Replace infinity values
-            df_unpivot["value"] = df_unpivot["value"].replace(
-                ["Infinity", "-Infinity"], None
-            )
+            # df_unpivot["value"] = df_unpivot["value"].replace(
+            #     ["Infinity", "-Infinity"], None
+            # )
+            df_unpivot = df_unpivot.replace(to_replace=["Infinity", "-Infinity", "None"], value=None)
 
             # Check datetime format
             df_unpivot = self._datetime_format(df_unpivot)
-
-            df_unpivot = df_unpivot.replace(to_replace='None', value=None)
 
             # Update/Create split
             df_new, df_new_existing, df_old_existing = self._create_update_split(df_unpivot, company_tidm)

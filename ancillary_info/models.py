@@ -53,14 +53,15 @@ class Sectors(models.Model):
 
 
 class Currencies(models.Model):
-    value = models.CharField(max_length=255)
+    symbol = models.CharField(max_length=255)
+    value = models.FloatField()
 
     class Meta:
         db_table = "currencies"
         verbose_name_plural = "Currencies"
 
     def __str__(self):
-        return self.value
+        return self.symbol
 
 
 class Countries(models.Model):

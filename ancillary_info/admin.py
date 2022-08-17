@@ -33,7 +33,10 @@ class SectorsAdmin(admin.ModelAdmin):
 
 
 class CurrenciesAdmin(admin.ModelAdmin):
-    fields = ["value"]
+    fields = [
+        "symbol",
+        "value",
+        ]
 
 
 class CountriesAdmin(admin.ModelAdmin):

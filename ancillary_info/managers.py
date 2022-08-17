@@ -13,6 +13,7 @@ class CompaniesQueryset(QuerySet):
             "exchange__value",
             "country__value",
             "company_source__value",
+            "currency__symbol",
             "currency__value",
         )
 
@@ -27,6 +28,7 @@ class CompaniesQueryset(QuerySet):
             "exchange__value",
             "country__value",
             "company_source__value",
+            "currency__symbol",
             "currency__value",
         ).filter(tidm=tidm)
 

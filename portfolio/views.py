@@ -121,7 +121,7 @@ class PortfolioOverviewView(TemplateView):
             dash_idx = df_dashboard[df_dashboard['tidm'] == curr_tidm].index[0]
             comp_id = df_dashboard["id"].iat[dash_idx]
             curr_comp_name = df_companies["company_name"].iat[comp_idx]
-            curr_currency = df_companies["currency__value"].iat[comp_idx]
+            curr_currency = df_companies["currency__symbol"].iat[comp_idx]
             tidm_list.append(curr_tidm)
             currency_list.append(curr_currency)
             results_list.append({'tidm': curr_tidm, 'company_name': curr_comp_name, 'pk': comp_id})
