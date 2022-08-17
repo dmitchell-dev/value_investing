@@ -15,3 +15,9 @@ class DashboardCompanyQueryset(QuerySet):
             "tidm",
             "company_name",
         )
+
+    def get_table_joined(self):
+        return self.values(
+            "id",
+            "tidm",
+        )

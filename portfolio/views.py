@@ -16,6 +16,10 @@ from ancillary_info.models import (
     Companies
 )
 
+from dashboard_company.models import (
+    DashboardCompany
+)
+
 from share_prices.models import (
     SharePrices
 )
@@ -107,17 +111,20 @@ class PortfolioOverviewView(TemplateView):
         # List of company ids
         comp_list = pd.unique(portfolio_df.company).tolist()
         df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
+        df_dashboard = pd.DataFrame(list(DashboardCompany.objects.get_table_joined()))
         results_list = []
         tidm_list = []
         currency_list = []
         for comp in comp_list:
             comp_idx = df_companies[df_companies['id'] == comp].index[0]
             curr_tidm = df_companies["tidm"].iat[comp_idx]
+            dash_idx = df_dashboard[df_dashboard['tidm'] == curr_tidm].index[0]
+            comp_id = df_dashboard["id"].iat[dash_idx]
             curr_comp_name = df_companies["company_name"].iat[comp_idx]
             curr_currency = df_companies["currency__value"].iat[comp_idx]
             tidm_list.append(curr_tidm)
             currency_list.append(curr_currency)
-            results_list.append({'tidm': curr_tidm, 'company_name': curr_comp_name, 'pk': comp_idx})
+            results_list.append({'tidm': curr_tidm, 'company_name': curr_comp_name, 'pk': comp_id})
             # results_list.append({'company_name': curr_comp_name})
             # results_list.append({'pk': comp_idx})
 
