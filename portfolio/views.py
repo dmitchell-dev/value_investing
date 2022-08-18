@@ -143,7 +143,7 @@ class PortfolioOverviewView(TemplateView):
             idx = idx + 1
 
         # Info on cost and fees
-        share_cost_list = []
+        share_total_cost_list = []
         fees_list = []
         num_shares_list = []
         idx = 0
@@ -153,15 +153,21 @@ class PortfolioOverviewView(TemplateView):
             fees_list.append(fee)
             results_list[idx].update({"fees_paid": f"£{fee:.2f}"})
 
-            share_cost = portfolio_sum_df[portfolio_sum_df.index == tidm].price[0]
-            share_cost_list.append(share_cost)
-            results_list[idx].update({"share_price_paid": f"£{share_cost:.2f}"})
+            share_total_cost = portfolio_sum_df[portfolio_sum_df.index == tidm].price[0]
+            share_total_cost_list.append(share_total_cost)
+            results_list[idx].update({"share_total_cost": f"£{share_total_cost:.2f}"})
 
-            total_cost_list = [a + b for a, b in zip(share_cost_list, fees_list)]
+            total_cost = share_total_cost + fee
+            total_cost_list = [a + b for a, b in zip(share_total_cost_list, fees_list)]
+            results_list[idx].update({"total_cost": f"£{total_cost:.2f}"})
+
 
             num_shares = portfolio_sum_df[portfolio_sum_df.index == tidm].num_stock[0]
             num_shares_list.append(num_shares)
             results_list[idx].update({"number_shares_held": f"{num_shares}"})
+
+            share_cost = share_total_cost / num_shares
+            results_list[idx].update({"share_price_paid": f"£{share_cost:.2f}"})
 
             idx = idx + 1
 
@@ -188,7 +194,7 @@ class PortfolioOverviewView(TemplateView):
 
         # Total Calculations
         total_dict = {}
-        total_cost = portfolio_df.price.sum()
+        total_cost = portfolio_df.price.sum() + portfolio_df.fees.sum()
         total_dict["total_cost"] = f"£{total_cost:.2f}"
         total_fees = portfolio_df.fees.sum()
         total_dict["total_fees"] = f"£{total_fees:.2f}"

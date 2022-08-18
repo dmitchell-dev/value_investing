@@ -9,6 +9,7 @@ class NameTable(tables.Table):
     share_price_paid = tables.Column()
     latest_share_price = tables.Column()
     number_shares_held = tables.Column()
+    total_cost = tables.Column()
     latest_total_value = tables.Column()
     value_change = tables.Column()
     pct_value_change = tables.Column()
