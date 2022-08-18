@@ -57,20 +57,21 @@ class Command(BaseCommand):
             df_data = pd.DataFrame(data_dict)
 
             # Split ready for create or update
-            (df_create, df_update) = self._create_update_split(
-                df_data,
-                company_tidm
-                )
+            (df_create, df_update) = self._create_update_split(df_data, company_tidm)
 
             # Create new companies
             if not df_create.empty:
                 num_rows_created = self._create_rows(df_create)
-                print(f"Default DCF Import Create Complete: {num_rows_created} rows updated")
+                print(
+                    f"Default DCF Import Create Complete: {num_rows_created} rows updated"
+                )
 
         return f"Created: {str(num_rows_created)}, Updated: Not Implemented"
 
     def _create_update_split(self, new_df, company_tidm):
-        existing_df = pd.DataFrame(list(DcfVariables.objects.get_table_joined_filtered(company_tidm)))
+        existing_df = pd.DataFrame(
+            list(DcfVariables.objects.get_table_joined_filtered(company_tidm))
+        )
 
         if not existing_df.empty:
             df_new = pd.DataFrame()

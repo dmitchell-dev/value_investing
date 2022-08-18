@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ancillary_info', '0004_rename_value_currencies_symbol'),
+        ("ancillary_info", "0004_rename_value_currencies_symbol"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='currencies',
-            name='value',
+            model_name="currencies",
+            name="value",
             field=models.FloatField(default=1),
             preserve_default=False,
         ),

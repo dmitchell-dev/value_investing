@@ -275,7 +275,7 @@ class Command(BaseCommand):
             "currency_symbol": "currency__symbol",
             "latest_share_price_date": "share_latest_date",
             "latest_financial_date": "financial_latest_date",
-            }
+        }
 
         for index, company in enumerate(companies):
 
@@ -411,7 +411,7 @@ class Command(BaseCommand):
                     df_update.index[cur_row], "currency__symbol"
                 ]
 
-                companies[index].latest_financial_date = (str(financial_latest_date))
+                companies[index].latest_financial_date = str(financial_latest_date)
 
                 companies[index].latest_share_price_date = df_update.loc[
                     df_update.index[cur_row], "share_latest_date"
@@ -424,10 +424,7 @@ class Command(BaseCommand):
         print("Updating Dashboard Table")
 
         for key in param_dict:
-            num_rows_updated = DashboardCompany.objects.bulk_update(
-                companies,
-                [key]
-                )
+            num_rows_updated = DashboardCompany.objects.bulk_update(companies, [key])
             total_rows = total_rows + num_rows_updated
 
         return total_rows

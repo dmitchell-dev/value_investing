@@ -436,7 +436,9 @@ def margin_of_safety(df_share_price_reduced, df_dcf_intrinsic_value):
     return df_margin_of_safety
 
 
-def latest_margin_of_safety(df_dcf_intrinsic_value, df_share_price_reduced, df_share_price):
+def latest_margin_of_safety(
+    df_dcf_intrinsic_value, df_share_price_reduced, df_share_price
+):
     """
     Latest Margin of Safety =
     Latest Share Price / Intrinsic Value

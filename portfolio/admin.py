@@ -18,8 +18,8 @@ class InvestmentsAdmin(admin.ModelAdmin):
     ]
 
     readonly_fields = [
-        'company',
-        'decision',
+        "company",
+        "decision",
     ]
 
 

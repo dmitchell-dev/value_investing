@@ -56,7 +56,7 @@ class Command(BaseCommand):
 
             path = BASE_DIR_LOCAL / f"data/database_tables/{table_name}.csv"
 
-            with open(path, encoding='utf-8') as f:
+            with open(path, encoding="utf-8") as f:
                 reader = csv.reader(f)
                 next(reader, None)  # skip the header
 
@@ -70,11 +70,9 @@ class Command(BaseCommand):
                         if field != "created_at" and field != "updated_at":
                             insert_dict[field] = row[row_num]
 
-                    _, created = table_object.objects.get_or_create(
-                        **insert_dict
-                        )
+                    _, created = table_object.objects.get_or_create(**insert_dict)
 
             print(f"{table_name} Import Completed with {row_num} rows imported")
             results_list.append(f"{table_name}; Created: {str(row_num)}")
 
-        return '-'.join(results_list)
+        return "-".join(results_list)

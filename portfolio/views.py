@@ -9,31 +9,21 @@ from django.views.generic import (
     DetailView,
     CreateView,
     UpdateView,
-    DeleteView
-    )
-
-from ancillary_info.models import (
-    Companies
+    DeleteView,
 )
 
-from dashboard_company.models import (
-    DashboardCompany
-)
+from ancillary_info.models import Companies
 
-from share_prices.models import (
-    SharePrices
-)
+from dashboard_company.models import DashboardCompany
 
-from .models import (
-    Investments,
-    WishList,
-    Portfolio
-    )
+from share_prices.models import SharePrices
+
+from .models import Investments, WishList, Portfolio
 
 from .managers import (
     value_pie_chart,
     perf_bar_chart,
-    )
+)
 
 from .tables import (
     NameTable,
@@ -93,7 +83,7 @@ class InvestmentUpdateView(UpdateView):
 class InvestmentDeleteView(DeleteView):
     model = Investments
     template_name = "investments/investment_delete.html"
-    success_url = reverse_lazy('portfolio:investment_list')
+    success_url = reverse_lazy("portfolio:investment_list")
 
 
 class PortfolioOverviewView(TemplateView):
@@ -105,7 +95,7 @@ class PortfolioOverviewView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         portfolio_df = self._get_portfolio_data()
-        portfolio_sum_df = portfolio_df.groupby(['company__tidm']).sum()
+        portfolio_sum_df = portfolio_df.groupby(["company__tidm"]).sum()
 
         # Per Share Calculations
         # List of company ids
@@ -117,9 +107,9 @@ class PortfolioOverviewView(TemplateView):
         currency_symbol_list = []
         currency_value_list = []
         for comp in comp_list:
-            comp_idx = df_companies[df_companies['id'] == comp].index[0]
+            comp_idx = df_companies[df_companies["id"] == comp].index[0]
             curr_tidm = df_companies["tidm"].iat[comp_idx]
-            dash_idx = df_dashboard[df_dashboard['tidm'] == curr_tidm].index[0]
+            dash_idx = df_dashboard[df_dashboard["tidm"] == curr_tidm].index[0]
             comp_id = df_dashboard["id"].iat[dash_idx]
             curr_comp_name = df_companies["company_name"].iat[comp_idx]
             curr_currency_symbol = df_companies["currency__symbol"].iat[comp_idx]
@@ -127,7 +117,9 @@ class PortfolioOverviewView(TemplateView):
             tidm_list.append(curr_tidm)
             currency_symbol_list.append(curr_currency_symbol)
             currency_value_list.append(curr_currency_value)
-            results_list.append({'tidm': curr_tidm, 'company_name': curr_comp_name, 'pk': comp_id})
+            results_list.append(
+                {"tidm": curr_tidm, "company_name": curr_comp_name, "pk": comp_id}
+            )
             # results_list.append({'company_name': curr_comp_name})
             # results_list.append({'pk': comp_idx})
 
@@ -161,7 +153,6 @@ class PortfolioOverviewView(TemplateView):
             total_cost_list = [a + b for a, b in zip(share_total_cost_list, fees_list)]
             results_list[idx].update({"total_cost": f"£{total_cost:.2f}"})
 
-
             num_shares = portfolio_sum_df[portfolio_sum_df.index == tidm].num_stock[0]
             num_shares_list.append(num_shares)
             results_list[idx].update({"number_shares_held": f"{num_shares}"})
@@ -186,7 +177,9 @@ class PortfolioOverviewView(TemplateView):
             results_list[idx].update({"value_change": f"£{item:.2f}"})
             idx = idx + 1
 
-        pct_change_list = [(a / b)*100 for a, b in zip(value_change_list, total_cost_list)]
+        pct_change_list = [
+            (a / b) * 100 for a, b in zip(value_change_list, total_cost_list)
+        ]
         idx = 0
         for item in pct_change_list:
             results_list[idx].update({"pct_value_change": f"{item:.2f}%"})
@@ -204,7 +197,7 @@ class PortfolioOverviewView(TemplateView):
         total_dict["total_value"] = f"£{total_value:.2f}"
         total_value_change = sum(value_change_list)
         total_dict["total_value_change"] = f"£{total_value_change:.2f}"
-        total_pct_value_change = ((total_value - total_cost) / total_cost)* 100
+        total_pct_value_change = ((total_value - total_cost) / total_cost) * 100
         total_dict["total_pct_value_change"] = f"{total_pct_value_change:.2f}%"
 
         # TODO get share price modal for selected company
@@ -228,9 +221,7 @@ class PortfolioOverviewView(TemplateView):
         return context
 
     def _get_portfolio_data(self):
-        test_df = pd.DataFrame(
-            list(Investments.objects.get_table_joined())
-            )
+        test_df = pd.DataFrame(list(Investments.objects.get_table_joined()))
 
         test_df["price"] = test_df["price"].astype(float)
         test_df["fees"] = test_df["fees"].astype(float)
@@ -242,44 +233,45 @@ def portfolio_overview_charts(request):
 
     error_message = None
 
-    df = pd.DataFrame(
-            list(Investments.objects.get_table_joined())
-            )
+    df = pd.DataFrame(list(Investments.objects.get_table_joined()))
 
     df["price"] = df["price"].astype(float)
 
     chart_plot = make_subplots(
-        rows=2, cols=2,
-        specs=[[{"type": "domain"}, {"type": "table"}],
-        [{"type": "xy"}, {"type": "scene"}]],
+        rows=2,
+        cols=2,
+        specs=[
+            [{"type": "domain"}, {"type": "table"}],
+            [{"type": "xy"}, {"type": "scene"}],
+        ],
         # specs=[[{"type": "domain"}], [{"type": "xy"}]],
-        )
+    )
 
-    labels = df['company__company_name'].values
+    labels = df["company__company_name"].values
     # print(labels)
-    values = df['price'].values
+    values = df["price"].values
     # print(values)
 
-    chart_plot.add_trace(
-        go.Pie(values=values, labels=labels),
-        row=1, col=1
-    )
+    chart_plot.add_trace(go.Pie(values=values, labels=labels), row=1, col=1)
 
     chart_plot.add_trace(
-        go.Table(header=dict(
-            values=['Price', 'Company Name'],
-            fill_color='paleturquoise',
-            align='left'),
+        go.Table(
+            header=dict(
+                values=["Price", "Company Name"],
+                fill_color="paleturquoise",
+                align="left",
+            ),
             cells=dict(
                 values=[df.price, df.company__company_name],
-                fill_color='lavender', align='left')),
-        row=1, col=2
+                fill_color="lavender",
+                align="left",
+            ),
+        ),
+        row=1,
+        col=2,
     )
 
-    chart_plot.add_trace(
-        go.Scatter(x=[20, 30, 40], y=[50, 60, 70]),
-        row=2, col=1
-    )
+    chart_plot.add_trace(go.Scatter(x=[20, 30, 40], y=[50, 60, 70]), row=2, col=1)
 
     # chart_plot.update_layout(showlegend=False)
 
@@ -311,14 +303,14 @@ def portfolio_overview_charts(request):
     #     output_type='div'
     #     )
 
-    plot_div = chart_plot.to_html(full_html=False, include_plotlyjs='cdn')
+    plot_div = chart_plot.to_html(full_html=False, include_plotlyjs="cdn")
 
     context = {
         "graph": plot_div,
         "error_message": error_message,
-        }
+    }
 
-    return render(request, 'portfolio/partials/charts.html', context)
+    return render(request, "portfolio/partials/charts.html", context)
 
 
 def portfolio_single_chart(request):
@@ -327,13 +319,13 @@ def portfolio_single_chart(request):
 
     # plot_div = fig.to_html(full_html=False, include_plotlyjs='cdn')
 
-    plot_div = plot(fig, output_type='div')
+    plot_div = plot(fig, output_type="div")
 
     context = {
         "graph": plot_div,
-        }
+    }
 
-    return render(request, 'portfolio/partials/single-chart.html', context)
+    return render(request, "portfolio/partials/single-chart.html", context)
 
 
 def portfolio_single_chart2(request):
@@ -342,12 +334,12 @@ def portfolio_single_chart2(request):
 
     # plot_div = fig.to_html(full_html=False, include_plotlyjs='cdn')
 
-    plot_div = plot(fig, output_type='div')
+    plot_div = plot(fig, output_type="div")
 
     print(plot_div)
 
     context = {
         "graph2": plot_div,
-        }
+    }
 
-    return render(request, 'portfolio/partials/single-chart2.html', context)
+    return render(request, "portfolio/partials/single-chart2.html", context)

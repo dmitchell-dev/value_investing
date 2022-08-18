@@ -36,7 +36,7 @@ class CurrenciesAdmin(admin.ModelAdmin):
     fields = [
         "symbol",
         "value",
-        ]
+    ]
 
 
 class CountriesAdmin(admin.ModelAdmin):
@@ -64,7 +64,7 @@ class DcfVariablesAdmin(admin.ModelAdmin):
         "est_growth_rate",
         "est_disc_rate",
         "est_ltg_rate",
-        ]
+    ]
 
 
 class ParamsApiAdmin(admin.ModelAdmin):

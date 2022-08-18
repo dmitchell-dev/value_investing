@@ -5,4 +5,4 @@ class Command(BaseCommand):
     help = "Generates portfolio stats"
 
     def handle(self, *args, **kwargs):
-        print('generate_portfolio')
+        print("generate_portfolio")

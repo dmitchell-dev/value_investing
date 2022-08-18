@@ -40,15 +40,15 @@ class Command(BaseCommand):
                 company_tidm = self._process_filename(current_company_filename)
             else:
                 company_tidm = options["symbol"][0]
-                current_company_filename = self._get_filename(file_list_single, company_tidm)
+                current_company_filename = self._get_filename(
+                    file_list_single, company_tidm
+                )
 
             # Get company report data
             df_data = self._import_reporting_data(current_company_filename)
 
             # company id
-            company_id = df_companies[
-                df_companies["tidm"] == company_tidm
-            ].id.values[0]
+            company_id = df_companies[df_companies["tidm"] == company_tidm].id.values[0]
 
             # Check datetime format
             df_data.insert(0, "company_id", [company_id] * df_data.shape[0])
@@ -57,10 +57,12 @@ class Command(BaseCommand):
             # Format Column Names
             df_data = self._format_col_names(df_data, company_tidm)
 
-            df_data = df_data.replace(to_replace='None', value=None)
+            df_data = df_data.replace(to_replace="None", value=None)
 
             # Update/Create split
-            df_new, df_new_existing, df_old_existing = self._create_update_split(df_data, company_tidm)
+            df_new, df_new_existing, df_old_existing = self._create_update_split(
+                df_data, company_tidm
+            )
 
             # Update existing rows
             if not df_new_existing.empty:
@@ -112,7 +114,7 @@ class Command(BaseCommand):
     def _get_filename(file_list_single, company_tidm):
 
         # Get company tidm for associated id
-        tidm_list = [tidm.split('_', 1)[0] for tidm in file_list_single]
+        tidm_list = [tidm.split("_", 1)[0] for tidm in file_list_single]
         tidm_idx = tidm_list.index(company_tidm)
         current_company_filename = file_list_single[tidm_idx]
 
@@ -146,13 +148,17 @@ class Command(BaseCommand):
         vol_col = f"{tidm} Volume"
 
         # Rename Columns
-        df = df.rename(columns={'DateTime': 'time_stamp', value_col: 'value', vol_col: 'volume'})
+        df = df.rename(
+            columns={"DateTime": "time_stamp", value_col: "value", vol_col: "volume"}
+        )
 
         # Add adjusted column
-        df['value_adjusted'] = df['value']
+        df["value_adjusted"] = df["value"]
 
         # Delete Columns
-        df = df.drop(['OHLC (open)', 'OHLC (high)', 'OHLC (low)', 'OHLC (close)'], axis=1)
+        df = df.drop(
+            ["OHLC (open)", "OHLC (high)", "OHLC (low)", "OHLC (close)"], axis=1
+        )
 
         df = df.astype(object).where(pd.notnull(df), None)
 
@@ -162,17 +168,23 @@ class Command(BaseCommand):
 
         existing_old_df = pd.DataFrame(
             list(SharePrices.objects.get_share_filtered(company_tidm))
-            )
+        )
 
         if not new_df.empty:
-            new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
-            new_df['time_stamp_txt'] = new_df['time_stamp_txt'].str.replace(' 00:00:00','')
+            new_df["time_stamp_txt"] = new_df["time_stamp"].astype(str)
+            new_df["time_stamp_txt"] = new_df["time_stamp_txt"].str.replace(
+                " 00:00:00", ""
+            )
 
         if not existing_old_df.empty:
-            existing_old_df['time_stamp_txt'] = existing_old_df['time_stamp'].astype(str)
+            existing_old_df["time_stamp_txt"] = existing_old_df["time_stamp"].astype(
+                str
+            )
 
             split_idx = np.where(
-                new_df["time_stamp_txt"].isin(existing_old_df["time_stamp_txt"]), "existing", "new"
+                new_df["time_stamp_txt"].isin(existing_old_df["time_stamp_txt"]),
+                "existing",
+                "new",
             )
 
             df_new_existing = new_df[split_idx == "existing"]
@@ -211,58 +223,78 @@ class Command(BaseCommand):
         num_rows_updated = 0
 
         # Format value columns correctly
-        df_new_existing['value'] = df_new_existing['value'].astype('float').map('{:.2f}'.format)
-        df_new_existing['value_adjusted'] = df_new_existing['value_adjusted'].astype('float').map('{:.2f}'.format)
-        df_new_existing['volume'] = df_new_existing['volume'].astype('float').map('{:.0f}'.format)
+        df_new_existing["value"] = (
+            df_new_existing["value"].astype("float").map("{:.2f}".format)
+        )
+        df_new_existing["value_adjusted"] = (
+            df_new_existing["value_adjusted"].astype("float").map("{:.2f}".format)
+        )
+        df_new_existing["volume"] = (
+            df_new_existing["volume"].astype("float").map("{:.0f}".format)
+        )
 
-        df_old_existing['value'] = df_old_existing['value'].astype('float').map('{:.2f}'.format)
-        df_old_existing['value_adjusted'] = df_old_existing['value_adjusted'].astype('float').map('{:.2f}'.format)
-        df_old_existing['volume'] = df_old_existing['volume'].astype('float').map('{:.0f}'.format)
+        df_old_existing["value"] = (
+            df_old_existing["value"].astype("float").map("{:.2f}".format)
+        )
+        df_old_existing["value_adjusted"] = (
+            df_old_existing["value_adjusted"].astype("float").map("{:.2f}".format)
+        )
+        df_old_existing["volume"] = (
+            df_old_existing["volume"].astype("float").map("{:.0f}".format)
+        )
 
         new_midx = pd.MultiIndex.from_arrays(
-            [df_new_existing[col] for col in ['time_stamp_txt', 'value', 'value_adjusted', 'volume']]
-            )
-        df_new_existing['mul_col_idx'] = new_midx
+            [
+                df_new_existing[col]
+                for col in ["time_stamp_txt", "value", "value_adjusted", "volume"]
+            ]
+        )
+        df_new_existing["mul_col_idx"] = new_midx
 
         existing_midx = pd.MultiIndex.from_arrays(
-            [df_old_existing[col] for col in ['time_stamp_txt', 'value', 'value_adjusted', 'volume']]
-            )
-        df_old_existing['mul_col_idx'] = existing_midx
-
-        split_idx = np.where(
-            new_midx.isin(existing_midx), "existing", "new"
+            [
+                df_old_existing[col]
+                for col in ["time_stamp_txt", "value", "value_adjusted", "volume"]
+            ]
         )
+        df_old_existing["mul_col_idx"] = existing_midx
+
+        split_idx = np.where(new_midx.isin(existing_midx), "existing", "new")
 
         # Only values to update
         df_to_update = df_new_existing[split_idx == "new"]
 
         if not df_to_update.empty:
-            df_to_update['id'] = np.nan
+            df_to_update["id"] = np.nan
 
             df_to_update = df_to_update.reset_index()
 
             # Transfer row id across to new df
             for index, row in df_to_update.iterrows():
-                df_to_update.at[index, 'id'] = df_old_existing[df_old_existing['time_stamp_txt'].isin([row['time_stamp_txt']])]['id'].values[0]
-            df_to_update = df_to_update.set_index('id')
+                df_to_update.at[index, "id"] = df_old_existing[
+                    df_old_existing["time_stamp_txt"].isin([row["time_stamp_txt"]])
+                ]["id"].values[0]
+            df_to_update = df_to_update.set_index("id")
 
             # Update Database
             with transaction.atomic():
                 for index, row in df_to_update.iterrows():
                     # print(index, row['value'])
-                    SharePrices.objects.filter(id=index).update(value=row['value'])
+                    SharePrices.objects.filter(id=index).update(value=row["value"])
                     num_rows_updated = num_rows_updated + 1
 
             with transaction.atomic():
                 for index, row in df_to_update.iterrows():
                     # print(index, row['value'])
-                    SharePrices.objects.filter(id=index).update(value_adjusted=row['value_adjusted'])
+                    SharePrices.objects.filter(id=index).update(
+                        value_adjusted=row["value_adjusted"]
+                    )
                     num_rows_updated = num_rows_updated + 1
 
             with transaction.atomic():
                 for index, row in df_to_update.iterrows():
                     # print(index, row['value'])
-                    SharePrices.objects.filter(id=index).update(volume=row['volume'])
+                    SharePrices.objects.filter(id=index).update(volume=row["volume"])
                     num_rows_updated = num_rows_updated + 1
 
         return num_rows_updated

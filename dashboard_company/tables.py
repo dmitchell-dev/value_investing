@@ -6,7 +6,9 @@ from .models import DashboardCompany
 
 
 class DashboardCompanyTable(tables.Table):
-    company_name = tables.LinkColumn('dashboard_company:dashboard_detail', args=[A("pk")])
+    company_name = tables.LinkColumn(
+        "dashboard_company:dashboard_detail", args=[A("pk")]
+    )
 
     class Meta:
         model = DashboardCompany

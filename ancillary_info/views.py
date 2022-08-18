@@ -11,8 +11,8 @@ from django.views.generic import (
     DetailView,
     CreateView,
     UpdateView,
-    DeleteView
-    )
+    DeleteView,
+)
 from .models import Companies, DcfVariables
 from .tables import DCFTable, CompaniesTable
 
@@ -74,7 +74,7 @@ class CompanyUpdateView(SuccessMessageMixin, UpdateView):
 class CompanyDeleteView(DeleteView):
     model = Companies
     template_name = "ancillary/company_delete.html"
-    success_url = reverse_lazy('ancillary:company_list')
+    success_url = reverse_lazy("ancillary:company_list")
 
 
 def company_stats_update(request, **kwargs):
@@ -87,14 +87,11 @@ def company_stats_update(request, **kwargs):
 
     # Import data for current company
     if pk:
-        result_str = management.call_command(
-            'data_import',
-            '--comp_pk', pk
-            )
+        result_str = management.call_command("data_import", "--comp_pk", pk)
     else:
         result_str = management.call_command(
-            'data_import',
-            )
+            "data_import",
+        )
 
     # Get correct company name and tidm
     company_name = Companies.objects.filter(id=pk).values()[0]["company_name"]
@@ -106,15 +103,13 @@ def company_stats_update(request, **kwargs):
 
     context = {
         "company_name": company_name,
-        "result_str": result_str.split('-'),
+        "result_str": result_str.split("-"),
         "table_data": table_data,
         "error_message": error_message,
     }
     messages.add_message(
-        request,
-        messages.SUCCESS,
-        'Company stats were successfully updated.'
-        )
+        request, messages.SUCCESS, "Company stats were successfully updated."
+    )
 
     return render(request, "ancillary/company_stats_update.html", context)
 
@@ -124,8 +119,8 @@ def company_all_stats_update(request, **kwargs):
     error_message = None
 
     result_str = management.call_command(
-        'data_import',
-        )
+        "data_import",
+    )
 
     # Change to dict of dicts
     table_data = dict(x.split("; ") for x in result_str.split("-"))
@@ -133,16 +128,14 @@ def company_all_stats_update(request, **kwargs):
         table_data[key] = dict(x.split(": ") for x in value.split(", "))
 
     context = {
-        "result_str": result_str.split('-'),
+        "result_str": result_str.split("-"),
         "table_data": table_data,
         "error_message": error_message,
     }
 
     messages.add_message(
-        request,
-        messages.SUCCESS,
-        'Company stats were successfully updated.'
-        )
+        request, messages.SUCCESS, "Company stats were successfully updated."
+    )
 
     return render(request, "ancillary/company_stats_update.html", context)
 
@@ -188,10 +181,7 @@ class DcfVariablesUpdateView(SuccessMessageMixin, UpdateView):
     ]
 
     def get_success_url(self):
-        companyid = self.kwargs['pk']
-        return reverse_lazy(
-            'ancillary:dcf_var_detail',
-            kwargs={'pk': companyid}
-            )
+        companyid = self.kwargs["pk"]
+        return reverse_lazy("ancillary:dcf_var_detail", kwargs={"pk": companyid})
 
     success_message = "Company was updated successfully"

@@ -42,7 +42,9 @@ class Command(BaseCommand):
                 company_tidm = self._process_filename(current_company_filename)
             else:
                 company_tidm = options["symbol"][0]
-                current_company_filename = self._get_filename(file_list_single, company_tidm)
+                current_company_filename = self._get_filename(
+                    file_list_single, company_tidm
+                )
 
             # Get company report data
             df_data = self._import_reporting_data(current_company_filename)
@@ -51,9 +53,7 @@ class Command(BaseCommand):
             df_data = self._generate_param_id(df_params_api, df_data)
 
             # company id
-            company_id = df_companies[
-                df_companies["tidm"] == company_tidm
-            ].id.values[0]
+            company_id = df_companies[df_companies["tidm"] == company_tidm].id.values[0]
 
             # Create list of columns
             df_items = df_data.items()
@@ -80,13 +80,17 @@ class Command(BaseCommand):
             # df_unpivot["value"] = df_unpivot["value"].replace(
             #     ["Infinity", "-Infinity"], None
             # )
-            df_unpivot = df_unpivot.replace(to_replace=["Infinity", "-Infinity", "None"], value=None)
+            df_unpivot = df_unpivot.replace(
+                to_replace=["Infinity", "-Infinity", "None"], value=None
+            )
 
             # Check datetime format
             df_unpivot = self._datetime_format(df_unpivot)
 
             # Update/Create split
-            df_new, df_new_existing, df_old_existing = self._create_update_split(df_unpivot, company_tidm)
+            df_new, df_new_existing, df_old_existing = self._create_update_split(
+                df_unpivot, company_tidm
+            )
 
             # Update existing rows
             if not df_new_existing.empty:
@@ -171,7 +175,7 @@ class Command(BaseCommand):
     def _get_filename(file_list_single, company_tidm):
 
         # Get company tidm for associated id
-        tidm_list = [tidm.split('_', 1)[0] for tidm in file_list_single]
+        tidm_list = [tidm.split("_", 1)[0] for tidm in file_list_single]
         tidm_idx = tidm_list.index(company_tidm)
         current_company_filename = file_list_single[tidm_idx]
 
@@ -222,24 +226,24 @@ class Command(BaseCommand):
 
         existing_old_df = pd.DataFrame(
             list(FinancialReports.objects.get_financial_data_filtered(company_tidm))
-            )
+        )
 
         if not new_df.empty:
-            new_df['time_stamp_txt'] = new_df['time_stamp'].astype(str)
+            new_df["time_stamp_txt"] = new_df["time_stamp"].astype(str)
 
         if not existing_old_df.empty:
-            existing_old_df['time_stamp_txt'] = existing_old_df['time_stamp'].astype(str)
+            existing_old_df["time_stamp_txt"] = existing_old_df["time_stamp"].astype(
+                str
+            )
 
             new_midx = pd.MultiIndex.from_arrays(
-                [new_df[col] for col in ['time_stamp_txt', 'parameter_id']]
-                )
-            existing_midx = pd.MultiIndex.from_arrays(
-                [existing_old_df[col] for col in ['time_stamp_txt', 'parameter']]
-                )
-
-            split_idx = np.where(
-                new_midx.isin(existing_midx), "existing", "new"
+                [new_df[col] for col in ["time_stamp_txt", "parameter_id"]]
             )
+            existing_midx = pd.MultiIndex.from_arrays(
+                [existing_old_df[col] for col in ["time_stamp_txt", "parameter"]]
+            )
+
+            split_idx = np.where(new_midx.isin(existing_midx), "existing", "new")
 
             df_new_existing = new_df[split_idx == "existing"]
             df_old_existing = existing_old_df
@@ -276,27 +280,30 @@ class Command(BaseCommand):
         num_rows_updated = 0
 
         # Format value columns correctly
-        df_new_existing['value'] = df_new_existing['value'].astype('float')
-        df_old_existing['value'] = df_old_existing['value'].astype('float')
-        df_new_existing['value'] = df_new_existing['value'].map('{:.2f}'.format)
-        df_old_existing['value'] = df_old_existing['value'].map('{:.2f}'.format)
+        df_new_existing["value"] = df_new_existing["value"].astype("float")
+        df_old_existing["value"] = df_old_existing["value"].astype("float")
+        df_new_existing["value"] = df_new_existing["value"].map("{:.2f}".format)
+        df_old_existing["value"] = df_old_existing["value"].map("{:.2f}".format)
 
         # Create multi columnindexes for both with and without value
         new_midx_value = pd.MultiIndex.from_arrays(
-            [df_new_existing[col] for col in ['time_stamp_txt', 'parameter_id', 'value']]
-            )
+            [
+                df_new_existing[col]
+                for col in ["time_stamp_txt", "parameter_id", "value"]
+            ]
+        )
         new_midx = pd.MultiIndex.from_arrays(
-            [df_new_existing[col] for col in ['time_stamp_txt', 'parameter_id']]
-            )
-        df_new_existing['mul_col_idx'] = new_midx
+            [df_new_existing[col] for col in ["time_stamp_txt", "parameter_id"]]
+        )
+        df_new_existing["mul_col_idx"] = new_midx
 
         existing_midx_value = pd.MultiIndex.from_arrays(
-            [df_old_existing[col] for col in ['time_stamp_txt', 'parameter', 'value']]
-            )
+            [df_old_existing[col] for col in ["time_stamp_txt", "parameter", "value"]]
+        )
         existing_midx = pd.MultiIndex.from_arrays(
-            [df_old_existing[col] for col in ['time_stamp_txt', 'parameter']]
-            )
-        df_old_existing['mul_col_idx'] = existing_midx
+            [df_old_existing[col] for col in ["time_stamp_txt", "parameter"]]
+        )
+        df_old_existing["mul_col_idx"] = existing_midx
 
         split_idx = np.where(
             new_midx_value.isin(existing_midx_value), "existing", "new"
@@ -306,20 +313,22 @@ class Command(BaseCommand):
         df_to_update = df_new_existing[split_idx == "new"]
 
         if not df_to_update.empty:
-            df_to_update['id'] = np.nan
+            df_to_update["id"] = np.nan
 
             df_to_update = df_to_update.reset_index()
 
             # Transfer row id across to new df
             for index, row in df_to_update.iterrows():
-                df_to_update.at[index, 'id'] = df_old_existing[df_old_existing['mul_col_idx'].isin([row['mul_col_idx']])]['id'].values[0]
-            df_to_update = df_to_update.set_index('id')
+                df_to_update.at[index, "id"] = df_old_existing[
+                    df_old_existing["mul_col_idx"].isin([row["mul_col_idx"]])
+                ]["id"].values[0]
+            df_to_update = df_to_update.set_index("id")
 
             # Update Database
             with transaction.atomic():
                 for index, row in df_to_update.iterrows():
                     # print(index, row['value'])
-                    FinancialReports.objects.filter(id=index).update(value=row['value'])
+                    FinancialReports.objects.filter(id=index).update(value=row["value"])
                 num_rows_updated = num_rows_updated + 1
 
         return num_rows_updated

@@ -11,7 +11,7 @@ class DCFTable(tables.Table):
 
 
 class CompaniesTable(tables.Table):
-    company_name = tables.LinkColumn('ancillary:company_detail', args=[A("pk")])
+    company_name = tables.LinkColumn("ancillary:company_detail", args=[A("pk")])
 
     class Meta:
         model = Companies

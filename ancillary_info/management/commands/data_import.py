@@ -8,18 +8,14 @@ class Command(BaseCommand):
     help = "populates and updates all tables"
 
     def add_arguments(self, parser):
+        parser.add_argument("--comp_pk", nargs="+", type=str)
         parser.add_argument(
-            '--comp_pk',
-            nargs="+",
-            type=str
-            )
-        parser.add_argument(
-            '--from_scratch',
+            "--from_scratch",
             type=str,
-            nargs='?',
+            nargs="?",
             default=False,
-            help="Include ancillary table imports"
-            )
+            help="Include ancillary table imports",
+        )
 
     def handle(self, *args, **options):
 
@@ -36,22 +32,19 @@ class Command(BaseCommand):
         # try:
         # Ancillary Import if required
         if options["from_scratch"]:
-            ancillary_num = management.call_command(
-                'ancillary_import'
-                )
+            ancillary_num = management.call_command("ancillary_import")
             ancillary_result = f"Ancillary Tables; {ancillary_num}"
             return_results.append(ancillary_result)
 
         # Financial Import
         if options["comp_pk"] is None:
             reports_num = management.call_command(
-                'financial_reports_import_tikr',
-                )
+                "financial_reports_import_tikr",
+            )
         else:
             reports_num = management.call_command(
-                'financial_reports_import_tikr',
-                '--symbol', company_tidm
-                )
+                "financial_reports_import_tikr", "--symbol", company_tidm
+            )
         reports_result = f"Financial Reports; {reports_num}"
         return_results.append(reports_result)
 
@@ -71,13 +64,12 @@ class Command(BaseCommand):
         # Share Price Import TIKR
         if options["comp_pk"] is None:
             share_price_num = management.call_command(
-                'share_price_import_tikr',
-                )
+                "share_price_import_tikr",
+            )
         else:
             share_price_num = management.call_command(
-                'share_price_import_tikr',
-                '--symbol', company_tidm
-                )
+                "share_price_import_tikr", "--symbol", company_tidm
+            )
         share_price_result = f"Share Price TIKR; {share_price_num}"
         return_results.append(share_price_result)
 
@@ -97,51 +89,46 @@ class Command(BaseCommand):
         # Share split Calcs
         if options["comp_pk"] is None:
             share_split_num = management.call_command(
-                'share_split_calcs',
-                )
+                "share_split_calcs",
+            )
         else:
             share_split_num = management.call_command(
-                'share_split_calcs',
-                '--symbol', company_tidm
-                )
+                "share_split_calcs", "--symbol", company_tidm
+            )
         share_split_result = f"Share Split; {share_split_num}"
         return_results.append(share_split_result)
 
         # Default Variables import
         if options["comp_pk"] is None:
             default_var_num = management.call_command(
-                'detault_dfc_variables',
-                )
+                "detault_dfc_variables",
+            )
         else:
             default_var_num = management.call_command(
-                'detault_dfc_variables',
-                '--symbol', company_tidm
-                )
+                "detault_dfc_variables", "--symbol", company_tidm
+            )
         default_var_result = f"Default Variables; {default_var_num}"
         return_results.append(default_var_result)
 
         # Calculate Stats
         if options["comp_pk"] is None:
             calc_stats_num = management.call_command(
-                'calculate_stats',
-                )
+                "calculate_stats",
+            )
         else:
             calc_stats_num = management.call_command(
-                'calculate_stats',
-                '--symbol', company_tidm
-                )
+                "calculate_stats", "--symbol", company_tidm
+            )
         calc_stats_result = f"Calculate Stats; {calc_stats_num}"
         return_results.append(calc_stats_result)
 
         # Update Dashboard
-        dash_stats = management.call_command(
-            'generate_dashboard'
-            )
+        dash_stats = management.call_command("generate_dashboard")
         dash_stats_result = f"Dashboard; {dash_stats}"
         return_results.append(dash_stats_result)
 
         # Can only return strings from management commands
-        return_string = '-'.join(return_results)
+        return_string = "-".join(return_results)
 
         print("###### SUMMARY UPDATE STATS ROWS ADDED ######")
         print(reports_result)
@@ -155,4 +142,4 @@ class Command(BaseCommand):
         return return_string
 
         # except Exception as e:
-            # messages.add_message(request, messages.ERROR, f"{str(e)}")
+        # messages.add_message(request, messages.ERROR, f"{str(e)}")

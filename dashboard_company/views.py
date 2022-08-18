@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
 
@@ -116,9 +116,9 @@ def dashboard_table(request, pk, report_type):
     # Get correct company id
     company_tidm = DashboardCompany.objects.filter(id=pk).values()[0]["tidm"]
     company_data = Companies.objects.get_companies_joined_filtered(company_tidm)
-    company_name = company_data[0]['company_name']
-    company_id = company_data[0]['id']
-    company_currency = company_data[0]['currency__symbol']
+    company_name = company_data[0]["company_name"]
+    company_id = company_data[0]["id"]
+    company_currency = company_data[0]["currency__symbol"]
 
     # Get financial data
     finance_qs = FinancialReports.objects.select_related("parameter_id").filter(
@@ -142,7 +142,7 @@ def dashboard_table(request, pk, report_type):
         values="value",
     )
 
-    table_data = finance_df_pivot.to_dict('index').items()
+    table_data = finance_df_pivot.to_dict("index").items()
 
     context = {
         "finance_table": finance_df_pivot.to_html(classes="table", border=0),
@@ -208,7 +208,9 @@ def _param_chart(company_id, DataSource, param_name):
     param_id = Params.objects.filter(param_name=param_name).values()[0]["id"]
 
     df = pd.DataFrame(
-        DataSource.objects.order_by('time_stamp').filter(company_id=company_id, parameter_id=param_id).values()
+        DataSource.objects.order_by("time_stamp")
+        .filter(company_id=company_id, parameter_id=param_id)
+        .values()
     )
     df["value"] = df["value"].astype(float)
 
@@ -239,19 +241,19 @@ def _multi_chart(company_id, DataSource, *args, **kwargs):
     param_id_3 = Params.objects.filter(param_name=param_name_3).values()[0]["id"]
 
     df_1 = pd.DataFrame(
-        DataSource.objects.order_by('time_stamp').filter(
-            company_id=company_id, parameter_id=param_id_1
-        ).values()
+        DataSource.objects.order_by("time_stamp")
+        .filter(company_id=company_id, parameter_id=param_id_1)
+        .values()
     )
     df_2 = pd.DataFrame(
-        DataSource.objects.order_by('time_stamp').filter(
-            company_id=company_id, parameter_id=param_id_2
-        ).values()
+        DataSource.objects.order_by("time_stamp")
+        .filter(company_id=company_id, parameter_id=param_id_2)
+        .values()
     )
     df_3 = pd.DataFrame(
-        DataSource.objects.order_by('time_stamp').filter(
-            company_id=company_id, parameter_id=param_id_3
-        ).values()
+        DataSource.objects.order_by("time_stamp")
+        .filter(company_id=company_id, parameter_id=param_id_3)
+        .values()
     )
 
     df_1["value"] = df_1["value"].astype(float)
@@ -303,7 +305,11 @@ class ShareChartDataView(View):
 
         company_id = _pk_to_comp_id(pk)
 
-        share_qs = SharePrices.objects.order_by('time_stamp').filter(company_id=company_id).values()
+        share_qs = (
+            SharePrices.objects.order_by("time_stamp")
+            .filter(company_id=company_id)
+            .values()
+        )
 
         y_data = []
         x_data = []

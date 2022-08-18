@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ancillary_info', '0003_remove_dcfvariables_parameter'),
+        ("ancillary_info", "0003_remove_dcfvariables_parameter"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='currencies',
-            old_name='value',
-            new_name='symbol',
+            model_name="currencies",
+            old_name="value",
+            new_name="symbol",
         ),
     ]
