@@ -2,10 +2,26 @@
 
 {% block title %}{{company.company_name}}{% endblock title %}
 
-{% block content %}
+{% block sidebar %}
 
-<a class="btn btn-primary" href="{% url 'ancillary:dcf_var_detail' company.company_id %}">DCF Detail</a>
-<a class="btn btn-primary" href="{% url 'ancillary:company_stats_update' company.company_id %}">Update Stats</a>
+    <span class="sidebar-heading">Dashboard Detail</span>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'ancillary:dcf_var_detail' company.company_id %}">
+        <i class="fa fa-info-circle" aria-hidden="true"></i>
+        DCF Detail
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'ancillary:company_stats_update' company.company_id %}">
+        <i class="fa fa-wrench" aria-hidden="true"></i>
+        Update Stats
+        </a>
+    </li>
+
+{% endblock sidebar %}
+
+{% block content %}
 
 <div class="container border shadow bg-light rounded py-2 mb-3">  
         <div class="row">

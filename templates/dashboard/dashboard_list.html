@@ -5,26 +5,18 @@
 
 {% block sidebar %}
 
-<ul class="nav flex-column">
+    <span class="sidebar-heading">Dashboard List</span>
+
     <li class="nav-item">
-      <a class="nav-link active" href="#">
-        <span data-feather="home"></span>
-        Dashboard <span class="sr-only">(current)</span>
-      </a>
+        <a class="nav-link" href="{% url 'ancillary:company_all_stats_update' %}">
+        <i class="fa fa-wrench" aria-hidden="true"></i>
+         Update Stats
+        </a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">
-        <span data-feather="file"></span>
-        Orders
-      </a>
-    </li>
-  </ul>
 
 {% endblock sidebar %}
 
 {% block content %}
-
-    <a class="btn btn-primary" href="{% url 'ancillary:company_all_stats_update' %}">Update Stats</a>
 
     {% render_table table %}
 

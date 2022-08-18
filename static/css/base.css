@@ -95,7 +95,7 @@ h1 {
  */
 
  .navbar {
-    position: sticky;
+    /* position: sticky; */
     z-index: 101; /* In front of the sidebar */
   }
 

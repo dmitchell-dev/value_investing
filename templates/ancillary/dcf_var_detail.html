@@ -3,8 +3,21 @@
 
 {% block title %}DCF Variables{% endblock title %}
 
+{% block sidebar %}
+
+    <span class="sidebar-heading">DCF Variables - {{ company_name }}</span>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'ancillary:dcf_var_update' company.pk %}">
+        <i class="fa fa-wrench" aria-hidden="true"></i>
+         Update DCF
+        </a>
+    </li>
+
+{% endblock sidebar %}
+
 {% block content %}
-    <h1>DCF Variables - {{ company_name }}</h1>
+
     {% if messages %}
         {% for message in messages %}
             <div class="text-center alert alert-{{ message.tags }}">
@@ -13,39 +26,6 @@
         {% endfor %}
     {% endif %}
 
-    <a class="btn btn-primary" href="{% url 'ancillary:dcf_var_update' company.pk %}">Update DCF</a>
-
-    {% comment %} <a class="btn btn-primary" href="{% url 'ancillary:dcf_var_update' company.pk %}">Update DCF</a> {% endcomment %}
-
     {% render_table data %}
-
-    {% comment %} <div class="container">
-        <div class="row">
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Name</h5>
-                        <p class="card-text">{{ data }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">TIDM</h5>
-                        <p class="card-text">{{ data.param }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">TIDM</h5>
-                        <p class="card-text">{{ company.tidm }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> {% endcomment %}
     
 {% endblock content %}
