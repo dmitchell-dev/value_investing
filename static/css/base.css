@@ -29,6 +29,21 @@ h1 {
 }
 
 /*
+ * Searchbar
+ */
+form.default-search input[type=text] {
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid grey;
+  margin-right: 15px;
+  margin-left: 15px;
+  float: left;
+  width: 50%;
+  height: 38px;
+  background: #f1f1f1;
+}
+
+/*
  * Sidebar
  */
 
@@ -80,6 +95,8 @@ h1 {
   .sidebar-heading {
     font-size: .75rem;
     text-transform: uppercase;
+    margin-left: 15px;
+    color: #999;
   }
 
 /*

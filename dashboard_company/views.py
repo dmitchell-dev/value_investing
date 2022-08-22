@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django_tables2 import SingleTableView
 
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 import pandas as pd
 
@@ -32,6 +33,32 @@ class DashboardListView(SingleTableView):
     template_name = "dashboard/dashboard_list.html"
 
     ordering = ["margin_safety"]
+
+
+class SearchResultsListView(TemplateView):
+    template_name = "dashboard/dashboard_search_results.html"
+
+    def get_queryset(self):
+
+        query = self.request.GET.get('q')
+
+        return DashboardCompany.objects.filter(
+            Q(company_name__icontains=query) | Q(share_listing__icontains=query)
+            )
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+
+        results_queryset = self.get_queryset()
+
+        # Results Table
+        results_table = DashboardCompanyTable(results_queryset)
+
+        # context["investments"] = portfolio_df
+        context["results_table"] = results_table
+
+        return context
 
 
 class DashboardDetailView(DetailView):

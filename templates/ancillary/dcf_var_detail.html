@@ -6,14 +6,15 @@
 {% block sidebar %}
 
     <span class="sidebar-heading">DCF Variables - {{ company_name }}</span>
-
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'ancillary:dcf_var_update' company.pk %}">
-        <i class="fa fa-wrench" aria-hidden="true"></i>
-         Update DCF
-        </a>
-    </li>
-
+    <hr>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'ancillary:dcf_var_update' company.pk %}">
+            <i class="fa fa-wrench" aria-hidden="true"></i>
+            Update DCF
+            </a>
+        </li>
+    </ul>
 {% endblock sidebar %}
 
 {% block content %}
