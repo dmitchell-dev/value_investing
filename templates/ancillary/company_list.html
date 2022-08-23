@@ -15,6 +15,12 @@
             </a>
         </li>
     </ul>
+    <hr>
+    <form class="default-search" action="{% url 'ancillary:search_results' %}" method="get">
+        <input name="q" type="text" placeholder="Search" aria-label="Search">
+        <input type="submit" class="btn btn-primary" value="Search">
+    </form>
+
 {% endblock sidebar %}
 
 {% block content %}

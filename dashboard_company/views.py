@@ -55,7 +55,6 @@ class SearchResultsListView(TemplateView):
         # Results Table
         results_table = DashboardCompanyTable(results_queryset)
 
-        # context["investments"] = portfolio_df
         context["results_table"] = results_table
 
         return context

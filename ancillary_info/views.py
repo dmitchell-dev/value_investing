@@ -4,10 +4,12 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
+from django.db.models import Q
+
 from django_tables2 import SingleTableView
+from django.views.generic.base import TemplateView
 
 from django.views.generic import (
-    ListView,
     DetailView,
     CreateView,
     UpdateView,
@@ -23,6 +25,31 @@ class CompanyListView(SingleTableView):
     template_name = "ancillary/company_list.html"
 
     ordering = ["company_name"]
+
+
+class SearchResultsListView(TemplateView):
+    template_name = "ancillary/company_search_results.html"
+
+    def get_queryset(self):
+
+        query = self.request.GET.get('q')
+
+        return Companies.objects.filter(
+            Q(company_name__icontains=query) | Q(tidm__icontains=query)
+            )
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+
+        results_queryset = self.get_queryset()
+
+        # Results Table
+        results_table = CompaniesTable(results_queryset)
+
+        context["results_table"] = results_table
+
+        return context
 
 
 class CompanyDetailView(DetailView):
