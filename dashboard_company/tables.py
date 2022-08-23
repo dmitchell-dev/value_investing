@@ -15,12 +15,11 @@ class DashboardCompanyTable(tables.Table):
         attrs = {"class": "table thead-light table-striped table-hover"}
         fields = (
             "company_name",
-            "share_listing",
-            "market_cap",
             "revenue",
             "fcf",
             "share_price",
             "dcf_intrinsic_value",
             "margin_safety",
             "latest_margin_of_safety",
+            "company__wish_list"
         )

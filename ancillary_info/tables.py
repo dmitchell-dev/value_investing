@@ -23,5 +23,4 @@ class CompaniesTable(tables.Table):
             "industry",
             "exchange",
             "company_source",
-            "wish_list",
         )

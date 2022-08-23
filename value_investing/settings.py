@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "economic.apps.EconomicConfig",
     "api_import.apps.ApiImportConfig",
     "portfolio.apps.PortfolioConfig",
+    "wish_list.apps.WishListConfig",
 ]
 
 MIDDLEWARE = [
