@@ -21,5 +21,4 @@ class DashboardCompanyTable(tables.Table):
             "dcf_intrinsic_value",
             "margin_safety",
             "latest_margin_of_safety",
-            "company__wish_list"
         )

@@ -71,7 +71,6 @@ class CompanyCreateView(SuccessMessageMixin, CreateView):
         "country",
         "currency",
         "company_source",
-        "wish_list",
         "company_summary",
     ]
 
@@ -91,7 +90,6 @@ class CompanyUpdateView(SuccessMessageMixin, UpdateView):
         "country",
         "currency",
         "company_source",
-        "wish_list",
         "company_summary",
     ]
 
