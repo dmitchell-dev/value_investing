@@ -45,6 +45,8 @@ def wish_list_create(request, **kwargs):
     for arg in kwargs.values():
         pk = arg
 
+    # TODO Save company to wishlist
+
     messages.add_message(
         request, messages.SUCCESS, "Company successfully added to wish list."
     )
