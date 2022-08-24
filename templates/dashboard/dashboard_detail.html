@@ -31,6 +31,14 @@
 
 {% block content %}
 
+{% if messages %}
+    {% for message in messages %}
+        <div class="text-center alert alert-{{ message.tags }}">
+            {{ message|safe }}
+        </div>
+    {% endfor %}
+{% endif %}
+
 <div class="container border shadow bg-light rounded py-2 mb-3">  
         <div class="row">
             <div class="col-8">

@@ -40,17 +40,13 @@ import pandas as pd
 
 def wish_list_create(request, **kwargs):
 
-    error_message = None
     pk = None
 
     for arg in kwargs.values():
         pk = arg
 
-    context = {
-        "error_message": error_message,
-    }
     messages.add_message(
-        request, messages.SUCCESS, "Company stats were successfully updated."
+        request, messages.SUCCESS, "Company successfully added to wish list."
     )
 
     return redirect('dashboard_company:dashboard_detail', pk=pk)
