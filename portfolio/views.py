@@ -1,5 +1,6 @@
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.shortcuts import render
+from django.shortcuts import redirect
 
 import django_tables2 as tables
 
@@ -18,7 +19,7 @@ from dashboard_company.models import DashboardCompany
 
 from share_prices.models import SharePrices
 
-from .models import Investments, WishList, Portfolio
+from .models import Investments, WishList
 
 from .managers import (
     value_pie_chart,
@@ -33,7 +34,26 @@ import plotly.express as px
 from plotly.offline import plot
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from django.contrib import messages
 import pandas as pd
+
+
+def wish_list_create(request, **kwargs):
+
+    error_message = None
+    pk = None
+
+    for arg in kwargs.values():
+        pk = arg
+
+    context = {
+        "error_message": error_message,
+    }
+    messages.add_message(
+        request, messages.SUCCESS, "Company stats were successfully updated."
+    )
+
+    return redirect('dashboard_company:dashboard_detail', pk=pk)
 
 
 class InvestmentListView(ListView):

@@ -7,6 +7,7 @@ from .views import (
     InvestmentUpdateView,
     InvestmentDeleteView,
     PortfolioOverviewView,
+    wish_list_create,
     portfolio_overview_charts,
     portfolio_single_chart,
     portfolio_single_chart2,
@@ -43,5 +44,8 @@ urlpatterns = [
         "overview/single-chart2/",
         portfolio_single_chart2,
         name="portfolio_single_chart2",
+    ),
+    path(
+        "wish-list/<int:pk>/create/", wish_list_create, name="wishlist_create"
     ),
 ]

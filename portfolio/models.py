@@ -53,6 +53,9 @@ class WishList(models.Model):
     def __str__(self):
         return f"{self.company} - {self.decision} - {self.buy_mos}"
 
+    def get_absolute_url(self):
+        return reverse("dashboard_company:dashboard_detail", kwargs={"pk": self.pk})
+
 
 class Portfolio(models.Model):
     company = models.ForeignKey(Companies, on_delete=models.CASCADE)
