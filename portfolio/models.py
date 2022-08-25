@@ -34,7 +34,7 @@ class Investments(models.Model):
 
 
 class WishList(models.Model):
-    company = models.ForeignKey(Companies, on_delete=models.CASCADE)
+    company = models.OneToOneField(Companies, on_delete=models.CASCADE, primary_key=True)
     decision = models.ForeignKey(DecisionType, on_delete=models.CASCADE)
     reporting_stock_price = models.FloatField()
     current_stock_price = models.FloatField()

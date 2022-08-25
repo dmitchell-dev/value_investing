@@ -13,7 +13,7 @@ from django.views.generic import (
     DeleteView,
 )
 
-from ancillary_info.models import Companies
+from ancillary_info.models import Companies, DecisionType
 
 from dashboard_company.models import DashboardCompany
 
@@ -46,6 +46,20 @@ def wish_list_create(request, **kwargs):
         pk = arg
 
     # TODO Save company to wishlist
+    # company = Companies.objects.filter(pk=pk)
+    wishlist_id = DecisionType.objects.filter(value='Wish List')[0].id
+
+    obj, created = WishList.objects.get_or_create(
+        company_id=pk,
+        decision_id=wishlist_id,
+        reporting_stock_price=100,
+        current_stock_price=2,
+        reporting_mos=1,
+        current_mos=1,
+        buy_mos=0.2,
+    )
+
+    # product=Product(id=1), defaults={'value': 0})
 
     messages.add_message(
         request, messages.SUCCESS, "Company successfully added to wish list."
