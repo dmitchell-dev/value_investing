@@ -25,6 +25,12 @@
             Add to Wish List
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'portfolio:wishlist_delete' company.pk %}">
+            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+            Delete from Wish List
+            </a>
+        </li>
     </ul>
 
 {% endblock sidebar %}

@@ -79,7 +79,7 @@ def wish_list_delete(request, **kwargs):
 
     # Delete company from wishlist
     try:
-        WishList.objects.filter(id=pk).delete()
+        WishList.objects.filter(company_id=pk).delete()
         messages.add_message(
             request, messages.SUCCESS, "Company successfully removed to wish list."
         )
