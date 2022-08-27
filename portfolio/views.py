@@ -70,6 +70,38 @@ def wish_list_create(request, **kwargs):
     return redirect('dashboard_company:dashboard_detail', pk=pk)
 
 
+def wish_list_delete(request, **kwargs):
+
+    pk = None
+
+    for arg in kwargs.values():
+        pk = arg
+
+    # TODO Save company to wishlist
+    wishlist_id = DecisionType.objects.filter(value='Wish List')[0].id
+
+    obj, created = WishList.objects.get_or_create(
+        company_id=pk,
+        decision_id=wishlist_id,
+        reporting_stock_price=100,
+        current_stock_price=2,
+        reporting_mos=1,
+        current_mos=1,
+        buy_mos=0.2,
+    )
+
+    if created:
+        messages.add_message(
+            request, messages.SUCCESS, "Company successfully added to wish list."
+        )
+    else:
+        messages.add_message(
+            request, messages.WARNING, "Company already exists on the wish list."
+        )
+
+    return redirect('dashboard_company:dashboard_detail', pk=pk)
+
+
 class InvestmentListView(ListView):
     model = Investments
     context_object_name = "investment_list"
