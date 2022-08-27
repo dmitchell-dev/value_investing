@@ -20,16 +20,17 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'portfolio:wishlist_create' company.pk %}">
-            <i class="fa fa-plus-circle" aria-hidden="true"></i>
-            Add to Wish List
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'portfolio:wishlist_delete' company.pk %}">
-            <i class="fa fa-plus-circle" aria-hidden="true"></i>
-            Delete from Wish List
-            </a>
+            {% if does_exist %}
+                <a class="nav-link" href="{% url 'portfolio:wishlist_delete' company.pk %}">
+                    <i class="fa fa-minus-circle" aria-hidden="true"></i>
+                    Delete from Wish List
+                </a>
+            {% else %}
+                <a class="nav-link" href="{% url 'portfolio:wishlist_create' company.pk %}">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    Add to Wish List
+                </a>
+            {% endif %}
         </li>
     </ul>
 

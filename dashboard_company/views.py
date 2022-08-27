@@ -14,6 +14,8 @@ import plotly.express as px
 from django.http import JsonResponse
 from django.views import View
 
+from portfolio.models import WishList
+
 from .models import DashboardCompany
 
 from ancillary_info.models import Params, Companies
@@ -77,10 +79,15 @@ class DashboardDetailView(DetailView):
         if share_splits:
             share_splits_last = share_splits.time_stamp
 
-        # TODO add wishlist search to check if added
-        
+        # Wishlist search to check if added
+        try:
+            WishList.objects.get(pk=comp_pk)
+            does_exist = True
+        except WishList.DoesNotExist:
+            does_exist = False
 
         # Add context data
+        context["does_exist"] = does_exist
         context["params"] = Params.objects.all()
         context["share_splits"] = share_splits_last
 
