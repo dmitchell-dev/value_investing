@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 
 import django_tables2 as tables
+from django_tables2 import SingleTableView
 
 from django.views.generic.base import TemplateView
 from django.views.generic import (
@@ -28,6 +29,7 @@ from .managers import (
 
 from .tables import (
     NameTable,
+    WishListTable,
 )
 
 import plotly.express as px
@@ -36,6 +38,21 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from django.contrib import messages
 import pandas as pd
+
+
+class WishListListView(SingleTableView):
+    model = WishList
+    table_class = WishListTable
+    template_name = "portfolio/wishlist_list.html"
+
+    # ordering = ["margin_safety"]
+
+
+class WishListDetailView(DetailView):
+    model = WishList
+    context_object_name = "wishlist"
+    template_name = "portfolio/wishlist_detail.html"
+
 
 
 def wish_list_create(request, **kwargs):

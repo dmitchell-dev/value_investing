@@ -1,0 +1,76 @@
+{% extends '_base.html' %}
+
+{% block title %}Wish List{% endblock title %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Company</h5>
+                        <p class="card-text">{{ wishlist.company }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Decision</h5>
+                        <p class="card-text">{{ wishlist.decision }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Current Stock Price</h5>
+                        <p class="card-text">{{ wishlist.current_stock_price }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Reporting Margin of Safety</h5>
+                        <p class="card-text">£{{ wishlist.reporting_mos }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Current Margin of Safety</h5>
+                        <p class="card-text">£{{ wishlist.current_mos }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Buy Margine of Safety</h5>
+                        <p class="card-text">{{ wishlist.buy_mos }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Reference</h5>
+                        <p class="card-text">{{ wishlist.reference }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a class="btn btn-primary" href="{% url 'portfolio:investment_update' wishlist.pk %}">Edit</a>
+        <a class="btn btn-danger" href="{% url 'portfolio:investment_delete' wishlist.pk %}">Delete</a>
+
+    </div>
+
+{% endblock content %}
