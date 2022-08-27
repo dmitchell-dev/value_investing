@@ -46,7 +46,6 @@ def wish_list_create(request, **kwargs):
         pk = arg
 
     # TODO Save company to wishlist
-    # company = Companies.objects.filter(pk=pk)
     wishlist_id = DecisionType.objects.filter(value='Wish List')[0].id
 
     obj, created = WishList.objects.get_or_create(
@@ -59,11 +58,14 @@ def wish_list_create(request, **kwargs):
         buy_mos=0.2,
     )
 
-    # product=Product(id=1), defaults={'value': 0})
-
-    messages.add_message(
-        request, messages.SUCCESS, "Company successfully added to wish list."
-    )
+    if created:
+        messages.add_message(
+            request, messages.SUCCESS, "Company successfully added to wish list."
+        )
+    else:
+        messages.add_message(
+            request, messages.WARNING, "Company already exists on the wish list."
+        )
 
     return redirect('dashboard_company:dashboard_detail', pk=pk)
 
