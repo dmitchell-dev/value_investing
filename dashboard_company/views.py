@@ -77,6 +77,9 @@ class DashboardDetailView(DetailView):
         if share_splits:
             share_splits_last = share_splits.time_stamp
 
+        # TODO add wishlist search to check if added
+        
+
         # Add context data
         context["params"] = Params.objects.all()
         context["share_splits"] = share_splits_last

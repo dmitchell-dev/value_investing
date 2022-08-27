@@ -79,13 +79,14 @@ def wish_list_delete(request, **kwargs):
 
     # Delete company from wishlist
     try:
-        WishList.objects.filter(company_id=pk).delete()
+        # WishList.objects.filter(company_id=pk).delete()
+        WishList.objects.get(pk=pk).delete()
         messages.add_message(
             request, messages.SUCCESS, "Company successfully removed to wish list."
         )
-    except Exception as e:
+    except WishList.DoesNotExist:
         messages.add_message(
-            request, messages.WARNING, f"Company does not exist on the wish list - {e}."
+            request, messages.WARNING, "Company does not exist on the wish list."
         )
 
     return redirect('dashboard_company:dashboard_detail', pk=pk)
