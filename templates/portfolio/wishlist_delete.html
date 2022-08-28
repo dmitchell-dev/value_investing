@@ -1,0 +1,12 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Wish List{% endblock title %}
+
+{% block content %}
+    <h1>Wishlist Delete</h1>
+    <form action="" method="post">{% csrf_token %}
+        <p>Are you sure you want to delete "{{ wishlist.reference }}"?</p>
+        <input class="btn btn-success" type="submit" value="Confirm">
+    </form>
+{% endblock content %}

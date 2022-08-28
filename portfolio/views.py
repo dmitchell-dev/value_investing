@@ -54,6 +54,24 @@ class WishListDetailView(DetailView):
     template_name = "portfolio/wishlist_detail.html"
 
 
+class WishListDeleteView(DeleteView):
+    model = WishList
+    template_name = "portfolio/wishlist_delete.html"
+    success_url = reverse_lazy("portfolio:wishlist_list")
+
+
+class WishListUpdateView(UpdateView):
+    model = WishList
+    template_name = "portfolio/wishlist_update.html"
+    fields = [
+        "decision",
+        # "reporting_stock_price",
+        # "current_stock_price",
+        # "reporting_mos",
+        # "current_mos",
+        "buy_mos",
+    ]
+
 
 def wish_list_create(request, **kwargs):
 
@@ -87,7 +105,7 @@ def wish_list_create(request, **kwargs):
     return redirect('dashboard_company:dashboard_detail', pk=pk)
 
 
-def wish_list_delete(request, **kwargs):
+def wish_list_remove(request, **kwargs):
 
     pk = None
 
