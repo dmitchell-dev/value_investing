@@ -64,7 +64,6 @@ class WishListUpdateView(UpdateView):
     model = WishList
     template_name = "portfolio/wishlist_update.html"
     fields = [
-        "decision",
         # "reporting_stock_price",
         # "current_stock_price",
         # "reporting_mos",
@@ -80,12 +79,11 @@ def wish_list_create(request, **kwargs):
     for arg in kwargs.values():
         pk = arg
 
-    # Save company to wishlist
-    wishlist_id = DecisionType.objects.filter(value='Wish List')[0].id
+    # TODO Get reporting and latest stats before saving
 
+    # Save company to database
     obj, created = WishList.objects.get_or_create(
         company_id=pk,
-        decision_id=wishlist_id,
         reporting_stock_price=100,
         current_stock_price=2,
         reporting_mos=1,

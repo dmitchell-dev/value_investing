@@ -10,7 +10,6 @@ from .managers import (
 
 class Investments(models.Model):
     company = models.ForeignKey(Companies, on_delete=models.CASCADE)
-    decision = models.ForeignKey(DecisionType, on_delete=models.CASCADE)
     date_dealt = models.DateField(blank=False)
     date_settled = models.DateField(blank=False)
     reference = models.CharField(max_length=255)

@@ -34,7 +34,6 @@ class WishListQueryset(QuerySet):
             "buy_mos",
             "company__tidm",
             "company__company_name",
-            "decision__value",
         )
 
 
