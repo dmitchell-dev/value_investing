@@ -10,6 +10,7 @@ from .managers import (
 
 class Investments(models.Model):
     company = models.ForeignKey(Companies, on_delete=models.CASCADE)
+    decision = models.ForeignKey(DecisionType, on_delete=models.CASCADE)
     date_dealt = models.DateField(blank=False)
     date_settled = models.DateField(blank=False)
     reference = models.CharField(max_length=255)
@@ -34,7 +35,6 @@ class Investments(models.Model):
 
 class WishList(models.Model):
     company = models.OneToOneField(Companies, on_delete=models.CASCADE, primary_key=True)
-    decision = models.ForeignKey(DecisionType, on_delete=models.CASCADE)
     reporting_stock_price = models.FloatField()
     current_stock_price = models.FloatField()
     reporting_mos = models.FloatField()

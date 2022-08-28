@@ -27,10 +27,9 @@ class WishListTable(tables.Table):
         attrs = {"class": "table thead-light table-striped table-hover"}
         fields = (
             "company__company_name",
-            "decision__value",
             "reporting_stock_price",
+            "current_stock_price",
             "reporting_mos",
+            "current_mos",
             "buy_mos",
-            "created_at",
-            "updated_at",
         )
