@@ -2,6 +2,27 @@
 
 {% block title %}Wish List{% endblock title %}
 
+{% block sidebar %}
+
+    <span class="sidebar-heading">Wish List</span>
+    <hr>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'portfolio:investment_update' investment.pk %}">
+            <i class="fa fa-wrench" aria-hidden="true"></i>
+            Update Item
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'portfolio:investment_delete' investment.pk %}">
+            <i class="fa fa-trash" aria-hidden="true"></i>
+            Delete Item
+            </a>
+        </li>
+    </ul>
+
+{% endblock sidebar %}
+
 
 {% block content %}
     <div class="container">
@@ -24,19 +45,29 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-4">
+            <div class="col-6">
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
-                        <h5 class="card-title">Current Stock Price</h5>
-                        <p class="card-text">{{ wishlist.current_stock_price }}</p>
+                        <h5 class="card-title">Reporting Stock Price</h5>
+                        <p class="card-text">£{{ wishlist.reporting_stock_price }}</p>
                     </div>
                 </div>
             </div>
+            <div class="col-6">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Current Stock Price</h5>
+                        <p class="card-text">£{{ wishlist.current_stock_price }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-4">
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Reporting Margin of Safety</h5>
-                        <p class="card-text">£{{ wishlist.reporting_mos }}</p>
+                        <p class="card-text">{{ wishlist.reporting_mos }}</p>
                     </div>
                 </div>
             </div>
@@ -44,7 +75,15 @@
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Current Margin of Safety</h5>
-                        <p class="card-text">£{{ wishlist.current_mos }}</p>
+                        <p class="card-text">{{ wishlist.current_mos }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Buy Margin of Safety</h5>
+                        <p class="card-text">{{ wishlist.buy_mos }}</p>
                     </div>
                 </div>
             </div>
@@ -53,24 +92,20 @@
             <div class="col-6">
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
-                        <h5 class="card-title">Buy Margine of Safety</h5>
-                        <p class="card-text">{{ wishlist.buy_mos }}</p>
+                        <h5 class="card-title">Created At</h5>
+                        <p class="card-text">{{ wishlist.created_at }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
-                        <h5 class="card-title">Reference</h5>
-                        <p class="card-text">{{ wishlist.reference }}</p>
+                        <h5 class="card-title">Updated At</h5>
+                        <p class="card-text">{{ wishlist.updated_at }}</p>
                     </div>
                 </div>
             </div>
         </div>
-
-        <a class="btn btn-primary" href="{% url 'portfolio:investment_update' wishlist.pk %}">Edit</a>
-        <a class="btn btn-danger" href="{% url 'portfolio:investment_delete' wishlist.pk %}">Delete</a>
-
     </div>
 
 {% endblock content %}

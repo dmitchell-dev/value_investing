@@ -2,12 +2,26 @@
 
 {% block title %}Investments{% endblock title %}
 
-<!--
-date_dealt = models.DateField(blank=False)
-reference = models.CharField(max_length=255)
-created_at = models.DateTimeField(auto_now_add=True)
-updated_at = models.DateTimeField(auto_now=True)
--->
+{% block sidebar %}
+
+    <span class="sidebar-heading">Investments</span>
+    <hr>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'portfolio:investment_update' investment.pk %}">
+            <i class="fa fa-wrench" aria-hidden="true"></i>
+            Update Investment
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'portfolio:investment_delete' investment.pk %}">
+            <i class="fa fa-trash" aria-hidden="true"></i>
+            Delete Investment
+            </a>
+        </li>
+    </ul>
+
+{% endblock sidebar %}
 
 {% block content %}
     <div class="container">
@@ -73,10 +87,6 @@ updated_at = models.DateTimeField(auto_now=True)
                 </div>
             </div>
         </div>
-
-        <a class="btn btn-primary" href="{% url 'portfolio:investment_update' investment.pk %}">Edit</a>
-        <a class="btn btn-danger" href="{% url 'portfolio:investment_delete' investment.pk %}">Delete</a>
-
     </div>
 
 {% endblock content %}

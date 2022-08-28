@@ -2,18 +2,26 @@
 
 {% block title %}Companies{% endblock title %}
 
-<!--
-<td>{{ company.company_name }}</td>
-<td>{{ company.tidm }}</td>
-<td>{{ company.comp_type }}</td> 
-<td>{{ company.sector }}</td>
-<td>{{ company.industry }}</td>
-<td>{{ company.exchange }}</td>
-<td>{{ company.country }}</td>
-<td>{{ company.currency }}</td>
-<td>{{ company.company_source }}</td>
-<td>{{ company.company_summary }}</td>
--->
+{% block sidebar %}
+
+    <span class="sidebar-heading">Companies</span>
+    <hr>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'ancillary:company_update' company.pk %}">
+            <i class="fa fa-wrench" aria-hidden="true"></i>
+            Update Company
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'ancillary:company_delete' company.pk %}">
+            <i class="fa fa-trash" aria-hidden="true"></i>
+            Delete Company
+            </a>
+        </li>
+    </ul>
+
+{% endblock sidebar %}
 
 {% block content %}
 
@@ -24,12 +32,6 @@
             </div>
         {% endfor %}
     {% endif %}
-
-
-    <a class="btn btn-primary" href="{% url 'ancillary:company_update' company.pk %}">Edit</a>
-    <a class="btn btn-danger" href="{% url 'ancillary:company_delete' company.pk %}">Delete</a>
-
-    <hr>
 
     <div class="container">
         <div class="row">
