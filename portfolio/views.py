@@ -79,7 +79,7 @@ def wish_list_create(request, **kwargs):
     for arg in kwargs.values():
         pk = arg
 
-    # TODO Get reporting and latest stats before saving
+    # Get reporting and latest stats
     current_company = DashboardCompany.objects.filter(pk=pk)[0]
     tidm = current_company.tidm
     reporting_stock_price = current_company.share_price
@@ -89,7 +89,7 @@ def wish_list_create(request, **kwargs):
 
     # Save company to database
     obj, created = WishList.objects.get_or_create(
-        company_id=pk,
+        company_id=current_company.company_id,
         reporting_stock_price=reporting_stock_price,
         current_stock_price=current_stock_price,
         reporting_mos=reporting_mos,

@@ -453,9 +453,10 @@ def latest_margin_of_safety(
     latest_share_price = df_latest_share_price["value_adjusted"]
 
     # TODO populate row with latest share price
-    df_share_price_reduced.iloc[-1:] = latest_share_price
+    df_latest_share_price_reduced = df_share_price_reduced.copy()
+    df_latest_share_price_reduced.iloc[-1:] = latest_share_price
 
-    df_latest_margin_of_safety = df_share_price_reduced.reset_index(drop=True).div(
+    df_latest_margin_of_safety = df_latest_share_price_reduced.reset_index(drop=True).div(
         df_dcf_intrinsic_value
     )
 
