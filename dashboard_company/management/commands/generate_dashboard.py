@@ -58,7 +58,8 @@ class Command(BaseCommand):
             subset=["time_stamp", "company_name", "param_name"], keep="last"
         )
 
-        financial_latest_date = df_reporting["time_stamp"].max()
+        df_financial_latest_date = df_reporting.groupby(['tidm'], sort=False)['time_stamp'].max().to_frame()
+        df_financial_latest_date = df_financial_latest_date.rename(columns={"time_stamp": "financial_latest_date"}, errors="raise")
 
         df_reporting_pivot = df_reporting.pivot(
             columns="param_name",
@@ -147,6 +148,10 @@ class Command(BaseCommand):
             df_merged, df_share_latest, left_index=True, right_index=True
         )
 
+        df_merged = pd.merge(
+            df_merged, df_financial_latest_date, left_index=True, right_index=True
+        )
+
         # Replace NaN for mySQL compatability
         df_merged = df_merged.replace(["NaN", "nan", "None"], np.nan)
         df_merged = df_merged.astype(object).where(pd.notnull(df_merged), None)
@@ -156,12 +161,12 @@ class Command(BaseCommand):
 
         # Create new companies
         if not df_create.empty:
-            num_rows_created = self._create_rows(df_create, financial_latest_date)
+            num_rows_created = self._create_rows(df_create)
             print(f"Dashboard Create Complete: {num_rows_created} rows updated")
 
         # Update existing companies
         if not df_update.empty:
-            num_rows_updated = self._update_rows(df_update, financial_latest_date)
+            num_rows_updated = self._update_rows(df_update)
             print(f"Dashboard Update Complete: {num_rows_updated} rows updated")
 
         return f"Created: {str(num_rows_created)}, Updated: {str(num_rows_updated)}"
@@ -181,7 +186,7 @@ class Command(BaseCommand):
 
         return df_new, df_existing
 
-    def _create_rows(self, df_create, financial_latest_date):
+    def _create_rows(self, df_create):
 
         # Save to database
         reports = [
@@ -223,7 +228,7 @@ class Command(BaseCommand):
                 pick_source=row["company_source__value"],
                 exchange_country=row["country__value"],
                 currency_symbol=row["currency__symbol"],
-                latest_financial_date=financial_latest_date,
+                latest_financial_date=row["financial_latest_date"],
                 latest_share_price_date=row["share_latest_date"],
                 market_cap=float(row["Market Capitalisation"]),
             )
@@ -235,7 +240,7 @@ class Command(BaseCommand):
 
         return total_rows_added
 
-    def _update_rows(self, df_update, financial_latest_date):
+    def _update_rows(self, df_update):
 
         companies = list(DashboardCompany.objects.all())
         num_companies = len(companies)
@@ -411,7 +416,9 @@ class Command(BaseCommand):
                     df_update.index[cur_row], "currency__symbol"
                 ]
 
-                companies[index].latest_financial_date = str(financial_latest_date)
+                companies[index].latest_financial_date = df_update.loc[
+                    df_update.index[cur_row], "financial_latest_date"
+                ]
 
                 companies[index].latest_share_price_date = df_update.loc[
                     df_update.index[cur_row], "share_latest_date"
