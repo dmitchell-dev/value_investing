@@ -22,6 +22,20 @@ class NameTable(tables.Table):
 class WishListTable(tables.Table):
     company__company_name = tables.LinkColumn("portfolio:wishlist_detail", args=[A("pk")])
 
+    def __init__(self, *args, **kwargs):
+        super(WishListTable, self).__init__(*args, **kwargs)
+        self.maxpts = 0.5
+
+    # render_foo example method
+    def render_current_mos(self, value, column):
+        if value < self.maxpts and value >= 0:
+            column.attrs = {'td': {'bgcolor': '#90EE90'}}  # Light Green
+        elif value < 0:
+            column.attrs = {'td': {'bgcolor': '#FFCCCB'}}  # Light Red
+        else:
+            column.attrs = {'td': {}}
+        return value
+
     class Meta:
         model = WishList
         attrs = {"class": "table thead-light table-striped table-hover"}
