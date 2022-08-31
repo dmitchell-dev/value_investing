@@ -59,13 +59,24 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                {% if results_table %}
-                    {% render_table results_table %}
-                {% endif %}
-            <div>
+
+        <div class="accordion shadow mb-3" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Transactions
+                </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        {% if results_table %}
+                            {% render_table results_table %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
+
         <div class="row">
             <div class="col-6">
                 {% if graph %}
@@ -80,13 +91,4 @@
         </div>
     </div>
 
-    
-
-    {% comment %} HTMX Example, not working, only displays one chart at a time {% endcomment %}
-    {% comment %} <div hx-trigger="load" hx-get="{% url 'portfolio:portfolio_single_chart' %}" hx-swap="innerHTML" id="frameworks_pie"> {% endcomment %}
-        {% comment %} {% include 'portfolio/partials/single-chart.html' %} {% endcomment %}
-    {% comment %} <div> {% endcomment %}
-    {% comment %} <div hx-trigger="load" hx-get="{% url 'portfolio:portfolio_single_chart2' %}" hx-swap="innerHTML" id="frameworks_pie2"> {% endcomment %}
-        {% comment %} {% include 'portfolio/partials/single-chart2.html' %} {% endcomment %}
-    {% comment %} <div> {% endcomment %}
 {% endblock content %}
