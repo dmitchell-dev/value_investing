@@ -2,17 +2,22 @@
 
 {% block title %}Investments{% endblock title %}
 
+{% block sidebar %}
+
+    <span class="sidebar-heading">Investments</span>
+    <hr>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'portfolio:investment_create' %}">
+            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+            Add Transaction
+            </a>
+        </li>
+    </ul>
+
+{% endblock sidebar %}
+
 {% block content %}
-
-<div class="row">
-    <div class="col-6">
-        <h1>Investment Page</h1>
-    </div>
-    <div class="col-6">
-        <a class="btn btn-primary float-right" href="{% url 'portfolio:investment_create' %}">Add Investment</a>
-    </div>
-</div>
-
 
 <table class="table table-striped">
     <thead>

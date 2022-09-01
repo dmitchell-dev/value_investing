@@ -29,54 +29,54 @@
   <header>
     <!-- Fixed navbar -->
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light border-bottom shadow-sm">
-      <a class="navbar-brand" href="{% url 'home' %}">Value Investing</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        {% with request.resolver_match.url_name as url_name %}
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link {% if url_name == 'cape_home' %}active{% endif %}" href="{% url 'economic_data:cape_home' %}">Economic Data</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link {% if url_name == 'company_list' %}active{% endif %}" href="{% url 'ancillary:company_list' %}">Companies</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link {% if url_name == 'dashboard_list' %}active{% endif %}" href="{% url 'dashboard_company:dashboard_list' %}">Dashboard</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-                Portfolio
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="{% url 'portfolio:portfolio_overview' %}">Overview</a>
-                <a class="dropdown-item" href="{% url 'portfolio:wishlist_list' %}">Wish List</a>
-                <a class="dropdown-item" href="{% url 'portfolio:investment_list' %}">Investments</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link {% if url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">About</a>
-            </li>
-            {% if user.is_authenticated %}
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">Value Investing</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          {% with request.resolver_match.url_name as url_name %}
+            <ul class="navbar-nav mr-auto">
               <li class="nav-item">
-                <a class="nav-link {% if url_name == 'account_logout' %}active{% endif %}" href="{% url 'account_logout' %}">Log Out</a>
+                <a class="nav-link {% if url_name == 'cape_home' %}active{% endif %}" href="{% url 'economic_data:cape_home' %}">Economic Data</span></a>
               </li>
-            {% else %}
               <li class="nav-item">
-                <a class="nav-link {% if url_name == 'account_login' %}active{% endif %}" href="{% url 'account_login' %}">Log In</a>
+                <a class="nav-link {% if url_name == 'company_list' %}active{% endif %}" href="{% url 'ancillary:company_list' %}">Companies</a>
               </li>
-            {% endif %}
-          </ul>
-        {% endwith %}
+              <li class="nav-item">
+                <a class="nav-link {% if url_name == 'dashboard_list' %}active{% endif %}" href="{% url 'dashboard_company:dashboard_list' %}">Dashboard</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+                  Portfolio
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{% url 'portfolio:portfolio_overview' %}">Overview</a>
+                  <a class="dropdown-item" href="{% url 'portfolio:wishlist_list' %}">Wish List</a>
+                  <a class="dropdown-item" href="{% url 'portfolio:investment_list' %}">Investments</a>
+                </div>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">About</a>
+              </li>
+              {% if user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link {% if url_name == 'account_logout' %}active{% endif %}" href="{% url 'account_logout' %}">Log Out</a>
+                </li>
+              {% else %}
+                <li class="nav-item">
+                  <a class="nav-link {% if url_name == 'account_login' %}active{% endif %}" href="{% url 'account_login' %}">Log In</a>
+                </li>
+              {% endif %}
+            </ul>
+          {% endwith %}
+        </div>
       </div>
     </nav>
-    </div>
   </header>
 
   {% if request.resolver_match.url_name != 'home' %}
     <div class="container-fluid">
-      {% comment %} <div class="row"> {% endcomment %}
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
           <div class="sidebar-sticky">
             {% block sidebar %}
@@ -86,9 +86,11 @@
     </div>
   {% endif %}
 
-  <div class="container pt-5">
-    {% block content %}
-    {% endblock content %}
+  <div class="ms-5 pt-5">
+    <div class="container">
+      {% block content %}
+      {% endblock content %}
+    </div>
   </div>
 
   <!-- JavaScript -->
