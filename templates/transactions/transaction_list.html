@@ -1,14 +1,14 @@
 {% extends '_base.html' %}
 
-{% block title %}Investments{% endblock title %}
+{% block title %}Transactions{% endblock title %}
 
 {% block sidebar %}
 
-    <span class="sidebar-heading">Investments</span>
+    <span class="sidebar-heading">Transactions</span>
     <hr>
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'portfolio:investment_create' %}">
+            <a class="nav-link" href="{% url 'portfolio:transaction_create' %}">
             <i class="fa fa-plus-circle" aria-hidden="true"></i>
             Add Transaction
             </a>
@@ -33,16 +33,16 @@
         </tr>
     </thead>
     <tbody>
-        {% for investment in investment_list %}
+        {% for transaction in transaction_list %}
             <tr>
-                <td><a href="{{ investment.get_absolute_url }}">{{ investment.company }}</a></td>
-                <td>{{ investment.decision }}</td> 
-                <td>{{ investment.date_dealt }}</td>
-                <td>{{ investment.date_settled }}</td>
-                <td>{{ investment.reference }}</td>
-                <td>{{ investment.num_stock }}</td>
-                <td>{{ investment.price }}</td>
-                <td>{{ investment.fees }}</td>
+                <td><a href="{{ transaction.get_absolute_url }}">{{ transaction.company }}</a></td>
+                <td>{{ transaction.decision }}</td> 
+                <td>{{ transaction.date_dealt }}</td>
+                <td>{{ transaction.date_settled }}</td>
+                <td>{{ transaction.reference }}</td>
+                <td>{{ transaction.num_stock }}</td>
+                <td>{{ transaction.price }}</td>
+                <td>{{ transaction.fees }}</td>
             </tr>
         {% endfor %}
     </tbody>

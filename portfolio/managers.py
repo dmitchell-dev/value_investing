@@ -4,7 +4,7 @@ import plotly.express as px
 from plotly.offline import plot
 
 
-class InvestmentsQueryset(QuerySet):
+class TransactionsQueryset(QuerySet):
     def get_table_joined(self):
         return self.values(
             "num_stock",

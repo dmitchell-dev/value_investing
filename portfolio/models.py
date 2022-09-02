@@ -2,13 +2,13 @@ from django.db import models
 from django.urls import reverse
 from ancillary_info.models import Companies, DecisionType
 from .managers import (
-    InvestmentsQueryset,
+    TransactionsQueryset,
     WishListQueryset,
     PortfolioQueryset,
 )
 
 
-class Investments(models.Model):
+class Transactions(models.Model):
     company = models.ForeignKey(Companies, on_delete=models.CASCADE)
     decision = models.ForeignKey(DecisionType, on_delete=models.CASCADE)
     date_dealt = models.DateField(blank=False)
@@ -20,17 +20,17 @@ class Investments(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    objects = InvestmentsQueryset.as_manager()
+    objects = TransactionsQueryset.as_manager()
 
     class Meta:
-        db_table = "investments"
-        verbose_name_plural = "Investments"
+        db_table = "transactions"
+        verbose_name_plural = "Transactions"
 
     def __str__(self):
         return f"{self.company} - {self.decision} - {self.created_at}"
 
     def get_absolute_url(self):
-        return reverse("portfolio:investment_detail", kwargs={"pk": self.pk})
+        return reverse("portfolio:transaction_detail", kwargs={"pk": self.pk})
 
 
 class WishList(models.Model):
@@ -60,6 +60,7 @@ class Portfolio(models.Model):
     company = models.ForeignKey(Companies, on_delete=models.CASCADE)
     num_shares = models.IntegerField()
     current_stock_price = models.FloatField()
+    cash_holding = models.FloatField()
 
     objects = PortfolioQueryset.as_manager()
 

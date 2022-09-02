@@ -1,22 +1,22 @@
 {% extends '_base.html' %}
 
-{% block title %}Investments{% endblock title %}
+{% block title %}Transactions{% endblock title %}
 
 {% block sidebar %}
 
-    <span class="sidebar-heading">Investments</span>
+    <span class="sidebar-heading">Transactions</span>
     <hr>
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'portfolio:investment_update' investment.pk %}">
+            <a class="nav-link" href="{% url 'portfolio:transaction_update' transaction.pk %}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
-            Update Investment
+            Update Transaction
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'portfolio:investment_delete' investment.pk %}">
+            <a class="nav-link" href="{% url 'portfolio:transaction_delete' transaction.pk %}">
             <i class="fa fa-trash" aria-hidden="true"></i>
-            Delete Investment
+            Delete Transaction
             </a>
         </li>
     </ul>
@@ -30,7 +30,7 @@
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Company</h5>
-                        <p class="card-text">{{ investment.company }}</p>
+                        <p class="card-text">{{ transaction.company }}</p>
                     </div>
                 </div>
             </div>
@@ -38,7 +38,7 @@
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Decision</h5>
-                        <p class="card-text">{{ investment.decision }}</p>
+                        <p class="card-text">{{ transaction.decision }}</p>
                     </div>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Number of Stock</h5>
-                        <p class="card-text">{{ investment.num_stock }}</p>
+                        <p class="card-text">{{ transaction.num_stock }}</p>
                     </div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Investment Price</h5>
-                        <p class="card-text">£{{ investment.price }}</p>
+                        <p class="card-text">£{{ transaction.price }}</p>
                     </div>
                 </div>
             </div>
@@ -64,7 +64,7 @@
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Investment fees</h5>
-                        <p class="card-text">£{{ investment.fees }}</p>
+                        <p class="card-text">£{{ transaction.fees }}</p>
                     </div>
                 </div>
             </div>
@@ -74,7 +74,7 @@
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Date Dealt</h5>
-                        <p class="card-text">{{ investment.date_dealt }}</p>
+                        <p class="card-text">{{ transaction.date_dealt }}</p>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,7 @@
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Reference</h5>
-                        <p class="card-text">{{ investment.reference }}</p>
+                        <p class="card-text">{{ transaction.reference }}</p>
                     </div>
                 </div>
             </div>

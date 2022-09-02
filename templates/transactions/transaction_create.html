@@ -1,10 +1,10 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Investments{% endblock title %}
+{% block title %}Transactions{% endblock title %}
 
 {% block content %}
-    <h1>Investment Edit</h1>
+    <h1>Transaction Create</h1>
     <form action="" method="post">{% csrf_token %}
         {{ form|crispy }}
         <input type="submit" value="Save" />

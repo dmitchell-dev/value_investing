@@ -1,12 +1,12 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Investments{% endblock title %}
+{% block title %}Transactions{% endblock title %}
 
 {% block content %}
-    <h1>Investment Delete</h1>
+    <h1>Transaction Delete</h1>
     <form action="" method="post">{% csrf_token %}
-        <p>Are you sure you want to delete "{{ investment.reference }}"?</p>
+        <p>Are you sure you want to delete "{{ transaction.reference }}"?</p>
         <input class="btn btn-success" type="submit" value="Confirm">
     </form>
 {% endblock content %}

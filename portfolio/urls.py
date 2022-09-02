@@ -1,11 +1,11 @@
 from django.urls import path
 
 from .views import (
-    InvestmentListView,
-    InvestmentDetailView,
-    InvestmentCreateView,
-    InvestmentUpdateView,
-    InvestmentDeleteView,
+    TransactionListView,
+    TransactionDetailView,
+    TransactionCreateView,
+    TransactionUpdateView,
+    TransactionDeleteView,
     PortfolioOverviewView,
     WishListListView,
     WishListDetailView,
@@ -22,29 +22,29 @@ app_name = "portfolio"
 
 urlpatterns = [
     path(
-        "investments/<int:pk>/delete/",
-        InvestmentDeleteView.as_view(),
-        name="investment_delete",
+        "transactions/<int:pk>/delete/",
+        TransactionDeleteView.as_view(),
+        name="transaction_delete",
     ),
     path(
-        "investments/create/",
-        InvestmentCreateView.as_view(),
-        name="investment_create"
+        "transactions/create/",
+        TransactionCreateView.as_view(),
+        name="transaction_create"
     ),
     path(
-        "investments/<int:pk>/",
-        InvestmentDetailView.as_view(),
-        name="investment_detail",
+        "transactions/<int:pk>/",
+        TransactionDetailView.as_view(),
+        name="transaction_detail",
     ),
     path(
-        "investments/<int:pk>/update/",
-        InvestmentUpdateView.as_view(),
-        name="investment_update",
+        "transactions/<int:pk>/update/",
+        TransactionUpdateView.as_view(),
+        name="transaction_update",
     ),
     path(
-        "investments/",
-        InvestmentListView.as_view(),
-        name="investment_list"),
+        "transactions/",
+        TransactionListView.as_view(),
+        name="transaction_list"),
     path(
         "overview/",
         PortfolioOverviewView.as_view(),

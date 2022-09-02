@@ -20,7 +20,7 @@ from dashboard_company.models import DashboardCompany
 
 from share_prices.models import SharePrices
 
-from .models import Investments, WishList
+from .models import Transactions, WishList
 
 from .managers import (
     value_pie_chart,
@@ -131,23 +131,23 @@ def wish_list_remove(request, **kwargs):
     return redirect('dashboard_company:dashboard_detail', pk=pk)
 
 
-class InvestmentListView(ListView):
-    model = Investments
-    context_object_name = "investment_list"
-    template_name = "investments/investment_list.html"
+class TransactionListView(ListView):
+    model = Transactions
+    context_object_name = "transaction_list"
+    template_name = "transactions/transaction_list.html"
 
     ordering = ["-date_dealt"]
 
 
-class InvestmentDetailView(DetailView):
-    model = Investments
-    context_object_name = "investment"
-    template_name = "investments/investment_detail.html"
+class TransactionDetailView(DetailView):
+    model = Transactions
+    context_object_name = "transaction"
+    template_name = "transactions/transaction_detail.html"
 
 
-class InvestmentCreateView(CreateView):
-    model = Investments
-    template_name = "investments/investment_create.html"
+class TransactionCreateView(CreateView):
+    model = Transactions
+    template_name = "transactions/transaction_create.html"
     fields = [
         "company",
         "decision",
@@ -160,9 +160,9 @@ class InvestmentCreateView(CreateView):
     ]
 
 
-class InvestmentUpdateView(UpdateView):
-    model = Investments
-    template_name = "investments/investment_update.html"
+class TransactionUpdateView(UpdateView):
+    model = Transactions
+    template_name = "transactions/transaction_update.html"
     fields = [
         "company",
         "decision",
@@ -175,10 +175,10 @@ class InvestmentUpdateView(UpdateView):
     ]
 
 
-class InvestmentDeleteView(DeleteView):
-    model = Investments
-    template_name = "investments/investment_delete.html"
-    success_url = reverse_lazy("portfolio:investment_list")
+class TransactionDeleteView(DeleteView):
+    model = Transactions
+    template_name = "transactions/transaction_delete.html"
+    success_url = reverse_lazy("portfolio:transaction_list")
 
 
 class PortfolioOverviewView(TemplateView):
@@ -190,6 +190,7 @@ class PortfolioOverviewView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         portfolio_df = self._get_portfolio_data()
+        # portfolio_sum_df = portfolio_df.groupby(["company__tidm", "decision__value"]).sum()
         portfolio_sum_df = portfolio_df.groupby(["company__tidm"]).sum()
 
         # Per Share Calculations
@@ -307,7 +308,6 @@ class PortfolioOverviewView(TemplateView):
         results_table = NameTable(results_list)
         print(results_table)
 
-        # context["investments"] = portfolio_df
         context["results_table"] = results_table
         context["total_dict"] = total_dict
         context["graph"] = plot_div
@@ -316,19 +316,19 @@ class PortfolioOverviewView(TemplateView):
         return context
 
     def _get_portfolio_data(self):
-        test_df = pd.DataFrame(list(Investments.objects.get_table_joined()))
+        transaction_df = pd.DataFrame(list(Transactions.objects.get_table_joined()))
 
-        test_df["price"] = test_df["price"].astype(float)
-        test_df["fees"] = test_df["fees"].astype(float)
+        transaction_df["price"] = transaction_df["price"].astype(float)
+        transaction_df["fees"] = transaction_df["fees"].astype(float)
 
-        return test_df
+        return transaction_df
 
 
 def portfolio_overview_charts(request):
 
     error_message = None
 
-    df = pd.DataFrame(list(Investments.objects.get_table_joined()))
+    df = pd.DataFrame(list(Transactions.objects.get_table_joined()))
 
     df["price"] = df["price"].astype(float)
 

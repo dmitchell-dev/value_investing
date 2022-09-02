@@ -1,13 +1,13 @@
 from django.contrib import admin
 
 from .models import (
-    Investments,
+    Transactions,
     WishList,
     Portfolio,
 )
 
 
-class InvestmentsAdmin(admin.ModelAdmin):
+class TransactionsAdmin(admin.ModelAdmin):
     fields = [
         "num_stock",
         "date_dealt",
@@ -31,6 +31,6 @@ class PortfolioAdmin(admin.ModelAdmin):
     fields = ["value"]
 
 
-admin.site.register(Investments, InvestmentsAdmin)
+admin.site.register(Transactions, TransactionsAdmin)
 admin.site.register(WishList, WishListAdmin)
 admin.site.register(Portfolio, PortfolioAdmin)
