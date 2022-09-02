@@ -20,7 +20,7 @@ from dashboard_company.models import DashboardCompany
 
 from share_prices.models import SharePrices
 
-from .models import Transactions, WishList
+from .models import Transactions, WishList, Cash
 
 from .managers import (
     value_pie_chart,
@@ -179,6 +179,46 @@ class TransactionDeleteView(DeleteView):
     model = Transactions
     template_name = "transactions/transaction_delete.html"
     success_url = reverse_lazy("portfolio:transaction_list")
+
+
+class CashListView(ListView):
+    model = Cash
+    context_object_name = "cash_list"
+    template_name = "cash/cash_list.html"
+
+    ordering = ["-date_dealt"]
+
+
+class CashDetailView(DetailView):
+    model = Cash
+    context_object_name = "cash"
+    template_name = "cash/cash_detail.html"
+
+
+class CashCreateView(CreateView):
+    model = Cash
+    template_name = "cash/cash_create.html"
+    fields = [
+        "decision",
+        "date_dealt",
+        "cash_value",
+    ]
+
+
+class CashUpdateView(UpdateView):
+    model = Cash
+    template_name = "cash/cash_update.html"
+    fields = [
+        "decision",
+        "date_dealt",
+        "cash_value",
+    ]
+
+
+class CashDeleteView(DeleteView):
+    model = Cash
+    template_name = "cash/cash_delete.html"
+    success_url = reverse_lazy("portfolio:cash_list")
 
 
 class PortfolioOverviewView(TemplateView):

@@ -37,5 +37,6 @@ class PortfolioAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Transactions, TransactionsAdmin)
+admin.site.register(Cash, CashAdmin)
 admin.site.register(WishList, WishListAdmin)
 admin.site.register(Portfolio, PortfolioAdmin)

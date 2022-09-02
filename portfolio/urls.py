@@ -6,6 +6,11 @@ from .views import (
     TransactionCreateView,
     TransactionUpdateView,
     TransactionDeleteView,
+    CashListView,
+    CashDetailView,
+    CashCreateView,
+    CashUpdateView,
+    CashDeleteView,
     PortfolioOverviewView,
     WishListListView,
     WishListDetailView,
@@ -45,6 +50,30 @@ urlpatterns = [
         "transactions/",
         TransactionListView.as_view(),
         name="transaction_list"),
+    path(
+        "cash/<int:pk>/delete/",
+        CashDeleteView.as_view(),
+        name="cash_delete",
+    ),
+    path(
+        "cash/create/",
+        CashCreateView.as_view(),
+        name="cash_create"
+    ),
+    path(
+        "cash/<int:pk>/",
+        CashDetailView.as_view(),
+        name="cash_detail",
+    ),
+    path(
+        "cash/<int:pk>/update/",
+        CashUpdateView.as_view(),
+        name="cash_update",
+    ),
+    path(
+        "cash/",
+        CashListView.as_view(),
+        name="cash_list"),
     path(
         "overview/",
         PortfolioOverviewView.as_view(),
