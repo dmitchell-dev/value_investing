@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import (
     Transactions,
+    Cash,
     WishList,
     Portfolio,
 )
@@ -21,6 +22,10 @@ class TransactionsAdmin(admin.ModelAdmin):
         "company",
         "decision"
     ]
+
+
+class CashAdmin(admin.ModelAdmin):
+    fields = ["cash_value"]
 
 
 class WishListAdmin(admin.ModelAdmin):

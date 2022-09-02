@@ -3,6 +3,7 @@ from django.urls import reverse
 from ancillary_info.models import Companies, DecisionType
 from .managers import (
     TransactionsQueryset,
+    CashQueryset,
     WishListQueryset,
     PortfolioQueryset,
 )
@@ -33,6 +34,26 @@ class Transactions(models.Model):
         return reverse("portfolio:transaction_detail", kwargs={"pk": self.pk})
 
 
+class Cash(models.Model):
+    decision = models.ForeignKey(DecisionType, on_delete=models.CASCADE)
+    date_dealt = models.DateField(blank=False)
+    cash_value = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    objects = CashQueryset.as_manager()
+
+    class Meta:
+        db_table = "cash"
+        verbose_name_plural = "Cash"
+
+    def __str__(self):
+        return f"{self.cash_value} - {self.decision} - {self.created_at}"
+
+    def get_absolute_url(self):
+        return reverse("portfolio:cash_detail", kwargs={"pk": self.pk})
+
+
 class WishList(models.Model):
     company = models.OneToOneField(Companies, on_delete=models.CASCADE, primary_key=True)
     reporting_stock_price = models.FloatField()
@@ -57,7 +78,7 @@ class WishList(models.Model):
 
 
 class Portfolio(models.Model):
-    company = models.ForeignKey(Companies, on_delete=models.CASCADE)
+    company = models.OneToOneField(Companies, on_delete=models.CASCADE, primary_key=True)
     num_shares = models.IntegerField()
     current_stock_price = models.FloatField()
     cash_holding = models.FloatField()

@@ -27,6 +27,17 @@ class TransactionsQueryset(QuerySet):
         )
 
 
+class CashQueryset(QuerySet):
+    def get_table_joined(self):
+        return self.values(
+            "decision",
+            "cash_value",
+            "created_at",
+            "date_dealt",
+            "decision__value",
+        )
+
+
 class WishListQueryset(QuerySet):
     def get_table_joined(self):
         return self.values(
