@@ -29,8 +29,8 @@
             <div class="col-6">
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
-                        <h5 class="card-title">Company</h5>
-                        <p class="card-text">{{ cash.company }}</p>
+                        <h5 class="card-title">Cash Value</h5>
+                        <p class="card-text">£{{ cash.cash_value }}</p>
                     </div>
                 </div>
             </div>
@@ -44,45 +44,11 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Number of Stock</h5>
-                        <p class="card-text">{{ cash.num_stock }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Cash Value</h5>
-                        <p class="card-text">£{{ cash.cash_value }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Investment fees</h5>
-                        <p class="card-text">£{{ cash.fees }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
+            <div class="col">
                 <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
                     <div class="card-body">
                         <h5 class="card-title">Date Dealt</h5>
                         <p class="card-text">{{ cash.date_dealt }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Reference</h5>
-                        <p class="card-text">{{ cash.reference }}</p>
                     </div>
                 </div>
             </div>
