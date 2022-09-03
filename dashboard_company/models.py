@@ -44,6 +44,7 @@ class DashboardCompany(models.Model):
     currency_symbol = models.CharField(max_length=5)
     latest_financial_date = models.DateTimeField(null=True)
     latest_share_price_date = models.DateTimeField(null=True)
+    latest_share_price = models.FloatField(null=True)
     market_cap = models.FloatField(null=True)
 
     objects = DashboardCompanyQueryset.as_manager()

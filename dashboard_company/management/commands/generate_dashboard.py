@@ -128,11 +128,11 @@ class Command(BaseCommand):
                 0: "tidm",
                 1: "company_name",
                 2: "share_latest_date",
-                3: "value",
+                3: "latest_share_price",
             }
         )
 
-        df_share_latest = df_share_latest.drop(["company_name", "value"], axis=1)
+        df_share_latest = df_share_latest.drop(["company_name"], axis=1)
         df_share_latest = df_share_latest.set_index("tidm")
 
         # Join dataframes
@@ -230,6 +230,7 @@ class Command(BaseCommand):
                 currency_symbol=row["currency__symbol"],
                 latest_financial_date=row["financial_latest_date"],
                 latest_share_price_date=row["share_latest_date"],
+                latest_share_price=row["latest_share_price"],
                 market_cap=float(row["Market Capitalisation"]),
             )
             for i, row in df_create.iterrows()
@@ -279,6 +280,7 @@ class Command(BaseCommand):
             "exchange_country": "country__value",
             "currency_symbol": "currency__symbol",
             "latest_share_price_date": "share_latest_date",
+            "latest_share_price": "latest_share_price",
             "latest_financial_date": "financial_latest_date",
         }
 
@@ -422,6 +424,10 @@ class Command(BaseCommand):
 
                 companies[index].latest_share_price_date = df_update.loc[
                     df_update.index[cur_row], "share_latest_date"
+                ]
+
+                companies[index].latest_share_price = df_update.loc[
+                    df_update.index[cur_row], "latest_share_price"
                 ]
 
                 companies[index].market_cap = self._convert_float(

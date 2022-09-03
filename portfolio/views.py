@@ -244,20 +244,24 @@ class PortfolioOverviewView(TemplateView):
         tidm_list = []
         currency_symbol_list = []
         currency_value_list = []
+        share_price_list_new = []
         for comp in comp_list:
             comp_idx = df_companies[df_companies["id"] == comp].index[0]
             curr_tidm = df_companies["tidm"].iat[comp_idx]
             dash_idx = df_dashboard[df_dashboard["tidm"] == curr_tidm].index[0]
             comp_id = df_dashboard["id"].iat[dash_idx]
+            latest_share_price = df_dashboard["latest_share_price"].iat[dash_idx]
             curr_comp_name = df_companies["company_name"].iat[comp_idx]
             curr_currency_symbol = df_companies["currency__symbol"].iat[comp_idx]
             curr_currency_value = df_companies["currency__value"].iat[comp_idx]
+
             tidm_list.append(curr_tidm)
             currency_symbol_list.append(curr_currency_symbol)
             currency_value_list.append(curr_currency_value)
             results_list.append(
                 {"tidm": curr_tidm, "company_name": curr_comp_name, "pk": comp_id}
             )
+            share_price_list_new.append(latest_share_price)
             # results_list.append({'company_name': curr_comp_name})
             # results_list.append({'pk': comp_idx})
 
