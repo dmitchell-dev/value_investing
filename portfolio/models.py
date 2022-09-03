@@ -38,6 +38,7 @@ class Cash(models.Model):
     decision = models.ForeignKey(DecisionType, on_delete=models.CASCADE)
     date_dealt = models.DateField(blank=False)
     cash_value = models.FloatField()
+    cash_balance = models.FloatField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
