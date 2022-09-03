@@ -244,37 +244,30 @@ class PortfolioOverviewView(TemplateView):
         tidm_list = []
         currency_symbol_list = []
         currency_value_list = []
-        share_price_list_new = []
+        share_price_list = []
         for comp in comp_list:
+            # Company and Dashboard ids and names
             comp_idx = df_companies[df_companies["id"] == comp].index[0]
             curr_tidm = df_companies["tidm"].iat[comp_idx]
+            tidm_list.append(curr_tidm)
             dash_idx = df_dashboard[df_dashboard["tidm"] == curr_tidm].index[0]
             comp_id = df_dashboard["id"].iat[dash_idx]
-            latest_share_price = df_dashboard["latest_share_price"].iat[dash_idx]
             curr_comp_name = df_companies["company_name"].iat[comp_idx]
             curr_currency_symbol = df_companies["currency__symbol"].iat[comp_idx]
-            curr_currency_value = df_companies["currency__value"].iat[comp_idx]
-
-            tidm_list.append(curr_tidm)
             currency_symbol_list.append(curr_currency_symbol)
-            currency_value_list.append(curr_currency_value)
-            results_list.append(
-                {"tidm": curr_tidm, "company_name": curr_comp_name, "pk": comp_id}
-            )
-            share_price_list_new.append(latest_share_price)
-            # results_list.append({'company_name': curr_comp_name})
-            # results_list.append({'pk': comp_idx})
 
-        # Current price
-        share_price_list = []
-        idx = 0
-        for tidm in tidm_list:
-            df_share_price = SharePrices.objects.get_latest_date(tidm).value_adjusted
-            # Convert to GBP
-            df_share_price = df_share_price * currency_value_list[idx]
-            share_price_list.append(df_share_price)
-            results_list[idx].update({"latest_share_price": f"£{df_share_price:.2f}"})
-            idx = idx + 1
+            # Latest Share Price
+            latest_share_price = df_dashboard["latest_share_price"].iat[dash_idx]
+            curr_currency_value = df_companies["currency__value"].iat[comp_idx]
+            currency_value_list.append(curr_currency_value)
+            latest_share_price = latest_share_price * curr_currency_value
+            share_price_list.append(latest_share_price)
+            results_list.append({
+                "tidm": curr_tidm,
+                "company_name": curr_comp_name,
+                "pk": comp_id,
+                "latest_share_price": f"£{latest_share_price:.2f}"
+                })
 
         # Info on cost and fees
         share_total_cost_list = []
