@@ -25,7 +25,16 @@ class TransactionsAdmin(admin.ModelAdmin):
 
 
 class CashAdmin(admin.ModelAdmin):
-    fields = ["cash_value"]
+    fields = [
+        "decision",
+        "date_dealt",
+        "cash_value",
+        "company",
+        ]
+
+    readonly_fields = [
+        "cash_balance",
+    ]
 
 
 class WishListAdmin(admin.ModelAdmin):

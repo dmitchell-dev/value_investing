@@ -202,6 +202,7 @@ class CashCreateView(CreateView):
         "decision",
         "date_dealt",
         "cash_value",
+        "company",
     ]
 
 
@@ -212,6 +213,7 @@ class CashUpdateView(UpdateView):
         "decision",
         "date_dealt",
         "cash_value",
+        "company",
     ]
 
 

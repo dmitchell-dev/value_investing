@@ -36,6 +36,7 @@ class Transactions(models.Model):
 
 class Cash(models.Model):
     decision = models.ForeignKey(DecisionType, on_delete=models.CASCADE)
+    company = models.ForeignKey(Companies, on_delete=models.CASCADE, null=True)
     date_dealt = models.DateField(blank=False)
     cash_value = models.FloatField()
     cash_balance = models.FloatField(null=True)
@@ -49,7 +50,7 @@ class Cash(models.Model):
         verbose_name_plural = "Cash"
 
     def __str__(self):
-        return f"{self.cash_value} - {self.decision} - {self.created_at}"
+        return f"{self.cash_value} - {self.decision} - {self.date_dealt}"
 
     def get_absolute_url(self):
         return reverse("portfolio:cash_detail", kwargs={"pk": self.pk})
