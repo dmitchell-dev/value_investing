@@ -232,8 +232,8 @@ class PortfolioOverviewView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         portfolio_df = self._get_portfolio_data()
-        # portfolio_sum_df = portfolio_df.groupby(["company__tidm", "decision__value"]).sum()
-        portfolio_sum_df = portfolio_df.groupby(["company__tidm"]).sum()
+        portfolio_sum_df = portfolio_df.groupby(["company__tidm", "decision__value"]).sum()
+        portfolio_sum_df = portfolio_sum_df.reset_index()
 
         # Per Share Calculations
         # List of company ids
@@ -276,22 +276,29 @@ class PortfolioOverviewView(TemplateView):
         idx = 0
 
         for tidm in tidm_list:
-            fee = portfolio_sum_df[portfolio_sum_df.index == tidm].fees[0]
+            # Fee for transaction
+            fee = portfolio_sum_df[(portfolio_sum_df['company__tidm'] == tidm) & (portfolio_sum_df['decision__value'] == 'Bought')].fees.sum()
             fees_list.append(fee)
             results_list[idx].update({"fees_paid": f"£{fee:.2f}"})
 
-            share_total_cost = portfolio_sum_df[portfolio_sum_df.index == tidm].price[0]
+            # Share cost for transaction
+            share_total_cost = portfolio_sum_df[(portfolio_sum_df['company__tidm'] == tidm) & (portfolio_sum_df['decision__value'] == 'Bought')].price.sum()
             share_total_cost_list.append(share_total_cost)
             results_list[idx].update({"share_total_cost": f"£{share_total_cost:.2f}"})
 
+            # Total cost for transaction
             total_cost = share_total_cost + fee
             total_cost_list = [a + b for a, b in zip(share_total_cost_list, fees_list)]
             results_list[idx].update({"total_cost": f"£{total_cost:.2f}"})
 
-            num_shares = portfolio_sum_df[portfolio_sum_df.index == tidm].num_stock[0]
+            # Number of shares
+            num_shares_bought = portfolio_sum_df[(portfolio_sum_df['company__tidm'] == tidm) & (portfolio_sum_df['decision__value'] == 'Bought')].num_stock.sum()
+            num_shares_sold = portfolio_sum_df[(portfolio_sum_df['company__tidm'] == tidm) & (portfolio_sum_df['decision__value'] == 'Sold')].num_stock.sum()
+            num_shares = num_shares_bought - num_shares_sold
             num_shares_list.append(num_shares)
             results_list[idx].update({"number_shares_held": f"{num_shares}"})
 
+            # Share price paid
             share_cost = share_total_cost / num_shares
             results_list[idx].update({"share_price_paid": f"£{share_cost:.2f}"})
 
