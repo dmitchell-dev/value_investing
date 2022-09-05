@@ -55,6 +55,16 @@ class Cash(models.Model):
     def get_absolute_url(self):
         return reverse("portfolio:cash_detail", kwargs={"pk": self.pk})
 
+    def save(self, *args, **kwargs):
+        current_balance = self.update_balance()
+        # TODO + or - depending on type
+        self.cash_balance = current_balance + self.cash_value
+        super().save(*args, **kwargs)
+
+    def update_balance(self):
+        current_balance = Cash.objects.all().latest('date_dealt').cash_balance
+        return current_balance
+
 
 class WishList(models.Model):
     company = models.OneToOneField(Companies, on_delete=models.CASCADE, primary_key=True)
