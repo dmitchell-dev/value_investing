@@ -16,6 +16,7 @@ class Transactions(models.Model):
     date_settled = models.DateField(blank=False)
     reference = models.CharField(max_length=255)
     num_stock = models.IntegerField()
+    num_stock_balance = models.IntegerField()
     price = models.FloatField()
     fees = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -28,10 +29,23 @@ class Transactions(models.Model):
         verbose_name_plural = "Transactions"
 
     def __str__(self):
-        return f"{self.company} - {self.decision} - {self.created_at}"
+        return f"{self.company} - {self.decision} - {self.num_stock} - {self.date_dealt}"
 
     def get_absolute_url(self):
         return reverse("portfolio:transaction_detail", kwargs={"pk": self.pk})
+
+    def save(self, *args, **kwargs):
+        current_num_stock_balance = Transactions.objects.filter(company_id=self.company_id).latest('date_dealt').num_stock_balance
+
+        # Increase or decrease depending on type
+        if self.decision.value == 'Sold':
+            self.num_stock_balance = current_num_stock_balance - self.num_stock
+        elif self.decision.value == 'Bought':
+            self.num_stock_balance = current_num_stock_balance + self.num_stock
+        else:
+            pass
+
+        super(Transactions, self).save(*args, **kwargs)
 
 
 class Cash(models.Model):
@@ -56,7 +70,7 @@ class Cash(models.Model):
         return reverse("portfolio:cash_detail", kwargs={"pk": self.pk})
 
     def save(self, *args, **kwargs):
-        current_balance = self.update_balance()
+        current_balance = Cash.objects.all().latest('date_dealt').cash_balance
 
         # Increase or decrease depending on type
         if self.decision.value == 'Deposit' or self.decision.value == 'Dividend' or self.decision.value == 'Sold':
@@ -66,11 +80,7 @@ class Cash(models.Model):
         else:
             pass
 
-        super().save(*args, **kwargs)
-
-    def update_balance(self):
-        current_balance = Cash.objects.all().latest('date_dealt').cash_balance
-        return current_balance
+        super(Cash, self).save(*args, **kwargs)
 
 
 class WishList(models.Model):

@@ -136,7 +136,7 @@ class TransactionListView(ListView):
     context_object_name = "transaction_list"
     template_name = "transactions/transaction_list.html"
 
-    ordering = ["-date_dealt"]
+    ordering = ["date_dealt"]
 
 
 class TransactionDetailView(DetailView):

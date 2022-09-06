@@ -11,6 +11,7 @@ from .models import (
 class TransactionsAdmin(admin.ModelAdmin):
     fields = [
         "num_stock",
+        "num_stock_balance",
         "date_dealt",
         "date_settled",
         "reference",

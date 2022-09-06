@@ -28,6 +28,7 @@
             <th scope="col">Date Settled</th>
             <th scope="col">Reference</th>
             <th scope="col">No. Shares</th>
+            <th scope="col">No. Shares Balance</th>
             <th scope="col">Price</th>
             <th scope="col">Fees</th>
         </tr>
@@ -41,6 +42,7 @@
                 <td>{{ transaction.date_settled }}</td>
                 <td>{{ transaction.reference }}</td>
                 <td>{{ transaction.num_stock }}</td>
+                <td>{{ transaction.num_stock_balance }}</td>
                 <td>{{ transaction.price }}</td>
                 <td>{{ transaction.fees }}</td>
             </tr>
