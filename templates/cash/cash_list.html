@@ -22,19 +22,19 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Cash Value</th>
             <th scope="col">Decision</th>
+            <th scope="col">Cash Value</th>
             <th scope="col">Date Dealt</th>
+            <th scope="col">Balance</th>
             <th scope="col">Company</th>
         </tr>
     </thead>
     <tbody>
         {% for cash in cash_list %}
             <tr>
-                <td><a href="{{ cash.get_absolute_url }}">{{ cash.id }}</a></td>
-                <td>£{{ cash.cash_value }}</td>
-                <td>{{ cash.decision }}</td> 
+                <td><a href="{{ cash.get_absolute_url }}">{{ cash.decision }}</a></td>
+                <td>£{{ cash.cash_value|floatformat:"2g" }}</td>
+                <td>£{{ cash.cash_balance|floatformat:"2g" }}</td>
                 <td>{{ cash.date_dealt }}</td>
                 <td>{{ cash.company }}</td>
             </tr>

@@ -36,7 +36,7 @@ class Transactions(models.Model):
 
 class Cash(models.Model):
     decision = models.ForeignKey(DecisionType, on_delete=models.CASCADE)
-    company = models.ForeignKey(Companies, on_delete=models.CASCADE, null=True)
+    company = models.ForeignKey(Companies, on_delete=models.CASCADE, null=True, blank=True)
     date_dealt = models.DateField(blank=False)
     cash_value = models.FloatField()
     cash_balance = models.FloatField(null=True)
@@ -57,8 +57,15 @@ class Cash(models.Model):
 
     def save(self, *args, **kwargs):
         current_balance = self.update_balance()
-        # TODO + or - depending on type
-        self.cash_balance = current_balance + self.cash_value
+
+        # Increase or decrease depending on type
+        if self.decision.value == 'Deposit' or self.decision.value == 'Dividend' or self.decision.value == 'Sold':
+            self.cash_balance = current_balance + self.cash_value
+        elif self.decision.value == 'Withdrawal' or self.decision.value == 'Fee' or self.decision.value == 'Bought':
+            self.cash_balance = current_balance - self.cash_value
+        else:
+            pass
+
         super().save(*args, **kwargs)
 
     def update_balance(self):

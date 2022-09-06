@@ -186,7 +186,7 @@ class CashListView(ListView):
     context_object_name = "cash_list"
     template_name = "cash/cash_list.html"
 
-    ordering = ["-date_dealt"]
+    ordering = ["date_dealt"]
 
 
 class CashDetailView(DetailView):
