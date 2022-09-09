@@ -107,10 +107,11 @@ class WishList(models.Model):
 
 
 class Portfolio(models.Model):
+    month_end_date = models.DateField()
     company = models.OneToOneField(Companies, on_delete=models.CASCADE, primary_key=True)
     num_shares = models.IntegerField()
-    current_stock_price = models.FloatField()
-    cash_holding = models.FloatField()
+    fees_paid = models.FloatField()
+    stock_holding = models.FloatField()
 
     objects = PortfolioQueryset.as_manager()
 
@@ -120,3 +121,23 @@ class Portfolio(models.Model):
 
     def __str__(self):
         return f"{self.company} - {self.num_shares} - {self.current_stock_price}"
+
+
+# class PositionPerformance(models.Model):
+#     month_end_date = models.DateField()
+#     company = models.OneToOneField(Companies, on_delete=models.CASCADE, primary_key=True)
+#     num_shares_bought = models.IntegerField()
+#     num_shares_bought = models.IntegerField()
+#     num_shares_sold = models.IntegerField()
+#     fees_paid = models.FloatField()
+#     current_stock_price = models.FloatField()
+#     cash_holding = models.FloatField()
+
+#     objects = PortfolioQueryset.as_manager()
+
+#     class Meta:
+#         db_table = "position_performance"
+#         verbose_name_plural = "Position Performance"
+
+#     def __str__(self):
+#         return f"{self.company} - {self.num_shares} - {self.current_stock_price}"
