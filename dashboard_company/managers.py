@@ -20,5 +20,7 @@ class DashboardCompanyQueryset(QuerySet):
         return self.values(
             "id",
             "tidm",
+            "company_name",
+            "company_id",
             "latest_share_price",
         )
