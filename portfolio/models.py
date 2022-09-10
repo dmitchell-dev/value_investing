@@ -107,11 +107,10 @@ class WishList(models.Model):
 
 
 class Portfolio(models.Model):
-    month_end_date = models.DateField()
     company = models.OneToOneField(Companies, on_delete=models.CASCADE, primary_key=True)
-    num_shares = models.IntegerField()
-    fees_paid = models.FloatField()
+    num_shares_held = models.IntegerField()
     stock_holding = models.FloatField()
+    pct_holding = models.FloatField()
 
     objects = PortfolioQueryset.as_manager()
 
@@ -120,24 +119,24 @@ class Portfolio(models.Model):
         verbose_name_plural = "Portfolio"
 
     def __str__(self):
-        return f"{self.company} - {self.num_shares} - {self.current_stock_price}"
+        return f"{self.company} - {self.stock_holding} - {self.pct_holding}"
 
 
-# class PositionPerformance(models.Model):
-#     month_end_date = models.DateField()
+# class InvestmentPerformance(models.Model):
 #     company = models.OneToOneField(Companies, on_delete=models.CASCADE, primary_key=True)
-#     num_shares_bought = models.IntegerField()
-#     num_shares_bought = models.IntegerField()
-#     num_shares_sold = models.IntegerField()
+#     initial_value = models.FloatField()
+#     final_value = models.FloatField()
 #     fees_paid = models.FloatField()
-#     current_stock_price = models.FloatField()
-#     cash_holding = models.FloatField()
+#     dividends_paid = models.FloatField()
+#     holding_period_return = models.FloatField()
+#     return_on_investment = models.FloatField()
+#     annualised_return_on_investment = models.FloatField()
 
 #     objects = PortfolioQueryset.as_manager()
 
 #     class Meta:
-#         db_table = "position_performance"
-#         verbose_name_plural = "Position Performance"
+#         db_table = "investment_performance"
+#         verbose_name_plural = "Investment Performance"
 
 #     def __str__(self):
-#         return f"{self.company} - {self.num_shares} - {self.current_stock_price}"
+#         return f"{self.company} - {self.holding_period_return} - {self.annualised_return_on_investment}"
