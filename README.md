@@ -34,4 +34,4 @@ The aim of this site is to not only help with value investing, it will also impr
 * python manage.py calculate_stats --symbol AAPL
 * python manage.py generate_dashboard
 
-# * python manage.py generate_portfolio
+* python manage.py generate_portfolio
