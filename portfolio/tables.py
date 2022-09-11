@@ -5,18 +5,36 @@ from .models import WishList
 
 
 class NameTable(tables.Table):
-    company_name = tables.LinkColumn(
-        "dashboard_company:dashboard_detail", args=[A("pk")]
+    company__company_name = tables.LinkColumn(
+        "dashboard_company:dashboard_detail", args=[A("company")],
+        verbose_name="Company Name",
+
     )
-    tidm = tables.Column()
-    fees_paid = tables.Column()
-    share_price_paid = tables.Column()
-    latest_share_price = tables.Column()
-    number_shares_held = tables.Column()
-    total_cost = tables.Column()
-    latest_total_value = tables.Column()
-    value_change = tables.Column()
-    pct_value_change = tables.Column()
+    company__tidm = tables.Column(verbose_name="TIDM")
+    fees_total = tables.Column(verbose_name="Total Fees")
+    latest_shares_num = tables.Column(verbose_name="Number Shares")
+    initial_shares_cost = tables.Column(verbose_name="Initial Shares Cost")
+    latest_shares_holding = tables.Column(verbose_name="Latest Shares Holding")
+    share_value_change = tables.Column(verbose_name="Share Value Change")
+    share_pct_change = tables.Column(verbose_name="Share % Change")
+
+    def __init__(self, *args, **kwargs):
+        super(NameTable, self).__init__(*args, **kwargs)
+
+    def render_fees_total(self, value):
+        return f"£{value:.2f}"
+
+    def render_initial_shares_cost(self, value):
+        return f"£{value:.2f}"
+
+    def render_latest_shares_holding(self, value):
+        return f"£{value:.2f}"
+
+    def render_share_value_change(self, value):
+        return f"£{value:.2f}"
+
+    def render_share_pct_change(self, value):
+        return f"{value:.1f}%"
 
 
 class WishListTable(tables.Table):

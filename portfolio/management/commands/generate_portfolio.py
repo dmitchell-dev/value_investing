@@ -72,13 +72,13 @@ class Command(BaseCommand):
             results_list[idx].update({"initial_shares_holding": f"{initial_shares_holding:.2f}"})
 
             # Total cost for transaction
-            total_cost = initial_shares_holding + fees_bought
-            results_list[idx].update({"initial_shares_cost": f"{total_cost:.2f}"})
+            initial_shares_cost = initial_shares_holding + fees_bought
+            results_list[idx].update({"initial_shares_cost": f"{initial_shares_cost:.2f}"})
 
             # Value and pct change
-            share_value_change = latest_share_holding - initial_shares_holding
+            share_value_change = latest_share_holding - initial_shares_cost
             results_list[idx].update({"share_value_change": f"{share_value_change:.2f}"})
-            share_pct_change = ((latest_share_holding - initial_shares_holding) / initial_shares_holding) * 100
+            share_pct_change = ((latest_share_holding - initial_shares_cost) / initial_shares_cost) * 100
             results_list[idx].update({"share_pct_change": f"{share_pct_change:.2f}"})
 
             idx = idx + 1
@@ -212,50 +212,49 @@ class Command(BaseCommand):
             company_num = company_num + 1
             print(f"Company {company_num} of {num_companies}, {df_update['tidm']}")
 
-            if cur_row:
-                companies[index].latest_share_price = df_update.loc[
-                    df_update.index[cur_row], "latest_share_price"
-                ]
+            companies[index].latest_share_price = df_update.loc[
+                df_update.index[cur_row], "latest_share_price"
+            ]
 
-                companies[index].latest_shares_num = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "latest_shares_num"]
-                )
+            companies[index].latest_shares_num = self._convert_float(
+                df_update.loc[df_update.index[cur_row], "latest_shares_num"]
+            )
 
-                companies[index].latest_shares_holding = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "latest_shares_holding"]
-                )
+            companies[index].latest_shares_holding = self._convert_float(
+                df_update.loc[df_update.index[cur_row], "latest_shares_holding"]
+            )
 
-                companies[index].fees_bought = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "fees_bought"]
-                )
+            companies[index].fees_bought = self._convert_float(
+                df_update.loc[df_update.index[cur_row], "fees_bought"]
+            )
 
-                companies[index].fees_sold = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "fees_sold"]
-                )
+            companies[index].fees_sold = self._convert_float(
+                df_update.loc[df_update.index[cur_row], "fees_sold"]
+            )
 
-                companies[index].fees_total = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "fees_total"]
-                )
+            companies[index].fees_total = self._convert_float(
+                df_update.loc[df_update.index[cur_row], "fees_total"]
+            )
 
-                companies[index].initial_shares_holding = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "initial_shares_holding"]
-                )
+            companies[index].initial_shares_holding = self._convert_float(
+                df_update.loc[df_update.index[cur_row], "initial_shares_holding"]
+            )
 
-                companies[index].initial_shares_cost = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "initial_shares_cost"]
-                )
+            companies[index].initial_shares_cost = self._convert_float(
+                df_update.loc[df_update.index[cur_row], "initial_shares_cost"]
+            )
 
-                companies[index].share_value_change = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "share_value_change"]
-                )
+            companies[index].share_value_change = self._convert_float(
+                df_update.loc[df_update.index[cur_row], "share_value_change"]
+            )
 
-                companies[index].share_pct_change = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "share_pct_change"]
-                )
+            companies[index].share_pct_change = self._convert_float(
+                df_update.loc[df_update.index[cur_row], "share_pct_change"]
+            )
 
-                companies[index].company_pct_holding = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "company_pct_holding"]
-                )
+            companies[index].company_pct_holding = self._convert_float(
+                df_update.loc[df_update.index[cur_row], "company_pct_holding"]
+            )
 
         print("Updating Dashboard Table")
 
