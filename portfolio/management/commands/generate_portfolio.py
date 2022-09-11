@@ -13,6 +13,9 @@ class Command(BaseCommand):
     help = "Generates portfolio stats"
 
     def handle(self, *args, **kwargs):
+        num_rows_created = 0
+        num_rows_updated = 0
+
         # Transaction Info
         transaction_df = self._get_portfolio_data()
         transaction_sum_df = transaction_df.groupby(["company__tidm", "decision__value"]).sum()
@@ -50,10 +53,10 @@ class Command(BaseCommand):
             num_shares_sold = transaction_sum_df[(transaction_sum_df['company__tidm'] == tidm) & (transaction_sum_df['decision__value'] == sell_text)].num_stock.sum()
             # TODO ############### Temp Testing, take out ###############
             # num_shares_holding = num_shares_bought - num_shares_sold
-            num_shares_holding = num_shares_bought
+            latest_shares_num = num_shares_bought
             # ############## END ###############
-            results_list[idx].update({"number_shares_held": f"{num_shares_holding}"})
-            latest_share_holding = num_shares_holding * latest_share_price
+            results_list[idx].update({"latest_shares_num": f"{latest_shares_num}"})
+            latest_share_holding = latest_shares_num * latest_share_price
             results_list[idx].update({"latest_shares_holding": f"{latest_share_holding}"})
 
             # Fee for transaction
@@ -155,51 +158,21 @@ class Command(BaseCommand):
         return df_new, df_existing
 
     def _create_rows(self, df_create):
-
         # Save to database
         reports = [
             Portfolio(
-                company=Companies.objects.get(id=row["id"]),
-                tidm=row["tidm"],
-                company_name=row["company_name"],
-                company_summary=row["company_summary"],
-                share_listing=row["exchange__value"],
-                company_type=row["comp_type__value"],
-                industry_name=row["industry__value"],
-                revenue=float(row["Total Revenue"]),
-                earnings=float(row["Reported EPS"]),
-                dividends=float(row["Dividends Per Share"]),
-                capital_expenditure=float(row["Capital Expenditures"]),
-                net_income=float(row["Net Income"]),
-                total_equity=float(row["Total Equity"]),
-                share_price=float(row["Share Price"]),
-                debt_to_equity=float(row["Debt to Equity (D/E)"]),
-                current_ratio=float(row["Current Ratio"]),
-                return_on_equity=float(row["Return on Equity (ROE)"]),
-                equity_per_share=float(row["Equity (Book Value) Per Share"]),
-                price_to_earnings=float(row["Price to Earnings (P/E)"]),
-                price_to_equity=float(row["Price to Book Value (Equity)"]),
-                earnings_yield=float(row["Earnings Yield"]),
-                annual_yield_return=float(row["Annual Yield (Return)"]),
-                fcf=float(row["Free Cash Flow"]),
-                dividend_cover=float(row["Dividend Cover"]),
-                capital_employed=float(row["Capital Employed"]),
-                roce=float(row["Return on Capital Employed (ROCE)"]),
-                dcf_intrinsic_value=float(row["Intrinsic Value"]),
-                margin_safety=float(row["Margin of Safety"]),
-                latest_margin_of_safety=float(row["Latest Margin of Safety"]),
-                estimated_growth_rate=float(row["Estimated Growth Rate"]),
-                estimated_discount_rate=float(row["Estimated Discount Rate"]),
-                estimated_long_term_growth_rate=float(
-                    row["Estimated Long Term Growth Rate"]
-                ),
-                pick_source=row["company_source__value"],
-                exchange_country=row["country__value"],
-                currency_symbol=row["currency__symbol"],
-                latest_financial_date=row["financial_latest_date"],
-                latest_share_price_date=row["share_latest_date"],
+                company=Companies.objects.get(id=row["comp_id"]),
                 latest_share_price=row["latest_share_price"],
-                market_cap=float(row["Market Capitalisation"]),
+                latest_shares_num=row["latest_shares_num"],
+                latest_shares_holding=row["latest_shares_holding"],
+                fees_bought=row["fees_bought"],
+                fees_sold=row["fees_sold"],
+                fees_total=row["fees_total"],
+                initial_shares_holding=row["initial_shares_holding"],
+                initial_shares_cost=row["initial_shares_cost"],
+                share_value_change=row["share_value_change"],
+                share_pct_change=row["share_pct_change"],
+                company_pct_holding=row["company_pct_holding"],
             )
             for i, row in df_create.iterrows()
         ]

@@ -51,8 +51,8 @@ class WishListQueryset(QuerySet):
 class PortfolioQueryset(QuerySet):
     def get_table_joined(self):
         return self.values(
-            "num_shares_held",
-            "stock_holding",
+            "latest_shares_num",
+            "latest_shares_holding",
             "company",
             "company__tidm",
             "company__company_name",

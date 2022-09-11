@@ -108,9 +108,17 @@ class WishList(models.Model):
 
 class Portfolio(models.Model):
     company = models.OneToOneField(Companies, on_delete=models.CASCADE, primary_key=True)
-    num_shares_held = models.IntegerField()
-    stock_holding = models.FloatField()
-    pct_holding = models.FloatField()
+    latest_share_price = models.FloatField()
+    latest_shares_num = models.IntegerField()
+    latest_shares_holding = models.FloatField()
+    fees_bought = models.FloatField()
+    fees_sold = models.FloatField()
+    fees_total = models.FloatField()
+    initial_shares_holding = models.FloatField()
+    initial_shares_cost = models.FloatField()
+    share_value_change = models.FloatField()
+    share_pct_change = models.FloatField()
+    company_pct_holding = models.FloatField()
 
     objects = PortfolioQueryset.as_manager()
 
