@@ -23,7 +23,6 @@ class Command(BaseCommand):
         transaction_sum_df = transaction_df.groupby(["company__tidm", "decision__value"]).sum()
         transaction_sum_df = transaction_sum_df.reset_index()
 
-        df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
         df_dashboard = pd.DataFrame(list(DashboardCompany.objects.get_table_joined()))
 
         tidm_list = transaction_df['company__tidm'].unique()
@@ -47,31 +46,42 @@ class Command(BaseCommand):
             results_list.append({
                 "tidm": tidm,
                 "company_name": curr_comp_name,
-                "pk": comp_id,
+                "comp_id": comp_id,
                 "latest_share_price": f"{latest_share_price:.2f}"
                 })
 
             # Number of shares
             num_shares_bought = transaction_sum_df[(transaction_sum_df['company__tidm'] == tidm) & (transaction_sum_df['decision__value'] == buy_text)].num_stock.sum()
             num_shares_sold = transaction_sum_df[(transaction_sum_df['company__tidm'] == tidm) & (transaction_sum_df['decision__value'] == sell_text)].num_stock.sum()
-            num_shares_holding = num_shares_bought - num_shares_sold
+            # TODO ############### Temp Testing, take out ###############
+            # num_shares_holding = num_shares_bought - num_shares_sold
+            num_shares_holding = num_shares_bought
+            # ############## END ###############
             results_list[idx].update({"number_shares_held": f"{num_shares_holding}"})
             latest_share_holding = num_shares_holding * latest_share_price
             results_list[idx].update({"latest_shares_holding": f"{latest_share_holding}"})
 
             # Fee for transaction
-            fee_bought = transaction_sum_df[(transaction_sum_df['company__tidm'] == tidm) & (transaction_sum_df['decision__value'] == buy_text)].fees.sum()
-            fee_sold = transaction_sum_df[(transaction_sum_df['company__tidm'] == tidm) & (transaction_sum_df['decision__value'] == sell_text)].fees.sum()
-            fee = fee_bought + fee_sold
-            results_list[idx].update({"fees_paid": f"{fee:.2f}"})
+            fees_bought = transaction_sum_df[(transaction_sum_df['company__tidm'] == tidm) & (transaction_sum_df['decision__value'] == buy_text)].fees.sum()
+            results_list[idx].update({"fees_bought": f"{fees_bought:.2f}"})
+            fees_sold = transaction_sum_df[(transaction_sum_df['company__tidm'] == tidm) & (transaction_sum_df['decision__value'] == sell_text)].fees.sum()
+            results_list[idx].update({"fees_sold": f"{fees_sold:.2f}"})
+            fees_total = fees_bought + fees_sold
+            results_list[idx].update({"fees_total": f"{fees_total:.2f}"})
 
             # Share cost for transaction
-            share_total_cost = transaction_sum_df[(transaction_sum_df['company__tidm'] == tidm) & (transaction_sum_df['decision__value'] == buy_text)].price.sum()
-            results_list[idx].update({"share_total_cost": f"{share_total_cost:.2f}"})
+            initial_shares_holding = transaction_sum_df[(transaction_sum_df['company__tidm'] == tidm) & (transaction_sum_df['decision__value'] == buy_text)].price.sum()
+            results_list[idx].update({"initial_shares_holding": f"{initial_shares_holding:.2f}"})
 
             # Total cost for transaction
-            total_cost = share_total_cost + fee
-            results_list[idx].update({"total_cost": f"{total_cost:.2f}"})
+            total_cost = initial_shares_holding + fees_bought
+            results_list[idx].update({"initial_shares_cost": f"{total_cost:.2f}"})
+
+            # Value and pct change
+            share_value_change = latest_share_holding - initial_shares_holding
+            results_list[idx].update({"share_value_change": f"{share_value_change:.2f}"})
+            share_pct_change = ((latest_share_holding - initial_shares_holding) / initial_shares_holding) * 100
+            results_list[idx].update({"share_pct_change": f"{share_pct_change:.2f}"})
 
             idx = idx + 1
 
@@ -82,26 +92,34 @@ class Command(BaseCommand):
         total_dict = {}
 
         for item in results_list:
-            total_fees = total_fees + float(item['fees_paid'])
-            total_initial_value = total_initial_value + float(item['total_cost'])
+            # Create totals
+            total_fees = total_fees + float(item['fees_total'])
+            total_initial_value = total_initial_value + float(item['initial_shares_cost'])
             total_latest_value = total_latest_value + float(item['latest_shares_holding'])
+            total_value_change = total_latest_value - total_initial_value
             total_pct_value_change = ((total_latest_value - total_initial_value) / total_initial_value) * 100
+            pct_fees = (total_fees / (total_initial_value + total_fees)) * 100
 
-        # total_cost = portfolio_df.price.sum() + portfolio_df.fees.sum()
-        total_dict["total_initial_value"] = f"£{total_initial_value:.2f}"
-        # total_fees = portfolio_df.fees.sum()
-        total_dict["total_fees"] = f"£{total_fees:.2f}"
-        # pct_fees = (total_fees / (total_cost + total_fees)) * 100
-        # total_dict["total_pct_fees"] = f"{pct_fees:.2f}%"
-        # total_value = sum(total_value_list)
-        total_dict["total_latest_value"] = f"£{total_latest_value:.2f}"
-        # total_value_change = sum(value_change_list)
-        # total_dict["total_pct_change"] = f"£{total_value_change:.2f}"
-        # total_pct_value_change = ((total_value - total_cost) / total_cost) * 100
-        total_dict["total_pct_value_change"] = f"{total_pct_value_change:.2f}%"
+        idx = 0
+        for item in results_list:
+            # Calculate company % in portfolio
+            comp_latest_value = float(item['latest_shares_holding'])
+            comp_pct_holding = (comp_latest_value / total_latest_value) * 100
+            results_list[idx].update({"company_pct_holding": f"{comp_pct_holding:.2f}"})
+            idx = idx + 1
 
-        print(results_list)
-        print(total_dict)
+        total_dict["total_initial_value"] = [total_initial_value]
+        total_dict["total_fees"] = [total_fees]
+        total_dict["total_pct_fees"] = [pct_fees]
+        total_dict["total_latest_value"] = [total_latest_value]
+        total_dict["total_value_change"] = [total_value_change]
+        total_dict["total_pct_value_change"] = [total_pct_value_change]
+
+        # Create Dataframes
+        results_df = pd.DataFrame.from_records(results_list)
+        total_df = pd.DataFrame.from_dict(total_dict, orient='columns')
+        print(total_df)
+        print(results_df)
 
         return results_list, total_dict
 
