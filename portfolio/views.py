@@ -235,121 +235,7 @@ class PortfolioOverviewView(TemplateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
 
-        # portfolio_df = self._get_portfolio_data()
-        # portfolio_sum_df = portfolio_df.groupby(["company__tidm", "decision__value"]).sum()
-        # portfolio_sum_df = portfolio_sum_df.reset_index()
-
-        # # Per Share Calculations
-        # # List of company ids
-        # comp_list = pd.unique(portfolio_df.company).tolist()
-        # df_companies = pd.DataFrame(list(Companies.objects.get_companies_joined()))
-        # df_dashboard = pd.DataFrame(list(DashboardCompany.objects.get_table_joined()))
-        # results_list = []
-        # tidm_list = []
-        # currency_symbol_list = []
-        # currency_value_list = []
-        # share_price_list = []
-        # for comp in comp_list:
-        #     # Company and Dashboard ids and names
-        #     comp_idx = df_companies[df_companies["id"] == comp].index[0]
-        #     curr_tidm = df_companies["tidm"].iat[comp_idx]
-        #     tidm_list.append(curr_tidm)
-        #     dash_idx = df_dashboard[df_dashboard["tidm"] == curr_tidm].index[0]
-        #     comp_id = df_dashboard["id"].iat[dash_idx]
-        #     curr_comp_name = df_companies["company_name"].iat[comp_idx]
-        #     curr_currency_symbol = df_companies["currency__symbol"].iat[comp_idx]
-        #     currency_symbol_list.append(curr_currency_symbol)
-
-        #     # Latest Share Price
-        #     latest_share_price = df_dashboard["latest_share_price"].iat[dash_idx]
-        #     curr_currency_value = df_companies["currency__value"].iat[comp_idx]
-        #     currency_value_list.append(curr_currency_value)
-        #     latest_share_price = latest_share_price * curr_currency_value
-        #     share_price_list.append(latest_share_price)
-        #     results_list.append({
-        #         "tidm": curr_tidm,
-        #         "company_name": curr_comp_name,
-        #         "pk": comp_id,
-        #         "latest_share_price": f"£{latest_share_price:.2f}"
-        #         })
-
-        # # Info on cost and fees
-        # share_total_cost_list = []
-        # fees_list = []
-        # num_shares_list = []
-        # idx = 0
-
-        # buy_text = 'Bought'
-        # sell_text = 'Sold'
-
-        # for tidm in tidm_list:
-        #     # Fee for transaction
-        #     fee_bought = portfolio_sum_df[(portfolio_sum_df['company__tidm'] == tidm) & (portfolio_sum_df['decision__value'] == buy_text)].fees.sum()
-        #     fee_sold = portfolio_sum_df[(portfolio_sum_df['company__tidm'] == tidm) & (portfolio_sum_df['decision__value'] == sell_text)].fees.sum()
-        #     fee = fee_bought + fee_sold
-        #     fees_list.append(fee)
-        #     results_list[idx].update({"fees_paid": f"£{fee:.2f}"})
-
-        #     # Share cost for transaction
-        #     share_total_cost = portfolio_sum_df[(portfolio_sum_df['company__tidm'] == tidm) & (portfolio_sum_df['decision__value'] == buy_text)].price.sum()
-        #     share_total_cost_list.append(share_total_cost)
-        #     results_list[idx].update({"share_total_cost": f"£{share_total_cost:.2f}"})
-
-        #     # Total cost for transaction
-        #     total_cost = share_total_cost + fee
-        #     total_cost_list = [a + b for a, b in zip(share_total_cost_list, fees_list)]
-        #     results_list[idx].update({"total_cost": f"£{total_cost:.2f}"})
-
-        #     # Number of shares
-        #     num_shares_bought = portfolio_sum_df[(portfolio_sum_df['company__tidm'] == tidm) & (portfolio_sum_df['decision__value'] == buy_text)].num_stock.sum()
-        #     num_shares_sold = portfolio_sum_df[(portfolio_sum_df['company__tidm'] == tidm) & (portfolio_sum_df['decision__value'] == sell_text)].num_stock.sum()
-        #     num_shares = num_shares_bought - num_shares_sold
-        #     num_shares_list.append(num_shares)
-        #     results_list[idx].update({"number_shares_held": f"{num_shares}"})
-
-        #     # Share price paid
-        #     share_cost = share_total_cost / num_shares
-        #     results_list[idx].update({"share_price_paid": f"£{share_cost:.2f}"})
-
-        #     idx = idx + 1
-
-        # # calculate total % and value decrease/increase
-        # # total_value = price_list * num_shares
-        # total_value_list = [a * b for a, b in zip(share_price_list, num_shares_list)]
-        # idx = 0
-        # for item in total_value_list:
-        #     results_list[idx].update({"latest_total_value": f"£{item:.2f}"})
-        #     idx = idx + 1
-
-        # # pct_change = (total_value - cost_list) / cost_list
-        # value_change_list = [a - b for a, b in zip(total_value_list, total_cost_list)]
-        # idx = 0
-        # for item in value_change_list:
-        #     results_list[idx].update({"value_change": f"£{item:.2f}"})
-        #     idx = idx + 1
-
-        # pct_change_list = [
-        #     (a / b) * 100 for a, b in zip(value_change_list, total_cost_list)
-        # ]
-        # idx = 0
-        # for item in pct_change_list:
-        #     results_list[idx].update({"pct_value_change": f"{item:.2f}%"})
-        #     idx = idx + 1
-
-        # # Total Calculations
-        # total_dict = {}
-        # total_cost = portfolio_df.price.sum() + portfolio_df.fees.sum()
-        # total_dict["total_cost"] = f"£{total_cost:.2f}"
-        # total_fees = portfolio_df.fees.sum()
-        # total_dict["total_fees"] = f"£{total_fees:.2f}"
-        # pct_fees = (total_fees / (total_cost + total_fees)) * 100
-        # total_dict["total_pct_fees"] = f"{pct_fees:.2f}%"
-        # total_value = sum(total_value_list)
-        # total_dict["total_value"] = f"£{total_value:.2f}"
-        # total_value_change = sum(value_change_list)
-        # total_dict["total_value_change"] = f"£{total_value_change:.2f}"
-        # total_pct_value_change = ((total_value - total_cost) / total_cost) * 100
-        # total_dict["total_pct_value_change"] = f"{total_pct_value_change:.2f}%"
+        portfolio_df = self._get_portfolio_data()
 
         # Results Table
         results_df = pd.DataFrame(list(Portfolio.objects.get_table_joined()))
@@ -371,17 +257,10 @@ class PortfolioOverviewView(TemplateView):
         total_dict["total_value_change"] = f"£{total_value_change:.2f}"
         total_dict["total_pct_value_change"] = f"{total_pct_value_change:.1f}%"
 
-        # total_fees = total_fees + float(item['fees_total'])
-        # total_initial_value = total_initial_value + float(item['initial_shares_cost'])
-        # total_latest_value = total_latest_value + float(item['latest_shares_holding'])
-        # total_value_change = total_latest_value - total_initial_value
-        # total_pct_value_change = ((total_latest_value - total_initial_value) / total_initial_value) * 100
-        # pct_fees = (total_fees / (total_initial_value + total_fees)) * 100
-
         # TODO get share price modal for selected company
 
         # Chart 1
-        # plot_div = value_pie_chart(portfolio_df)
+        plot_div = value_pie_chart(portfolio_df)
 
         # Chart 2
         tidm_list = results_df['company__tidm'].to_list()
@@ -391,7 +270,7 @@ class PortfolioOverviewView(TemplateView):
         # Add context
         context["results_table"] = results_table
         context["total_dict"] = total_dict
-        # context["graph"] = plot_div
+        context["graph"] = plot_div
         context["graph2"] = plot_div2
 
         return context
