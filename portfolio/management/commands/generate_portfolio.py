@@ -13,11 +13,6 @@ class Command(BaseCommand):
     help = "Generates portfolio stats"
 
     def handle(self, *args, **kwargs):
-        # company
-        # num_shares_held = models.IntegerField()
-        # stock_holding = models.FloatField()
-        # pct_holding = models.FloatField()
-
         # Transaction Info
         transaction_df = self._get_portfolio_data()
         transaction_sum_df = transaction_df.groupby(["company__tidm", "decision__value"]).sum()
@@ -121,7 +116,20 @@ class Command(BaseCommand):
         print(total_df)
         print(results_df)
 
-        return results_list, total_dict
+        # Split ready for create or update
+        [df_create, df_update] = self._create_update_split(results_df)
+
+        # Create new companies
+        if not df_create.empty:
+            num_rows_created = self._create_rows(df_create)
+            print(f"Portfolio Create Complete: {num_rows_created} rows updated")
+
+        # Update existing companies
+        if not df_update.empty:
+            num_rows_updated = self._update_rows(df_update)
+            print(f"Portfolio Update Complete: {num_rows_updated} rows updated")
+
+        return f"Created: {str(num_rows_created)}, Updated: {str(num_rows_updated)}"
 
     def _get_portfolio_data(self):
         transaction_df = pd.DataFrame(list(Transactions.objects.get_table_joined()))
@@ -132,7 +140,7 @@ class Command(BaseCommand):
         return transaction_df
 
     def _create_update_split(self, new_df):
-        existing_df = pd.DataFrame(list(Portfolio.objects.get_dash_joined()))
+        existing_df = pd.DataFrame(list(Portfolio.objects.get_table_joined()))
 
         if not existing_df.empty:
             split_idx = np.where(
