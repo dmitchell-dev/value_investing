@@ -147,7 +147,7 @@ class Command(BaseCommand):
 
         if not existing_df.empty:
             split_idx = np.where(
-                new_df["tidm"].isin(existing_df["tidm"]), "existing", "new"
+                new_df["tidm"].isin(existing_df["company__tidm"]), "existing", "new"
             )
             df_existing = new_df[split_idx == "existing"]
             df_new = new_df[split_idx == "new"]
