@@ -353,10 +353,30 @@ class PortfolioOverviewView(TemplateView):
 
         # Results Table
         results_df = pd.DataFrame(list(Portfolio.objects.get_table_joined()))
-        print(results_df)
         results_dict = results_df.to_dict(orient="records")
-        print(results_dict)
         results_table = NameTable(results_dict)
+
+        total_dict = {}
+        total_fees = results_df['fees_bought'].sum()
+        total_initial_value = results_df['initial_shares_cost'].sum()
+        total_latest_value = results_df['latest_shares_holding'].sum()
+        total_value_change = results_df['share_value_change'].sum()
+        total_pct_value_change = ((total_latest_value - total_initial_value) / total_initial_value) * 100
+        pct_fees = (total_fees / (total_initial_value + total_fees)) * 100
+
+        total_dict["total_initial_value"] = f"£{total_initial_value:.2f}"
+        total_dict["total_fees"] = f"£{total_fees:.2f}"
+        total_dict["total_pct_fees"] = f"{pct_fees:.1f}%"
+        total_dict["total_latest_value"] = f"£{total_latest_value:.2f}"
+        total_dict["total_value_change"] = f"£{total_value_change:.2f}"
+        total_dict["total_pct_value_change"] = f"{total_pct_value_change:.1f}%"
+
+        # total_fees = total_fees + float(item['fees_total'])
+        # total_initial_value = total_initial_value + float(item['initial_shares_cost'])
+        # total_latest_value = total_latest_value + float(item['latest_shares_holding'])
+        # total_value_change = total_latest_value - total_initial_value
+        # total_pct_value_change = ((total_latest_value - total_initial_value) / total_initial_value) * 100
+        # pct_fees = (total_fees / (total_initial_value + total_fees)) * 100
 
         # TODO get share price modal for selected company
 
@@ -364,13 +384,15 @@ class PortfolioOverviewView(TemplateView):
         # plot_div = value_pie_chart(portfolio_df)
 
         # Chart 2
-        # plot_div2 = perf_bar_chart(tidm_list, pct_change_list)
+        tidm_list = results_df['company__tidm'].to_list()
+        pct_change_list = results_df['share_pct_change'].to_list()
+        plot_div2 = perf_bar_chart(tidm_list, pct_change_list)
 
         # Add context
         context["results_table"] = results_table
-        # context["total_dict"] = total_dict
+        context["total_dict"] = total_dict
         # context["graph"] = plot_div
-        # context["graph2"] = plot_div2
+        context["graph2"] = plot_div2
 
         return context
 
