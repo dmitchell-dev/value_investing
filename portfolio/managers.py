@@ -51,8 +51,17 @@ class WishListQueryset(QuerySet):
 class PortfolioQueryset(QuerySet):
     def get_table_joined(self):
         return self.values(
+            "latest_share_price",
             "latest_shares_num",
             "latest_shares_holding",
+            "fees_bought",
+            "fees_sold",
+            "fees_total",
+            "initial_shares_holding",
+            "initial_shares_cost",
+            "share_value_change",
+            "share_pct_change",
+            "company_pct_holding",
             "company",
             "company__tidm",
             "company__company_name",
