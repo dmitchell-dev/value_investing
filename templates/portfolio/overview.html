@@ -27,6 +27,24 @@
             <div class="col-4">
                 <div class="card border-0 shadow p-3 mb-3 bg-light rounded">
                     <div class="card-body">
+                        <h5 class="card-title">Present Holding</h5>
+                        <p class="card-text">{{ total_dict.total_latest_value }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card border-0 shadow p-3 mb-3 bg-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Change</h5>
+                        <p class="card-text">{{ total_dict.total_value_change }} ({{ total_dict.total_pct_value_change }})</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="card border-0 shadow p-3 mb-3 bg-light rounded">
+                    <div class="card-body">
                         <h5 class="card-title">Fees</h5>
                         <p class="card-text">{{ total_dict.total_fees }} ({{ total_dict.total_pct_fees }})</p>
                     </div>
@@ -35,26 +53,16 @@
             <div class="col-4">
                 <div class="card border-0 shadow p-3 mb-3 bg-light rounded">
                     <div class="card-body">
-                        <h5 class="card-title">Present Value</h5>
-                        <p class="card-text">{{ total_dict.total_latest_value }}</p>
+                        <h5 class="card-title">Selling Income</h5>
+                        <p class="card-text">{{ total_dict.income_from_selling }}</p>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
+            <div class="col-4">
                 <div class="card border-0 shadow p-3 mb-3 bg-light rounded">
                     <div class="card-body">
-                        <h5 class="card-title">Value Change</h5>
-                        <p class="card-text">{{ total_dict.total_value_change }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-3 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">% Value Change</h5>
-                        <p class="card-text">{{ total_dict.total_pct_value_change }}</p>
+                        <h5 class="card-title">Total Profit</h5>
+                        <p class="card-text">{{ total_dict.total_profit }} ({{ total_dict.total_pct_profit_change }})</p>
                     </div>
                 </div>
             </div>

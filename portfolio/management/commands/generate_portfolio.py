@@ -1,3 +1,4 @@
+from ast import AsyncFunctionDef
 from django.core.management.base import BaseCommand
 
 from portfolio.models import Portfolio, Transactions
@@ -51,10 +52,7 @@ class Command(BaseCommand):
             # Number of shares
             num_shares_bought = transaction_sum_df[(transaction_sum_df['company__tidm'] == tidm) & (transaction_sum_df['decision__value'] == buy_text)].num_stock.sum()
             num_shares_sold = transaction_sum_df[(transaction_sum_df['company__tidm'] == tidm) & (transaction_sum_df['decision__value'] == sell_text)].num_stock.sum()
-            # TODO ############### Temp Testing, take out ###############
-            # num_shares_holding = num_shares_bought - num_shares_sold
-            latest_shares_num = num_shares_bought
-            # ############## END ###############
+            latest_shares_num = num_shares_bought - num_shares_sold
             results_list[idx].update({"latest_shares_num": f"{latest_shares_num}"})
             latest_share_holding = latest_shares_num * latest_share_price
             results_list[idx].update({"latest_shares_holding": f"{latest_share_holding}"})
@@ -70,10 +68,18 @@ class Command(BaseCommand):
             # Share cost for transaction
             initial_shares_holding = transaction_sum_df[(transaction_sum_df['company__tidm'] == tidm) & (transaction_sum_df['decision__value'] == buy_text)].price.sum()
             results_list[idx].update({"initial_shares_holding": f"{initial_shares_holding:.2f}"})
+            sold_shares_income = transaction_sum_df[(transaction_sum_df['company__tidm'] == tidm) & (transaction_sum_df['decision__value'] == sell_text)].price.sum()
+            results_list[idx].update({"sold_shares_income": f"{sold_shares_income:.2f}"})
 
             # Total cost for transaction
             initial_shares_cost = initial_shares_holding + fees_bought
             results_list[idx].update({"initial_shares_cost": f"{initial_shares_cost:.2f}"})
+            income_from_selling = sold_shares_income - fees_sold
+            results_list[idx].update({"income_from_selling": f"{income_from_selling:.2f}"})
+
+            # Profit
+            total_profit = income_from_selling - initial_shares_cost
+            results_list[idx].update({"total_profit": f"{total_profit:.2f}"})
 
             # Value and pct change
             share_value_change = latest_share_holding - initial_shares_cost
@@ -102,7 +108,10 @@ class Command(BaseCommand):
         for item in results_list:
             # Calculate company % in portfolio
             comp_latest_value = float(item['latest_shares_holding'])
-            comp_pct_holding = (comp_latest_value / total_latest_value) * 100
+            if total_latest_value == 0:
+                comp_pct_holding = 0
+            else:
+                comp_pct_holding = (comp_latest_value / total_latest_value) * 100
             results_list[idx].update({"company_pct_holding": f"{comp_pct_holding:.2f}"})
             idx = idx + 1
 
@@ -169,6 +178,9 @@ class Command(BaseCommand):
                 fees_sold=row["fees_sold"],
                 fees_total=row["fees_total"],
                 initial_shares_holding=row["initial_shares_holding"],
+                sold_shares_income=row["sold_shares_income"],
+                income_from_selling=row["income_from_selling"],
+                total_profit=row["total_profit"],
                 initial_shares_cost=row["initial_shares_cost"],
                 share_value_change=row["share_value_change"],
                 share_pct_change=row["share_pct_change"],
@@ -197,6 +209,9 @@ class Command(BaseCommand):
             "fees_sold": "fees_sold",
             "fees_total": "fees_total",
             "initial_shares_holding": "initial_shares_holding",
+            "sold_shares_income": "sold_shares_income",
+            "income_from_selling": "income_from_selling",
+            "total_profit": "total_profit",
             "initial_shares_cost": "initial_shares_cost",
             "share_value_change": "share_value_change",
             "share_pct_change": "share_pct_change",
@@ -238,6 +253,18 @@ class Command(BaseCommand):
 
             companies[index].initial_shares_holding = self._convert_float(
                 df_update.loc[df_update.index[cur_row], "initial_shares_holding"]
+            )
+
+            companies[index].sold_shares_income = self._convert_float(
+                df_update.loc[df_update.index[cur_row], "sold_shares_income"]
+            )
+
+            companies[index].income_from_selling = self._convert_float(
+                df_update.loc[df_update.index[cur_row], "income_from_selling"]
+            )
+
+            companies[index].total_profit = self._convert_float(
+                df_update.loc[df_update.index[cur_row], "total_profit"]
             )
 
             companies[index].initial_shares_cost = self._convert_float(

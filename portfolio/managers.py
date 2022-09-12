@@ -59,9 +59,12 @@ class PortfolioQueryset(QuerySet):
             "fees_total",
             "initial_shares_holding",
             "initial_shares_cost",
+            "income_from_selling",
+            "total_profit",
             "share_value_change",
             "share_pct_change",
             "company_pct_holding",
+            "sold_shares_income",
             "company",
             "company__tidm",
             "company__company_name",
@@ -69,7 +72,7 @@ class PortfolioQueryset(QuerySet):
 
 
 def value_pie_chart(portfolio_df):
-    fig = px.pie(portfolio_df, values="price", names="company__company_name")
+    fig = px.pie(portfolio_df, values="latest_shares_holding", names="company__company_name")
     plot_div = plot(fig, output_type="div")
 
     return plot_div

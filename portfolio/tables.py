@@ -11,12 +11,13 @@ class NameTable(tables.Table):
 
     )
     company__tidm = tables.Column(verbose_name="TIDM")
-    fees_total = tables.Column(verbose_name="Total Fees")
     latest_shares_num = tables.Column(verbose_name="Number Shares")
     initial_shares_cost = tables.Column(verbose_name="Initial Shares Cost")
     latest_shares_holding = tables.Column(verbose_name="Latest Shares Holding")
     share_value_change = tables.Column(verbose_name="Share Value Change")
     share_pct_change = tables.Column(verbose_name="Share % Change")
+    income_from_selling = tables.Column(verbose_name="Selling Income")
+    total_profit = tables.Column(verbose_name="Profit")
 
     def __init__(self, *args, **kwargs):
         super(NameTable, self).__init__(*args, **kwargs)
@@ -28,6 +29,12 @@ class NameTable(tables.Table):
         return f"£{value:.2f}"
 
     def render_latest_shares_holding(self, value):
+        return f"£{value:.2f}"
+
+    def render_income_from_selling(self, value):
+        return f"£{value:.2f}"
+
+    def render_total_profit(self, value):
         return f"£{value:.2f}"
 
     def render_share_value_change(self, value):

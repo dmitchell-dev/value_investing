@@ -243,12 +243,15 @@ class PortfolioOverviewView(TemplateView):
         results_table = NameTable(results_dict)
 
         total_dict = {}
-        total_fees = results_df['fees_bought'].sum()
+        total_fees = results_df['fees_bought'].sum() + results_df['fees_sold'].sum()
         total_initial_value = results_df['initial_shares_cost'].sum()
         total_latest_value = results_df['latest_shares_holding'].sum()
         total_value_change = results_df['share_value_change'].sum()
         total_pct_value_change = ((total_latest_value - total_initial_value) / total_initial_value) * 100
         pct_fees = (total_fees / (total_initial_value + total_fees)) * 100
+        income_from_selling = results_df['income_from_selling'].sum()
+        total_profit = results_df['total_profit'].sum()
+        total_pct_profit_change = ((income_from_selling - total_initial_value) / total_initial_value) * 100
 
         total_dict["total_initial_value"] = f"£{total_initial_value:.2f}"
         total_dict["total_fees"] = f"£{total_fees:.2f}"
@@ -256,11 +259,12 @@ class PortfolioOverviewView(TemplateView):
         total_dict["total_latest_value"] = f"£{total_latest_value:.2f}"
         total_dict["total_value_change"] = f"£{total_value_change:.2f}"
         total_dict["total_pct_value_change"] = f"{total_pct_value_change:.1f}%"
-
-        # TODO get share price modal for selected company
+        total_dict["income_from_selling"] = f"£{income_from_selling:.2f}"
+        total_dict["total_profit"] = f"£{total_profit:.2f}"
+        total_dict["total_pct_profit_change"] = f"{total_pct_profit_change:.1f}%"
 
         # Chart 1
-        plot_div = value_pie_chart(portfolio_df)
+        plot_div = value_pie_chart(results_df)
 
         # Chart 2
         tidm_list = results_df['company__tidm'].to_list()
