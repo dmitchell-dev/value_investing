@@ -51,12 +51,18 @@ class WishListTable(tables.Table):
         super(WishListTable, self).__init__(*args, **kwargs)
         self.maxpts = 0.5
 
+    def render_reporting_stock_price(self, value):
+        return f"£{value:.2f}"
+
+    def render_current_stock_price(self, value):
+        return f"£{value:.2f}"
+
     # render_foo example method
     def render_current_mos(self, value, column):
         if value < self.maxpts and value >= 0:
-            column.attrs = {'td': {'bgcolor': '#90EE90'}}  # Light Green
+            column.attrs = {'td': {'class': 'table-success'}}  # Light Green
         elif value < 0:
-            column.attrs = {'td': {'bgcolor': '#FFCCCB'}}  # Light Red
+            column.attrs = {'td': {'class': 'table-success'}}  # Light Red
         else:
             column.attrs = {'td': {}}
         return value

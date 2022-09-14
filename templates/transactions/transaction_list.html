@@ -43,8 +43,8 @@
                 <td>{{ transaction.reference }}</td>
                 <td>{{ transaction.num_stock }}</td>
                 <td>{{ transaction.num_stock_balance }}</td>
-                <td>{{ transaction.price }}</td>
-                <td>{{ transaction.fees }}</td>
+                <td>£{{ transaction.price|floatformat:"2g" }}</td>
+                <td>£{{ transaction.fees|floatformat:"2g" }}</td>
             </tr>
         {% endfor %}
     </tbody>
