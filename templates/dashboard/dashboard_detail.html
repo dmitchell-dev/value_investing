@@ -36,9 +36,6 @@
     <hr>
     <ul class="nav flex-column">
         <li class="nav-item ps-3">
-            <h6 class="text-secondary">{{company.company_name}} ({{company.tidm}})</h6>
-        </li>
-        <li class="nav-item ps-3">
             <h6 class="text-secondary">{{company.share_listing}} ({{ company.exchange_country }})</h6>
         </li>
     </ul>
@@ -68,11 +65,15 @@
         <li class="nav-item ps-3">
             <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type='Cash Flow' %}">Cash Flow</a></p>
         </li>
+    </ul>
+    <hr>
+    <ul class="nav flex-column">
         <li class="nav-item ps-3">
-            <a class="float-right icon-blue" href="{% url 'dashboard_company:htmx_explore' pk=company.id %}"><i class="fas fa-code fa-3x"></i></a>
+            <a class="pe-3 icon-blue" href="{% url 'dashboard_company:htmx_explore' pk=company.id %}"><i class="fas fa-code fa-3x"></i></a>
+            <a class="icon-blue" href="{% url 'dashboard_company:dashboard_chart' pk=company.id %}"><i class="fas fa-chart-bar fa-3x"></i></a>
         </li>
         <li class="nav-item ps-3">
-            <a class="float-right icon-blue" href="{% url 'dashboard_company:dashboard_chart' pk=company.id %}"><i class="fas fa-chart-bar fa-3x"></i></a>
+            
         </li>
     </ul>
 
@@ -88,10 +89,14 @@
     {% endfor %}
 {% endif %}
 
+<div class="container border shadow bg-light rounded py-2 mb-3">
+    <h3 class="text-secondary">{{company.company_name}} ({{company.tidm}})</h3>
+</div>
+
     <div class="container border shadow bg-light rounded py-2 mb-3">
         <div class="row">
             <div class="col-3">
-                <p><h1><span class="badge bg-dark">{{ company.currency_symbol }}{{company.share_price|floatformat:"2g"}}</span></h1></p>
+                <p><h1><span class="badge bg-secondary">{{ company.currency_symbol }}{{company.share_price|floatformat:"2g"}}</span></h1></p>
                 <h6 class="text-secondary">Share Price</h6>
             </div>
             <div class="col-3">
@@ -233,7 +238,7 @@
     <!-- Warren's Rules -->
     <div class="row">
         <div class="col-6">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-header">
                     Rule 1 - Vigilant Leaders
                 </div>
@@ -244,7 +249,7 @@
                         <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#debtToEquityModal"></i>
                             Debt to Equity Ratio (<0.5)
                         </span>
-                        <span class="badge {% if company.debt_to_equity < 0.5 %}bg-success{% else %}bg-danger{% endif %} rounded-pill" data-toggle="modal" data-target="#exampleModal">{{ company.debt_to_equity|floatformat }}</span>
+                        <span class="badge float-end {% if company.debt_to_equity < 0.5 %}bg-success{% else %}bg-danger{% endif %} rounded-pill" data-toggle="modal" data-target="#exampleModal">{{ company.debt_to_equity|floatformat }}</span>
                     </li>
                     <li class="list-group-item">
                         <span>
@@ -252,7 +257,7 @@
                         <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#currentRatioModal"></i>
                             Current Ratio (>1.5, <2.5)
                         </span>
-                        <span class="badge {% if company.current_ratio > 1.5 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">{{ company.current_ratio|floatformat }}</span>
+                        <span class="badge float-end {% if company.current_ratio > 1.5 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">{{ company.current_ratio|floatformat }}</span>
                     </li>
                     <li class="list-group-item">
                         <span>
@@ -260,7 +265,7 @@
                         <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#roeModal"></i>
                         Return on Equity (>8%)
                         </span>
-                        <span class="badge {% if company.return_on_equity > 8 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">{{ company.return_on_equity|floatformat:1}}%</span>
+                        <span class="badge float-end {% if company.return_on_equity > 8 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">{{ company.return_on_equity|floatformat:1}}%</span>
                     </li>
                     <li class="list-group-item">
                         <span>
@@ -268,18 +273,117 @@
                         <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#dividendCoverModal"></i>
                         Dividend Cover
                         </span>
-                        <span class="badge bg-primary rounded-pill">{{company.dividend_cover|floatformat}}</span>
+                        <span class="badge float-end bg-primary rounded-pill">{{company.dividend_cover|floatformat}}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card shadow">
+                <div class="card-header">
+                    Rule 3 - Stable & Understandable
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Reported EPS' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#epsModal"></i>
+                        Earnings Per Share
+                        </span>
+                        <span class="badge float-end bg-primary rounded-pill">{{ company.earnings|floatformat:"2g" }}p</span>
                     </li>
                     <li class="list-group-item">
-                        <h6>Magic Formula</h6>
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Equity (Book Value) Per Share' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#bookValueModal"></i>
+                        Equity Per Share (Book Value)
+                        </span>
+                        <span class="badge float-end bg-primary rounded-pill">{{ company.currency_symbol }}{{ company.equity_per_share|floatformat:"2g" }}</span>
                     </li>
+                    <li class="list-group-item">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Dividends Per Share' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#dividendModal"></i>
+                        Dividends
+                        </span>
+                        <span class="badge float-end bg-primary rounded-pill">{{ company.dividends|floatformat:2 }}p</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Capital Employed' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#capEmpModal"></i>
+                        Capital Employed
+                        </span>
+                        <span class="badge float-end bg-primary rounded-pill">{{ company.currency_symbol }}{{company.capital_employed|floatformat:"2g"}}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row pt-3">
+        <div class="col-6">
+            <div class="card shadow">
+                <div class="card-header">
+                    Rule 4 - Undervalued
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Annual Yield (Return)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#annualYieldModal"></i>
+                        Annual Yield (Return)
+                        </span>
+                        <span class="badge float-end bg-primary rounded-pill">{{company.annual_yield_return|floatformat:"1g"}}%</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Intrinsic Value' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#intrinsicValueModal"></i>
+                        Intrinsic Value
+                        </span>
+                        <span class="badge float-end bg-primary rounded-pill">{{ company.currency_symbol }}{{company.dcf_intrinsic_value|floatformat:"2g"}}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Share Price' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#sharePriceModal"></i>
+                        Share Price
+                        </span>
+                        <span class="badge float-end bg-primary rounded-pill">{{ company.currency_symbol }}{{company.share_price|floatformat:2}}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Price to Earnings (P/E)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#priceToEaringsModal"></i>
+                        Price to Earnings (<15)
+                        </span>
+                        <span class="badge float-end {% if company.price_to_earnings < 15 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">{{ company.price_to_earnings|floatformat }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span>
+                        <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Price to Book Value (Equity)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#priceToBookModal"></i>
+                        Price to Book Value (<1.5)
+                        </span>
+                        <span class="badge float-end {% if company.price_to_equity < 1.5 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">{{ company.price_to_equity|floatformat }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card shadow">
+                <div class="card-header">
+                    Magic Formula
+                </div>
+                <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <span>
                         <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Return on Capital Employed (ROCE)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
                         <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#roceModal"></i>
                         Return on Capital Employed (ROCE) (>7%)
                         </span>
-                        <span class="badge {% if company.roce > 8 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">{{ company.roce|floatformat:1}}%</span>
+                        <span class="badge float-end {% if company.roce > 8 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">{{ company.roce|floatformat:1}}%</span>
                     </li>
                     <li class="list-group-item">
                         <span>
@@ -287,119 +391,30 @@
                         <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#earningsYieldModal"></i>
                         Earnings Yield
                         </span>
-                        <span class="badge bg-primary rounded-pill">{{company.earnings_yield|floatformat:1}}%</span>
+                        <span class="badge float-end bg-primary rounded-pill">{{company.earnings_yield|floatformat:1}}%</span>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="col-6">
-            <div class="card">
-                <div class="card-header">
-                    Rule 1 - Vigilant Leaders
+        <div class="row pt-3">
+            <div class="col">
+                <div class="accordion shadow mb-3" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Rule 2 - Long Term Prospects
+                        </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                {{company.company_summary}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        Second Column
-                    </li>
-                </ul>
             </div>
         </div>
     </div>
-
-    <h1>Rule 2 - Long Term Prospects</h1>
-        <div class="row">
-            <div class="col">
-                <p>{{company.company_summary}}</p>
-            </div>
-        </div>
-
-    <h1>Rule 3 - Stable & Understandable</h1>
-        <div class="row">
-            <div class="col">
-                <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>
-                            <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Reported EPS' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
-                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#epsModal"></i>
-                            Earnings Per Share
-                        </span>
-                        <span class="badge bg-primary rounded-pill">{{ company.earnings|floatformat:"2g" }}p</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>
-                            <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Equity (Book Value) Per Share' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
-                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#bookValueModal"></i>
-                            Equity Per Share (Book Value)
-                        </span>
-                        <span class="badge bg-primary rounded-pill">{{ company.currency_symbol }}{{ company.equity_per_share|floatformat:"2g" }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>
-                            <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Dividends Per Share' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
-                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#dividendModal"></i>
-                            Dividends
-                        </span>
-                        <span class="badge bg-primary rounded-pill">{{ company.dividends|floatformat:2 }}p</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>
-                            <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Capital Employed' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
-                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#capEmpModal"></i>
-                            Capital Employed
-                        </span>
-                        <span class="badge bg-primary rounded-pill">{{ company.currency_symbol }}{{company.capital_employed|floatformat:"2g"}}</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-    <h1>Rule 4 - Undervalued</h1>
-        <div class="row">
-            <div class="col">
-                <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>
-                            <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Annual Yield (Return)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
-                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#annualYieldModal"></i>
-                            Annual Yield (Return)
-                        </span>
-                        <span class="badge bg-primary rounded-pill">{{company.annual_yield_return|floatformat:"1g"}}%</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>
-                            <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Intrinsic Value' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
-                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#intrinsicValueModal"></i>
-                            Intrinsic Value
-                        </span>
-                        <span class="badge bg-primary rounded-pill">{{ company.currency_symbol }}{{company.dcf_intrinsic_value|floatformat:"2g"}}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>
-                            <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Share Price' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
-                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#sharePriceModal"></i>
-                            Share Price
-                        </span>
-                        <span class="badge bg-primary rounded-pill">{{ company.currency_symbol }}{{company.share_price|floatformat:2}}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>
-                            <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Price to Earnings (P/E)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
-                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#priceToEaringsModal"></i>
-                            Price to Earnings (<15)
-                        </span>
-                        <span class="badge {% if company.price_to_earnings < 15 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">{{ company.price_to_earnings|floatformat }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>
-                            <i class="far fa-question-circle fa-lg text-info mr-2" data-toggle="tooltip" data-placement="top" title="{% for param in params %}{% if param.param_name == 'Price to Book Value (Equity)' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
-                        <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#priceToBookModal"></i>
-                            Price to Book Value (<1.5)
-                        </span>
-                        <span class="badge {% if company.price_to_equity < 1.5 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">{{ company.price_to_equity|floatformat }}</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
 
 {% endblock content %}
 
