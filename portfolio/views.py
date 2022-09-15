@@ -253,6 +253,10 @@ class PortfolioOverviewView(TemplateView):
         total_profit = results_df['total_profit'].sum()
         total_pct_profit_change = ((income_from_selling - total_initial_value) / total_initial_value) * 100
 
+        # Cash
+        latest_cash_bal = Cash.objects.get_latest_balance()
+
+        # Create Total Dictionary
         total_dict["total_initial_value"] = f"£{total_initial_value:.2f}"
         total_dict["total_fees"] = f"£{total_fees:.2f}"
         total_dict["total_pct_fees"] = f"{pct_fees:.1f}%"
@@ -262,6 +266,7 @@ class PortfolioOverviewView(TemplateView):
         total_dict["income_from_selling"] = f"£{income_from_selling:.2f}"
         total_dict["total_profit"] = f"£{total_profit:.2f}"
         total_dict["total_pct_profit_change"] = f"{total_pct_profit_change:.1f}%"
+        total_dict["latest_cash_bal"] = f"£{latest_cash_bal:.2f}"
 
         # Chart 1
         plot_div = value_pie_chart(results_df)

@@ -34,8 +34,12 @@ class CashQueryset(QuerySet):
             "cash_value",
             "created_at",
             "date_dealt",
+            "cash_balance",
             "decision__value",
         )
+
+    def get_latest_balance(self):
+        return self.latest("date_dealt").cash_balance
 
 
 class WishListQueryset(QuerySet):
