@@ -72,8 +72,9 @@ class DashboardDetailView(DetailView):
         context = super().get_context_data(**kwargs)
 
         # Share Splits
-        comp_pk = self.kwargs["pk"]
-        comp_tidm = DashboardCompany.objects.get_tidm_from_id(comp_pk)
+        dash_pk = self.kwargs["pk"]
+        comp_tidm = DashboardCompany.objects.get_tidm_from_id(dash_pk)
+        comp_id = DashboardCompany.objects.get_compid_from_dashid(dash_pk)
         share_splits = ShareSplits.objects.get_latest_date(comp_tidm)
         share_splits_last = None
         if share_splits:
@@ -81,7 +82,7 @@ class DashboardDetailView(DetailView):
 
         # Wishlist search to check if added
         try:
-            WishList.objects.get(pk=comp_pk)
+            WishList.objects.get(pk=comp_id)
             does_exist = True
         except WishList.DoesNotExist:
             does_exist = False

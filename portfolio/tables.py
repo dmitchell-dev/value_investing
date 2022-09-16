@@ -1,6 +1,10 @@
 import django_tables2 as tables
 from django_tables2.utils import A
 
+from datetime import datetime
+import pytz
+from dateutil import relativedelta
+
 from .models import WishList
 
 
@@ -57,6 +61,24 @@ class WishListTable(tables.Table):
     def render_current_stock_price(self, value):
         return f"£{value:.2f}"
 
+    def render_latest_financial_date(self, value, record):
+        delta = relativedelta.relativedelta(datetime.now(pytz.utc), record.latest_financial_date)
+        if delta.years == 0:
+            year_str = ""
+        else:
+            year_str = f"{delta.years} Years, "
+        rtn_str = year_str + f"{delta.months} Months, {delta.days} Days"
+        return rtn_str
+
+    def render_latest_share_price_date(self, value, record):
+        delta = relativedelta.relativedelta(datetime.now(pytz.utc), record.latest_share_price_date)
+        if delta.years == 0:
+            year_str = ""
+        else:
+            year_str = f"{delta.years} Years, "
+        rtn_str = year_str + f"{delta.months} Months, {delta.days} Days"
+        return rtn_str
+
     # render_foo example method
     def render_current_mos(self, value, column):
         if value < self.maxpts and value >= 0:
@@ -77,4 +99,6 @@ class WishListTable(tables.Table):
             "reporting_mos",
             "current_mos",
             "buy_mos",
+            "latest_financial_date",
+            "latest_share_price_date",
         )

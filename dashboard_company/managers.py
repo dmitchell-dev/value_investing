@@ -9,6 +9,13 @@ class DashboardCompanyQueryset(QuerySet):
 
         return tidm
 
+    def get_compid_from_dashid(self, val):
+        comp_id = self.values("company_id",).filter(id=val)[
+            0
+        ]["company_id"]
+
+        return comp_id
+
     def get_dash_joined(self):
         return self.values(
             "id",

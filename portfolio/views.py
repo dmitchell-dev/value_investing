@@ -89,6 +89,8 @@ def wish_list_create(request, **kwargs):
     reporting_stock_price = current_company.share_price
     reporting_mos = current_company.margin_safety
     latest_margin_of_safety = current_company.latest_margin_of_safety
+    latest_financial_date = current_company.latest_financial_date
+    latest_share_price_date = current_company.latest_share_price_date
     current_stock_price = SharePrices.objects.get_latest_date(tidm).value_adjusted
 
     # Save company to database
@@ -98,6 +100,8 @@ def wish_list_create(request, **kwargs):
         current_stock_price=current_stock_price,
         reporting_mos=reporting_mos,
         current_mos=latest_margin_of_safety,
+        latest_financial_date=latest_financial_date,
+        latest_share_price_date=latest_share_price_date,
         buy_mos=0.5,
     )
 
@@ -118,12 +122,14 @@ def wish_list_remove(request, **kwargs):
     pk = None
 
     for arg in kwargs.values():
-        pk = arg
+        dash_pk = arg
+
+    comp_id = DashboardCompany.objects.get_compid_from_dashid(dash_pk)
 
     # Delete company from wishlist
     try:
         # WishList.objects.filter(company_id=pk).delete()
-        WishList.objects.get(pk=pk).delete()
+        WishList.objects.get(pk=comp_id).delete()
         messages.add_message(
             request, messages.SUCCESS, "Company successfully removed to wish list."
         )
@@ -132,7 +138,7 @@ def wish_list_remove(request, **kwargs):
             request, messages.WARNING, "Company does not exist on the wish list."
         )
 
-    return redirect('dashboard_company:dashboard_detail', pk=pk)
+    return redirect('dashboard_company:dashboard_detail', pk=dash_pk)
 
 
 class TransactionListView(ListView):
