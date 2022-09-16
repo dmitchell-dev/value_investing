@@ -2,6 +2,8 @@ from django.urls import reverse_lazy, reverse
 from django.shortcuts import render
 from django.shortcuts import redirect
 
+from django.http import HttpResponseRedirect
+
 import django_tables2 as tables
 from django_tables2 import SingleTableView
 
@@ -105,6 +107,9 @@ def wish_list_create(request, **kwargs):
         buy_mos=0.5,
     )
 
+    # Update Decision Type = "Wish List"
+    DashboardCompany.objects.filter(pk=pk).update(decision_type=2)
+
     if created:
         messages.add_message(
             request, messages.SUCCESS, "Company successfully added to wish list."
@@ -119,16 +124,18 @@ def wish_list_create(request, **kwargs):
 
 def wish_list_remove(request, **kwargs):
 
-    pk = None
+    dash_pk = None
 
     for arg in kwargs.values():
         dash_pk = arg
 
     comp_id = DashboardCompany.objects.get_compid_from_dashid(dash_pk)
 
+    # Update Decision Type = "No"
+    DashboardCompany.objects.filter(pk=dash_pk).update(decision_type=1)
+
     # Delete company from wishlist
     try:
-        # WishList.objects.filter(company_id=pk).delete()
         WishList.objects.get(pk=comp_id).delete()
         messages.add_message(
             request, messages.SUCCESS, "Company successfully removed to wish list."
@@ -168,6 +175,13 @@ class TransactionCreateView(CreateView):
         "price",
         "fees",
     ]
+
+    # def form_valid(self, form):
+    #     self.object = form.save()
+    #     # Update Decision Type = "Bought"
+    #     comp_id = form.instance.company_id
+    #     DashboardCompany.objects.filter(company_id=comp_id).update(decision_type=3)
+    #     return HttpResponseRedirect(self.get_success_url())
 
 
 class TransactionUpdateView(UpdateView):
