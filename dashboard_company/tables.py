@@ -18,7 +18,6 @@ class DashboardCompanyTable(tables.Table):
         super(DashboardCompanyTable, self).__init__(*args, **kwargs)
 
     def render_revenue(self, value, record):
-        print(record.currency_symbol)
         return f"{record.currency_symbol}{value:.2f}"
 
     def render_fcf(self, value, record):

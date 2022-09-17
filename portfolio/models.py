@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
 from ancillary_info.models import Companies, DecisionType
+from dashboard_company.models import DashboardCompany
+
 from .managers import (
     TransactionsQueryset,
     CashQueryset,
@@ -35,13 +37,23 @@ class Transactions(models.Model):
         return reverse("portfolio:transaction_detail", kwargs={"pk": self.pk})
 
     def save(self, *args, **kwargs):
-        current_num_stock_balance = Transactions.objects.filter(company_id=self.company_id).latest('date_dealt').num_stock_balance
+        try:
+            current_num_stock_balance = Transactions.objects.filter(company_id=self.company_id).latest('date_dealt').num_stock_balance
+        except Transactions.DoesNotExist:
+            current_num_stock_balance = 0
+
+        # Update DashboardCompany with decision
+        dash_id = DashboardCompany.objects.get_dashid_from_compid(self.company_id)
+        DashboardCompany.objects.filter(pk=dash_id).update(decision_type=3)
 
         # Increase or decrease depending on type
         if self.decision.value == 'Sold':
             self.num_stock_balance = current_num_stock_balance - self.num_stock
+            if self.num_stock_balance == 0:  # If all stocks sold, then marlk as 'Sold'
+                DashboardCompany.objects.filter(pk=dash_id).update(decision_type=4)
         elif self.decision.value == 'Bought':
             self.num_stock_balance = current_num_stock_balance + self.num_stock
+            DashboardCompany.objects.filter(pk=dash_id).update(decision_type=3)
         else:
             pass
 

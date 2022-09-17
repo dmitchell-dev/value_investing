@@ -2,9 +2,8 @@ from django.urls import reverse_lazy, reverse
 from django.shortcuts import render
 from django.shortcuts import redirect
 
-from django.http import HttpResponseRedirect
+from .forms import TransactionsForm
 
-import django_tables2 as tables
 from django_tables2 import SingleTableView
 
 from django.views.generic.base import TemplateView
@@ -176,12 +175,32 @@ class TransactionCreateView(CreateView):
         "fees",
     ]
 
-    # def form_valid(self, form):
-    #     self.object = form.save()
-    #     # Update Decision Type = "Bought"
-    #     comp_id = form.instance.company_id
-    #     DashboardCompany.objects.filter(company_id=comp_id).update(decision_type=3)
-    #     return HttpResponseRedirect(self.get_success_url())
+
+def transaction_create_view(request):
+    # dictionary for initial data with
+    # field names as keys
+    context = {}
+
+    # add the dictionary during initialization
+    form = TransactionsForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('portfolio:transaction_list')
+
+        # TODO get pk
+        # DashboardCompany.objects.filter(pk=pk).update(decision_type=3)
+
+        # if created:
+        #     messages.add_message(
+        #         request, messages.SUCCESS, "Transaction successfully added."
+        #     )
+        # else:
+        #     messages.add_message(
+        #         request, messages.WARNING, "Transaction already exists."
+        #     )
+
+    context['form'] = form
+    return render(request, "transactions/transaction_create.html", context)
 
 
 class TransactionUpdateView(UpdateView):

@@ -4,6 +4,7 @@ from .views import (
     TransactionListView,
     TransactionDetailView,
     TransactionCreateView,
+    transaction_create_view,
     TransactionUpdateView,
     TransactionDeleteView,
     CashListView,
@@ -36,6 +37,11 @@ urlpatterns = [
         TransactionCreateView.as_view(),
         name="transaction_create"
     ),
+    # path(
+    #     "transactions/create/",
+    #     transaction_create_view,
+    #     name="transaction_create"
+    #     ),
     path(
         "transactions/<int:pk>/",
         TransactionDetailView.as_view(),

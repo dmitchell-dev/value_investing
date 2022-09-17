@@ -16,6 +16,13 @@ class DashboardCompanyQueryset(QuerySet):
 
         return comp_id
 
+    def get_dashid_from_compid(self, val):
+        dash_id = self.values("id",).filter(company_id=val)[
+            0
+        ]["id"]
+
+        return dash_id
+
     def get_dash_joined(self):
         return self.values(
             "id",
