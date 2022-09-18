@@ -45,7 +45,7 @@ class DashboardCompany(models.Model):
     latest_financial_date = models.DateTimeField(null=True)
     latest_share_price_date = models.DateTimeField(null=True)
     latest_share_price = models.FloatField(null=True)
-    decision_type = models.ForeignKey(DecisionType, on_delete=models.CASCADE)
+    decision_type = models.ForeignKey(DecisionType, default=1, on_delete=models.CASCADE)
     market_cap = models.FloatField(null=True)
 
     objects = DashboardCompanyQueryset.as_manager()

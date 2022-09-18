@@ -153,8 +153,8 @@ class Command(BaseCommand):
         )
 
         # Replace NaN for mySQL compatability
+        df_merged = df_merged.astype(str)
         df_merged = df_merged.replace(["NaN", "nan", "None"], np.nan)
-        df_merged = df_merged.astype(object).where(pd.notnull(df_merged), None)
 
         # Split ready for create or update
         [df_create, df_update] = self._create_update_split(df_merged)
