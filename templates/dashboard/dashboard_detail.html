@@ -60,20 +60,20 @@
     <hr>
     <ul class="nav flex-column">
         <li class="nav-item ps-3">
-            <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type='Income Statement' %}">Income Statement</a></p>
+            <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.company_id report_type='Income Statement' %}">Income Statement</a></p>
         </li>
         <li class="nav-item ps-3">
-            <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type='Balance Sheet' %}">Balance Sheet</a></p>
+            <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.company_id report_type='Balance Sheet' %}">Balance Sheet</a></p>
         </li>
         <li class="nav-item ps-3">
-            <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.id report_type='Cash Flow' %}">Cash Flow</a></p>
+            <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.company_id report_type='Cash Flow' %}">Cash Flow</a></p>
         </li>
     </ul>
     <hr>
     <ul class="nav flex-column">
         <li class="nav-item ps-3">
-            <a class="pe-3 icon-blue" href="{% url 'dashboard_company:htmx_explore' pk=company.id %}"><i class="fas fa-code fa-3x"></i></a>
-            <a class="icon-blue" href="{% url 'dashboard_company:dashboard_chart' pk=company.id %}"><i class="fas fa-chart-bar fa-3x"></i></a>
+            <a class="pe-3 icon-blue" href="{% url 'dashboard_company:htmx_explore' pk=company.company_id %}"><i class="fas fa-code fa-3x"></i></a>
+            <a class="icon-blue" href="{% url 'dashboard_company:dashboard_chart' pk=company.company_id %}"><i class="fas fa-chart-bar fa-3x"></i></a>
         </li>
         <li class="nav-item ps-3">
             
