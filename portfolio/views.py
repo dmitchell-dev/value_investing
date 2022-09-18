@@ -1,4 +1,4 @@
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.shortcuts import render
 from django.shortcuts import redirect
 
@@ -14,8 +14,6 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
-
-from ancillary_info.models import Companies, DecisionType
 
 from dashboard_company.models import DashboardCompany
 
@@ -126,16 +124,14 @@ def wish_list_remove(request, **kwargs):
     dash_pk = None
 
     for arg in kwargs.values():
-        dash_pk = arg
-
-    comp_id = DashboardCompany.objects.get_compid_from_dashid(dash_pk)
+        pk = arg
 
     # Update Decision Type = "No"
-    DashboardCompany.objects.filter(pk=dash_pk).update(decision_type=1)
+    DashboardCompany.objects.filter(pk=pk).update(decision_type=1)
 
     # Delete company from wishlist
     try:
-        WishList.objects.get(pk=comp_id).delete()
+        WishList.objects.get(pk=pk).delete()
         messages.add_message(
             request, messages.SUCCESS, "Company successfully removed to wish list."
         )
@@ -144,7 +140,7 @@ def wish_list_remove(request, **kwargs):
             request, messages.WARNING, "Company does not exist on the wish list."
         )
 
-    return redirect('dashboard_company:dashboard_detail', pk=dash_pk)
+    return redirect('dashboard_company:dashboard_detail', pk=pk)
 
 
 class TransactionListView(ListView):
