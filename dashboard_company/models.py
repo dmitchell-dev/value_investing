@@ -8,6 +8,7 @@ from .managers import DashboardCompanyQueryset
 
 class DashboardCompany(models.Model):
     company = models.OneToOneField(Companies, on_delete=models.CASCADE, primary_key=True)
+    decision_type = models.ForeignKey(DecisionType, default=1, on_delete=models.CASCADE)
     tidm = models.CharField(max_length=255, null=True)
     company_name = models.CharField(max_length=255, null=True)
     company_summary = models.TextField()
@@ -45,7 +46,6 @@ class DashboardCompany(models.Model):
     latest_financial_date = models.DateTimeField(null=True)
     latest_share_price_date = models.DateTimeField(null=True)
     latest_share_price = models.FloatField(null=True)
-    decision_type = models.ForeignKey(DecisionType, default=1, on_delete=models.CASCADE)
     market_cap = models.FloatField(null=True)
 
     objects = DashboardCompanyQueryset.as_manager()
