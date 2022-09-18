@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse
 
-from ancillary_info.models import Companies
+from ancillary_info.models import Companies, DecisionType
 
 from .managers import DashboardCompanyQueryset
 
@@ -45,7 +45,7 @@ class DashboardCompany(models.Model):
     latest_financial_date = models.DateTimeField(null=True)
     latest_share_price_date = models.DateTimeField(null=True)
     latest_share_price = models.FloatField(null=True)
-    decision_type = models.IntegerField(default=1)
+    decision_type = models.ForeignKey(DecisionType, on_delete=models.CASCADE)
     market_cap = models.FloatField(null=True)
 
     objects = DashboardCompanyQueryset.as_manager()
