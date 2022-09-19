@@ -60,4 +60,5 @@ class DashboardCompanyTable(tables.Table):
             "latest_margin_of_safety",
             "latest_financial_date",
             "latest_share_price_date",
+            "decision_type",
         )

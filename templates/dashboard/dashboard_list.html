@@ -22,6 +22,15 @@
         </li>
     </ul>
     <hr>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard_company:wishlist_filtered_results' %}">
+            <i class="fa fa-wrench" aria-hidden="true"></i>
+            Filter Wishlist
+            </a>
+        </li>
+    </ul>
+    <hr>
     <form class="default-search" action="{% url 'dashboard_company:search_results' %}" method="get">
         <input name="q" type="text" placeholder="Search" aria-label="Search">
         <input type="submit" class="btn btn-primary" value="Search">

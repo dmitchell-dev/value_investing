@@ -24,6 +24,7 @@ from .views import (
     IntrinsicMultiDataView,
     DashboardTableView,
     SearchResultsListView,
+    WishListFilteredListView,
     dashboard_chart,
     htmx_explore,
     dashboard_table,
@@ -38,6 +39,7 @@ urlpatterns = [
     path("<int:pk>/htmx-explore/", htmx_explore, name="htmx_explore"),
     path("<int:pk>/", DashboardDetailView.as_view(), name="dashboard_detail"),
     path("search/", SearchResultsListView.as_view(), name="search_results"),
+    path("wishlist-filtered/", WishListFilteredListView.as_view(), name="wishlist_filtered_results"),
     path("table/<int:pk>/<str:report_type>/", dashboard_table, name="dashboard_table"),
     path(
         "<int:pk>/table-pag/",
