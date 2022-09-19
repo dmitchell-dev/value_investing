@@ -27,6 +27,7 @@ from .views import (
     dashboard_chart,
     htmx_explore,
     dashboard_table,
+    company_dash_update,
 )
 
 app_name = "dashboard_company"
@@ -43,6 +44,7 @@ urlpatterns = [
         DashboardTableView.as_view(),
         name="dashboard_table_pagination",
     ),
+    path("dash-update/", company_dash_update, name="dashboard_update"),
 ]
 
 data_patterns = (

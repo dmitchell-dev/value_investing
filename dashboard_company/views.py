@@ -1,6 +1,9 @@
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.core import management
+from django.contrib import messages
+
 
 from django_tables2 import SingleTableView
 
@@ -141,6 +144,17 @@ class DashboardTableView(TemplateView):
             "error_message": error_message,
         }
         return context
+
+
+def company_dash_update(request, **kwargs):
+
+    management.call_command("generate_dashboard")
+
+    messages.add_message(
+        request, messages.SUCCESS, "Dashboard successfully updated."
+    )
+
+    return redirect('dashboard_company:dashboard_list')
 
 
 def dashboard_table(request, pk, report_type):
