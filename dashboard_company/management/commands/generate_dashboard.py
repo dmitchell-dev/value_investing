@@ -4,6 +4,8 @@ from calculated_stats.models import CalculatedStats
 from financial_reports.models import FinancialReports
 from share_prices.models import SharePrices
 from dashboard_company.models import DashboardCompany
+from portfolio.models import Transactions, WishList, DecisionType
+
 import pandas as pd
 import numpy as np
 
@@ -135,6 +137,34 @@ class Command(BaseCommand):
         df_share_latest = df_share_latest.drop(["company_name"], axis=1)
         df_share_latest = df_share_latest.set_index("tidm")
 
+        # Generate decision type column
+        # Populate all 1 (No)
+        df_decision_type = pd.DataFrame(list(Companies.objects.get_companies_tidm()))
+        df_decision_type['decision_type'] = 1
+        df_decision_type = df_decision_type.set_index("tidm")
+        df_decision_type = df_decision_type.drop('id', axis=1)
+
+        # Wish List (Wish List)
+        df_wish_list = pd.DataFrame(list(WishList.objects.get_table_joined()))
+        df_decision_type['decision_type'] = np.where(df_decision_type.index.isin(df_wish_list.company__tidm), 2, df_decision_type.decision_type)
+
+        # Transaction LIst (Bought & Sold)
+        df_transaction_list = pd.DataFrame(list(Transactions.objects.get_latest_transactions()))
+        df_transaction_list = df_transaction_list.rename(columns={"company__tidm": "tidm"})
+        df_transaction_list = df_transaction_list.set_index("tidm")
+        # If all stocks sold
+        df_transaction_list['decision_type'] = 1
+        df_transaction_list['decision_type'].mask(df_transaction_list['num_stock_balance'] == 0, 4, inplace=True)
+        # If holding some stocks
+        df_transaction_list['decision_type'].mask(df_transaction_list['num_stock_balance'] != 0, 3, inplace=True)
+
+        # Merge back into decision type df
+        df_decision_type['decision_type_copy'] = df_decision_type['decision_type']
+        df_decision_type.loc[:, ['decision_type']] = df_transaction_list[['decision_type']]
+        df_decision_type['decision_type'] = df_decision_type['decision_type'].fillna(df_decision_type['decision_type_copy'])
+        df_decision_type['decision_type'] = df_decision_type['decision_type'] .astype(int)
+        df_decision_type = df_decision_type.drop('decision_type_copy', axis=1)
+
         # Join dataframes
         df_merged = pd.merge(
             df_companies, df_calc_latest_pivot, left_index=True, right_index=True
@@ -150,6 +180,10 @@ class Command(BaseCommand):
 
         df_merged = pd.merge(
             df_merged, df_financial_latest_date, left_index=True, right_index=True
+        )
+
+        df_merged = pd.merge(
+            df_merged, df_decision_type, left_index=True, right_index=True
         )
 
         # Replace NaN for mySQL compatability
@@ -192,6 +226,7 @@ class Command(BaseCommand):
         reports = [
             DashboardCompany(
                 company=Companies.objects.get(id=row["id"]),
+                decision_type=DecisionType.objects.get(id=row["decision_type"]),
                 tidm=row["tidm"],
                 company_name=row["company_name"],
                 company_summary=row["company_summary"],
@@ -249,6 +284,7 @@ class Command(BaseCommand):
         total_rows = 0
 
         param_dict = {
+            "decision_type": "decision_type",
             "industry_name": "industry__value",
             "revenue": "Total Revenue",
             "earnings": "Reported EPS",
@@ -294,6 +330,10 @@ class Command(BaseCommand):
             print(f"Company {company_num} of {num_companies}, {company.tidm}")
 
             if cur_row:
+                companies[index].decision_type = DecisionType.objects.get(
+                    id=df_update.loc[df_update.index[cur_row], "decision_type"]
+                    )
+
                 companies[index].industry_name = df_update.loc[
                     df_update.index[cur_row], "industry__value"
                 ]

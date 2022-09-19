@@ -104,9 +104,6 @@ def wish_list_create(request, **kwargs):
         buy_mos=0.5,
     )
 
-    # Update Decision Type = "Wish List"
-    DashboardCompany.objects.filter(pk=pk).update(decision_type=2)
-
     if created:
         messages.add_message(
             request, messages.SUCCESS, "Company successfully added to wish list."
@@ -121,13 +118,10 @@ def wish_list_create(request, **kwargs):
 
 def wish_list_remove(request, **kwargs):
 
-    dash_pk = None
+    pk = None
 
     for arg in kwargs.values():
         pk = arg
-
-    # Update Decision Type = "No"
-    DashboardCompany.objects.filter(pk=pk).update(decision_type=1)
 
     # Delete company from wishlist
     try:

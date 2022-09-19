@@ -17,6 +17,12 @@ class CompaniesQueryset(QuerySet):
             "currency__value",
         )
 
+    def get_companies_tidm(self):
+        return self.values(
+            "id",
+            "tidm",
+        )
+
     def get_companies_joined_filtered(self, tidm):
         return self.values(
             "id",

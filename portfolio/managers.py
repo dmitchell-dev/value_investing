@@ -1,4 +1,5 @@
 from django.db.models import QuerySet
+from django.db.models import Max, F
 
 import plotly.express as px
 from plotly.offline import plot
@@ -8,6 +9,7 @@ class TransactionsQueryset(QuerySet):
     def get_table_joined(self):
         return self.values(
             "num_stock",
+            "num_stock_balance",
             "decision",
             "reference",
             "price",
@@ -25,6 +27,15 @@ class TransactionsQueryset(QuerySet):
             "company__currency",
             "decision__value",
         )
+
+    def get_latest_transactions(self):
+        return self.order_by(
+            'company__tidm',
+            '-date_dealt'
+            ).distinct('company__tidm').values(
+                "company__tidm",
+                "num_stock_balance"
+                )
 
 
 class CashQueryset(QuerySet):
