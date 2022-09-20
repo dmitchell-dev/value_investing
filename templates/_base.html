@@ -76,7 +76,9 @@
     </nav>
   </header>
 
-  {% if request.resolver_match.url_name != 'home' %}
+  {% if request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'dashboard_table' %}
+
+  {% else %}
     <div class="container-fluid">
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
           <div class="sidebar-sticky">

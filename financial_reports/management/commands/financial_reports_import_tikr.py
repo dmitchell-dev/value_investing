@@ -109,21 +109,21 @@ class Command(BaseCommand):
         df_income = pd.read_excel(
             f"data/company_reports/{current_company_filename}",
             sheet_name="income_statement",
-            index_col="Income Statement",
+            index_col="Income Statement | TIKR.com",
             skiprows=1,
         )
 
         df_balance = pd.read_excel(
             f"data/company_reports/{current_company_filename}",
             sheet_name="balance_sheet",
-            index_col="Balance Sheet",
+            index_col="Balance Sheet | TIKR.com",
             skiprows=1,
         )
 
         df_cash = pd.read_excel(
             f"data/company_reports/{current_company_filename}",
             sheet_name="cash_flow_statement",
-            index_col="Cash Flow Statement",
+            index_col="Cash Flow Statement | TIKR.com",
             skiprows=1,
         )
 

@@ -92,31 +92,49 @@
     {% endfor %}
 {% endif %}
 
-<div class="container border shadow bg-light rounded py-2 mb-3">
-    <h3 class="text-secondary">{{company.company_name}} ({{company.tidm}})</h3>
-</div>
-
-    <div class="container border shadow bg-light rounded py-2 mb-3">
-        <div class="row">
-            <div class="col-3">
-                <p><h1><span class="badge bg-secondary">{{ company.currency_symbol }}{{company.share_price|floatformat:"2g"}}</span></h1></p>
-                <h6 class="text-secondary">Share Price</h6>
-            </div>
-            <div class="col-3">
-                <p><h1><span class="badge {% if company.dcf_intrinsic_value > company.share_price %}bg-success{% else %}bg-danger{% endif %}">{{ company.currency_symbol }}{{company.dcf_intrinsic_value|floatformat:"2g"}}</span></h1></p>
-                <h6 class="text-secondary">Intrinsic Value</h6>
-            </div>
-            <div class="col-3">
-                <p><h1><span class="badge {% if company.margin_safety <= 0.5 and company.margin_safety >= 0  %}bg-success{% else %}bg-danger{% endif %}">{{company.margin_safety|floatformat:"2g"}}</span></h1></p>
-                <h6 class="text-secondary">Margin Safety</h6>
-            </div>
-            <div class="col-3">
-                <p><h1><span class="badge {% if company.latest_margin_of_safety <= 0.5 and company.latest_margin_of_safety >= 0  %}bg-success{% else %}bg-danger{% endif %}">{{company.latest_margin_of_safety|floatformat:"2g"}}</span></h1></p>
-                <h6 class="text-secondary">Latest Margin Safety</h6>
+    <div class="row">
+        <div class="col">
+            <div class="container border shadow bg-light rounded py-2 mb-3">
+                <h3 class="text-secondary">{{company.company_name}} ({{company.tidm}})</h3>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-6">
+            <div class="container border shadow bg-light rounded py-2 mb-3">
+                <div class="row">
+                    <div class="col-4">
+                        <p><h1><span class="badge bg-secondary">{{ company.currency_symbol }}{{company.share_price|floatformat:"2g"}}</span></h1></p>
+                        <h6 class="text-secondary">Share Price</h6>
+                    </div>
+                    <div class="col-4">
+                        <p><h1><span class="badge {% if company.dcf_intrinsic_value > company.share_price %}bg-success{% else %}bg-danger{% endif %}">{{ company.currency_symbol }}{{company.dcf_intrinsic_value|floatformat:"2g"}}</span></h1></p>
+                        <h6 class="text-secondary">Intrinsic Value</h6>
+                    </div>
+                    <div class="col-4">
+                        <p><h1><span class="badge {% if company.margin_safety <= 0.5 and company.margin_safety >= 0  %}bg-success{% else %}bg-danger{% endif %}">{{company.margin_safety|floatformat:"2g"}}</span></h1></p>
+                        <h6 class="text-secondary">Margin Safety</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="container border shadow bg-light rounded py-2 mb-3">
+                <div class="row">
+                    <div class="col-6">
+                        <p><h1><span class="badge bg-secondary">{{ company.currency_symbol }}{{company.latest_share_price|floatformat:"2g"}}</span></h1></p>
+                        <h6 class="text-secondary">Latest Share Price</h6>
+                    </div>
+                    <div class="col-6">
+                        <p><h1><span class="badge {% if company.latest_margin_of_safety <= 0.5 and company.latest_margin_of_safety >= 0  %}bg-success{% else %}bg-danger{% endif %}">{{company.latest_margin_of_safety|floatformat:"2g"}}</span></h1></p>
+                        <h6 class="text-secondary">Latest Margin Safety</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+
+    </div>
     <!-- Modals -->
     <div class="modal fade" id="sharePriceModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
