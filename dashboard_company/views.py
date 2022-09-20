@@ -20,11 +20,11 @@ from django.views import View
 from portfolio.models import WishList
 
 from .models import DashboardCompany
-
 from ancillary_info.models import Params, Companies
 from share_prices.models import SharePrices, ShareSplits
 from financial_reports.models import FinancialReports
 from calculated_stats.models import CalculatedStats
+from portfolio.models import WishList
 
 from .tables import DashboardCompanyTable
 
@@ -70,11 +70,15 @@ class WishListFilteredListView(TemplateView):
 
     def get_queryset(self):
 
-        query = self.request.GET.get('q')
+        # Get list of company ids on wishlist
+        id_list_dicts = list(WishList.objects.values('company_id').distinct())
+        id_list = []
+        for item in id_list_dicts:
+            for val in item.values():
+                id_list.append(val)
 
-        return DashboardCompany.objects.filter(
-            Q(company_name__icontains=query) | Q(share_listing__icontains=query)
-            )
+        # Filter list on those ids
+        return DashboardCompany.objects.filter(company_id__in=id_list)
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
