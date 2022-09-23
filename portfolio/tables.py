@@ -50,6 +50,7 @@ class NameTable(tables.Table):
 
 class WishListTable(tables.Table):
     company__company_name = tables.LinkColumn("portfolio:wishlist_detail", args=[A("pk")])
+    company_id = tables.LinkColumn("dashboard_company:dashboard_detail", args=[A("pk")])
 
     def __init__(self, *args, **kwargs):
         super(WishListTable, self).__init__(*args, **kwargs)
@@ -93,6 +94,7 @@ class WishListTable(tables.Table):
         model = WishList
         attrs = {"class": "table thead-light table-striped table-hover"}
         fields = (
+            "company_id",
             "company__company_name",
             "reporting_stock_price",
             "current_stock_price",
