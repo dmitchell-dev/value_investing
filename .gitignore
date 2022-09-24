@@ -8,4 +8,6 @@
 
 value_investing/.env
 
+/ancillary_info/fixtures/
+
 **/__pycache__
