@@ -37,6 +37,7 @@ django-environ
 django-allauth
 django-cacheops
 django-crispy-forms
+crispy-bootstrap5
 django-extensions
 django-filter
 django-google-analytics-app

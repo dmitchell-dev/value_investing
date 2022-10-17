@@ -58,6 +58,8 @@ colorama==0.4.4
     #   click
     #   ipython
     #   pytest
+crispy-bootstrap5==0.7
+    # via -r requirements.in
 cryptography==37.0.2
     # via pyjwt
 cycler==0.11.0
@@ -73,6 +75,7 @@ deprecated==1.2.13
 django==4.0.4
     # via
     #   -r requirements.in
+    #   crispy-bootstrap5
     #   django-allauth
     #   django-cacheops
     #   django-configurations
@@ -90,7 +93,9 @@ django-cacheops==6.0
 django-configurations==2.3.2
     # via -r requirements.in
 django-crispy-forms==1.14.0
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   crispy-bootstrap5
 django-debug-toolbar==3.4.0
     # via -r requirements.in
 django-environ==0.8.1

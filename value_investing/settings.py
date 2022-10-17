@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     # Third Party
     "crispy_forms",
+    "crispy_bootstrap5",
     "allauth",
     "allauth.account",
     "django_extensions",
@@ -95,7 +96,8 @@ WSGI_APPLICATION = "value_investing.wsgi.application"
 SITE_ID = 1
 
 # django-crispy-forms
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 # DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
 
 # Database
@@ -146,8 +148,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
-STATIC_URL = "/static/"
 
 AUTH_USER_MODEL = "users.CustomUser"
 
