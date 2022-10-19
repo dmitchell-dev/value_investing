@@ -3,83 +3,85 @@
 {% block title %}{{company.company_name}}{% endblock title %}
 
 {% block sidebar %}
-
-    <span class="sidebar-heading">Dashboard Detail</span>
-    <hr>
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'ancillary:dcf_var_detail' company.company_id %}">
-            <i class="fa fa-info-circle" aria-hidden="true"></i>
-            DCF Detail
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'ancillary:company_stats_update' company.company_id %}">
-            <i class="fa fa-wrench" aria-hidden="true"></i>
-            Update Stats
-            </a>
-        </li>
-        <li class="nav-item">
-            {% if does_exist %}
-                <a class="nav-link" href="{% url 'portfolio:wishlist_remove' company.pk %}">
-                    <i class="fa fa-minus-circle" aria-hidden="true"></i>
-                    Remove from Wish List
-                </a>
-            {% else %}
-                <a class="nav-link" href="{% url 'portfolio:wishlist_create' company.pk %}">
-                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                    Add to Wish List
-                </a>
-            {% endif %}
-        </li>
-    </ul>
-    <hr>
-    <ul class="nav flex-column">
-        <li class="nav-item ps-3">
-            <h6 class="text-secondary">{{company.share_listing}} ({{ company.exchange_country }})</h6>
-        </li>
-        <li class="nav-item ps-3">
-            <h6 class="text-secondary">Decision Type: {{ company.decision_type }}</h6>
-        </li>
-    </ul>
-    <hr>
-    <ul class="nav flex-column">
-        <li class="nav-item ps-3">
-            <h8>Stock Split:</h8>
-            <h8 class="text-secondary">{% if share_splits %}{{ share_splits|timesince }}{% endif %}</h8>
-        </li>
-        <li class="nav-item ps-3">
-            <h8>Fundamentals:</h8>
-            <h8 class="text-secondary">{{ company.latest_financial_date|timesince }}</h8>
-        </li>
-        <li class="nav-item ps-3">
-            <h8>Share Price:</h8>
-            <h8 class="text-secondary">{{ company.latest_share_price_date|timesince }}</h8>
-        </li>
-    </ul>
-    <hr>
-    <ul class="nav flex-column">
-        <li class="nav-item ps-3">
-            <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.company_id report_type='Income Statement' %}">Income Statement</a></p>
-        </li>
-        <li class="nav-item ps-3">
-            <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.company_id report_type='Balance Sheet' %}">Balance Sheet</a></p>
-        </li>
-        <li class="nav-item ps-3">
-            <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.company_id report_type='Cash Flow' %}">Cash Flow</a></p>
-        </li>
-    </ul>
-    <hr>
-    <ul class="nav flex-column">
-        <li class="nav-item ps-3">
-            <a class="pe-3 icon-blue" href="{% url 'dashboard_company:htmx_explore' pk=company.company_id %}"><i class="fas fa-code fa-3x"></i></a>
-            <a class="icon-blue" href="{% url 'dashboard_company:dashboard_chart' pk=company.company_id %}"><i class="fas fa-chart-bar fa-3x"></i></a>
-        </li>
-        <li class="nav-item ps-3">
-            
-        </li>
-    </ul>
-
+    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
+        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
+            <span class="sidebar-heading">Dashboard Detail</span>
+            <hr>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'ancillary:dcf_var_detail' company.company_id %}">
+                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                    DCF Detail
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'ancillary:company_stats_update' company.company_id %}">
+                    <i class="fa fa-wrench" aria-hidden="true"></i>
+                    Update Stats
+                    </a>
+                </li>
+                <li class="nav-item">
+                    {% if does_exist %}
+                        <a class="nav-link" href="{% url 'portfolio:wishlist_remove' company.pk %}">
+                            <i class="fa fa-minus-circle" aria-hidden="true"></i>
+                            Remove from Wish List
+                        </a>
+                    {% else %}
+                        <a class="nav-link" href="{% url 'portfolio:wishlist_create' company.pk %}">
+                            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                            Add to Wish List
+                        </a>
+                    {% endif %}
+                </li>
+            </ul>
+            <hr>
+            <ul class="nav flex-column">
+                <li class="nav-item ps-3">
+                    <h6 class="text-secondary">{{company.share_listing}} ({{ company.exchange_country }})</h6>
+                </li>
+                <li class="nav-item ps-3">
+                    <h6 class="text-secondary">Decision Type: {{ company.decision_type }}</h6>
+                </li>
+            </ul>
+            <hr>
+            <ul class="nav flex-column">
+                <li class="nav-item ps-3">
+                    <h8>Stock Split:</h8>
+                    <h8 class="text-secondary">{% if share_splits %}{{ share_splits|timesince }}{% endif %}</h8>
+                </li>
+                <li class="nav-item ps-3">
+                    <h8>Fundamentals:</h8>
+                    <h8 class="text-secondary">{{ company.latest_financial_date|timesince }}</h8>
+                </li>
+                <li class="nav-item ps-3">
+                    <h8>Share Price:</h8>
+                    <h8 class="text-secondary">{{ company.latest_share_price_date|timesince }}</h8>
+                </li>
+            </ul>
+            <hr>
+            <ul class="nav flex-column">
+                <li class="nav-item ps-3">
+                    <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.company_id report_type='Income Statement' %}">Income Statement</a></p>
+                </li>
+                <li class="nav-item ps-3">
+                    <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.company_id report_type='Balance Sheet' %}">Balance Sheet</a></p>
+                </li>
+                <li class="nav-item ps-3">
+                    <p class="my-0"><a href="{% url 'dashboard_company:dashboard_table' pk=company.company_id report_type='Cash Flow' %}">Cash Flow</a></p>
+                </li>
+            </ul>
+            <hr>
+            <ul class="nav flex-column">
+                <li class="nav-item ps-3">
+                    <a class="pe-3 icon-blue" href="{% url 'dashboard_company:htmx_explore' pk=company.company_id %}"><i class="fas fa-code fa-3x"></i></a>
+                    <a class="icon-blue" href="{% url 'dashboard_company:dashboard_chart' pk=company.company_id %}"><i class="fas fa-chart-bar fa-3x"></i></a>
+                </li>
+                <li class="nav-item ps-3">
+                    
+                </li>
+            </ul>
+        </div>
+    </div>
 {% endblock sidebar %}
 
 {% block content %}
@@ -404,7 +406,7 @@
                         <i class="fas fa-chart-bar fa-lg mr-2 icon-blue" data-toggle="modal" data-target="#roceModal"></i>
                         Return on Capital Employed (ROCE) (>7%)
                         </span>
-                        <span class="badge float-end {% if company.roce > 8 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">{{ company.roce|floatformat:1}}%</span>
+                        <span class="badge float-end {% if company.roce > 7 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">{{ company.roce|floatformat:1}}%</span>
                     </li>
                     <li class="list-group-item">
                         <span>

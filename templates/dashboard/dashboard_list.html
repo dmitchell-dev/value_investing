@@ -4,38 +4,40 @@
 {% block title %}Dashboard{% endblock title %}
 
 {% block sidebar %}
-
-    <span class="sidebar-heading">Dashboard List</span>
-    <hr>
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'ancillary:company_all_stats_update' %}">
-            <i class="fa fa-wrench" aria-hidden="true"></i>
-            Update All Company Stats
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'dashboard_company:dashboard_update' %}">
-            <i class="fa fa-wrench" aria-hidden="true"></i>
-            Update Dashboard Stats Only
-            </a>
-        </li>
-    </ul>
-    <hr>
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'dashboard_company:wishlist_filtered_results' %}">
-            <i class="fa fa-search" aria-hidden="true"></i>
-            Filter Wishlist
-            </a>
-        </li>
-    </ul>
-    <hr>
-    <form class="default-search" action="{% url 'dashboard_company:search_results' %}" method="get">
-        <input name="q" type="text" placeholder="Search" aria-label="Search">
-        <input type="submit" class="btn btn-primary" value="Search">
-    </form>
-
+    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
+        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
+            <span class="sidebar-heading">Dashboard List</span>
+            <hr>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'ancillary:company_all_stats_update' %}">
+                    <i class="fa fa-wrench" aria-hidden="true"></i>
+                    Update All Company Stats
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard_company:dashboard_update' %}">
+                    <i class="fa fa-wrench" aria-hidden="true"></i>
+                    Update Dashboard Stats Only
+                    </a>
+                </li>
+            </ul>
+            <hr>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard_company:wishlist_filtered_results' %}">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                    Filter Wishlist
+                    </a>
+                </li>
+            </ul>
+            <hr>
+            <form class="default-search" action="{% url 'dashboard_company:search_results' %}" method="get">
+                <input name="q" type="text" placeholder="Search" aria-label="Search">
+                <input type="submit" class="btn btn-primary" value="Search">
+            </form>
+        </div>
+    </div>
 {% endblock sidebar %}
 
 {% block content %}

@@ -75,23 +75,14 @@
     </nav>
   </header>
 
-  {% if request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'dashboard_table' %}
-
-  {% else %}
-    <div class="container-fluid">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-          <div class="sidebar-sticky">
-            {% block sidebar %}
-            {% endblock sidebar %}
-          </div>
-        </nav>
-    </div>
-  {% endif %}
-
-  <div class="ms-5 pt-5">
-    <div class="container">
-      {% block content %}
-      {% endblock content %}
+  <div class="container-fluid">
+    <div class="row flex-nowrap">
+      {% block sidebar %}
+      {% endblock sidebar %}
+      <div class="col py-3">
+        {% block content %}
+        {% endblock content %}
+      </div>
     </div>
   </div>
 

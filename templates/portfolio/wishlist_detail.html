@@ -3,24 +3,26 @@
 {% block title %}Wish List{% endblock title %}
 
 {% block sidebar %}
-
-    <span class="sidebar-heading">Wish List</span>
-    <hr>
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'portfolio:wishlist_update' wishlist.pk %}">
-            <i class="fa fa-wrench" aria-hidden="true"></i>
-            Update Item
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'portfolio:wishlist_delete' wishlist.pk %}">
-            <i class="fa fa-trash" aria-hidden="true"></i>
-            Delete Item
-            </a>
-        </li>
-    </ul>
-
+    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
+        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
+            <span class="sidebar-heading">Wish List</span>
+            <hr>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'portfolio:wishlist_update' wishlist.pk %}">
+                    <i class="fa fa-wrench" aria-hidden="true"></i>
+                    Update Item
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'portfolio:wishlist_delete' wishlist.pk %}">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                    Delete Item
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 {% endblock sidebar %}
 
 
