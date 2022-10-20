@@ -90,6 +90,7 @@ def wish_list_create(request, **kwargs):
     latest_margin_of_safety = current_company.latest_margin_of_safety
     latest_financial_date = current_company.latest_financial_date
     latest_share_price_date = current_company.latest_share_price_date
+    dcf_intrinsic_value = current_company.dcf_intrinsic_value
     current_stock_price = SharePrices.objects.get_latest_date(tidm).value_adjusted
 
     # Save company to database
@@ -101,6 +102,7 @@ def wish_list_create(request, **kwargs):
         current_mos=latest_margin_of_safety,
         latest_financial_date=latest_financial_date,
         latest_share_price_date=latest_share_price_date,
+        dcf_intrinsic_value=dcf_intrinsic_value,
         buy_mos=0.5,
     )
 

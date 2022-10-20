@@ -62,6 +62,9 @@ class WishListTable(tables.Table):
     def render_current_stock_price(self, value):
         return f"£{value:.2f}"
 
+    def render_dcf_intrinsic_value(self, value):
+        return f"£{value:.2f}"
+
     def render_latest_financial_date(self, value, record):
         delta = relativedelta.relativedelta(datetime.now(pytz.utc), record.latest_financial_date)
         if delta.years == 0:
@@ -98,6 +101,7 @@ class WishListTable(tables.Table):
             "company__company_name",
             "reporting_stock_price",
             "current_stock_price",
+            "dcf_intrinsic_value",
             "reporting_mos",
             "current_mos",
             "buy_mos",

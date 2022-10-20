@@ -42,11 +42,13 @@ class Command(BaseCommand):
             latest_share_price = df_dashboard["latest_share_price"].iat[dash_idx]
             curr_comp_name = df_dashboard["company_name"].iat[dash_idx]
             comp_id = df_dashboard["company_id"].iat[dash_idx]
+            dcf_intrinsic_value = df_dashboard["dcf_intrinsic_value"].iat[dash_idx]
             results_list.append({
                 "tidm": tidm,
                 "company_name": curr_comp_name,
                 "comp_id": comp_id,
-                "latest_share_price": f"{latest_share_price:.2f}"
+                "latest_share_price": f"{latest_share_price:.2f}",
+                "dcf_intrinsic_value": dcf_intrinsic_value,
                 })
 
             # Number of shares
@@ -184,6 +186,7 @@ class Command(BaseCommand):
                 initial_shares_cost=row["initial_shares_cost"],
                 share_value_change=row["share_value_change"],
                 share_pct_change=row["share_pct_change"],
+                dcf_intrinsic_value=row["dcf_intrinsic_value"],
                 company_pct_holding=row["company_pct_holding"],
             )
             for i, row in df_create.iterrows()
@@ -216,6 +219,7 @@ class Command(BaseCommand):
             "share_value_change": "share_value_change",
             "share_pct_change": "share_pct_change",
             "company_pct_holding": "company_pct_holding",
+            "dcf_intrinsic_value": "dcf_intrinsic_value",
         }
 
         for index, company in enumerate(companies):
@@ -281,6 +285,10 @@ class Command(BaseCommand):
 
             companies[index].company_pct_holding = self._convert_float(
                 df_update.loc[df_update.index[cur_row], "company_pct_holding"]
+            )
+
+            companies[index].dcf_intrinsic_value = self._convert_float(
+                df_update.loc[df_update.index[cur_row], "dcf_intrinsic_value"]
             )
 
         print("Updating Dashboard Table")

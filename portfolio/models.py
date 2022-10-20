@@ -94,6 +94,7 @@ class WishList(models.Model):
     reporting_mos = models.FloatField()
     current_mos = models.FloatField()
     buy_mos = models.FloatField()
+    dcf_intrinsic_value = models.FloatField()
     latest_financial_date = models.DateTimeField(null=True)
     latest_share_price_date = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
