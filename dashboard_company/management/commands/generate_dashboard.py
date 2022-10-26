@@ -218,6 +218,8 @@ class Command(BaseCommand):
             df_new = new_df
             df_existing = pd.DataFrame()
 
+        # Issue with adding new companies
+        # Is the new company in the update df?
         return df_new, df_existing
 
     def _create_rows(self, df_create):
@@ -324,6 +326,9 @@ class Command(BaseCommand):
 
             # For each company, get the associated row in df
             df_update = df_update.reset_index(drop=True)
+
+            # Issue with adding new companies
+            # Is the new company in the update df?
             cur_row = df_update[df_update["tidm"] == company.tidm].index[0]
 
             company_num = company_num + 1
