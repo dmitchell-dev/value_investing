@@ -99,6 +99,7 @@ class CompaniesAdmin(admin.ModelAdmin):
         "industry",
         "exchange",
         "tidm",
+        "company_source",
         "company_name",
         "company_summary",
     ]
@@ -108,6 +109,7 @@ class CompaniesAdmin(admin.ModelAdmin):
         "comp_type",
         "industry",
         "exchange",
+        "company_source",
         "company_summary",
     )
 

@@ -324,160 +324,163 @@ class Command(BaseCommand):
 
         for index, company in enumerate(companies):
 
-            # For each company, get the associated row in df
-            df_update = df_update.reset_index(drop=True)
+            # If company is in the update list
+            if df_update['tidm'].str.contains(company.tidm).any():
 
-            # Issue with adding new companies
-            # Is the new company in the update df?
-            cur_row = df_update[df_update["tidm"] == company.tidm].index[0]
+                # For each company, get the associated row in df
+                df_update = df_update.reset_index(drop=True)
 
-            company_num = company_num + 1
-            print(f"Company {company_num} of {num_companies}, {company.tidm}")
+                # Issue with adding new companies
+                # Is the new company in the update df?
+                cur_row = df_update[df_update["tidm"] == company.tidm].index[0]
 
-            if cur_row:
-                companies[index].decision_type = DecisionType.objects.get(
-                    id=df_update.loc[df_update.index[cur_row], "decision_type"]
+                company_num = company_num + 1
+                print(f"Company {company_num} of {num_companies}, {company.tidm}")
+
+                if cur_row:
+                    companies[index].decision_type = DecisionType.objects.get(
+                        id=df_update.loc[df_update.index[cur_row], "decision_type"]
+                        )
+
+                    companies[index].industry_name = df_update.loc[
+                        df_update.index[cur_row], "industry__value"
+                    ]
+
+                    companies[index].revenue = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Total Revenue"]
                     )
 
-                companies[index].industry_name = df_update.loc[
-                    df_update.index[cur_row], "industry__value"
-                ]
+                    companies[index].earnings = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Reported EPS"]
+                    )
 
-                companies[index].revenue = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Total Revenue"]
-                )
+                    companies[index].dividends = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Dividends Per Share"]
+                    )
 
-                companies[index].earnings = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Reported EPS"]
-                )
+                    companies[index].capital_expenditure = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Capital Expenditures"]
+                    )
 
-                companies[index].dividends = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Dividends Per Share"]
-                )
+                    companies[index].net_income = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Net Income"]
+                    )
 
-                companies[index].capital_expenditure = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Capital Expenditures"]
-                )
+                    companies[index].total_equity = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Total Equity"]
+                    )
 
-                companies[index].net_income = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Net Income"]
-                )
+                    companies[index].share_price = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Share Price"]
+                    )
 
-                companies[index].total_equity = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Total Equity"]
-                )
+                    companies[index].debt_to_equity = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Debt to Equity (D/E)"]
+                    )
 
-                companies[index].share_price = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Share Price"]
-                )
+                    companies[index].current_ratio = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Current Ratio"]
+                    )
 
-                companies[index].debt_to_equity = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Debt to Equity (D/E)"]
-                )
+                    companies[index].return_on_equity = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Return on Equity (ROE)"]
+                    )
 
-                companies[index].current_ratio = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Current Ratio"]
-                )
+                    companies[index].equity_per_share = self._convert_float(
+                        df_update.loc[
+                            df_update.index[cur_row], "Equity (Book Value) Per Share"
+                        ]
+                    )
 
-                companies[index].return_on_equity = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Return on Equity (ROE)"]
-                )
+                    companies[index].price_to_earnings = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Price to Earnings (P/E)"]
+                    )
 
-                companies[index].equity_per_share = self._convert_float(
-                    df_update.loc[
-                        df_update.index[cur_row], "Equity (Book Value) Per Share"
+                    companies[index].price_to_equity = self._convert_float(
+                        df_update.loc[
+                            df_update.index[cur_row], "Price to Book Value (Equity)"
+                        ]
+                    )
+
+                    companies[index].earnings_yield = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Earnings Yield"]
+                    )
+
+                    companies[index].annual_yield_return = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Annual Yield (Return)"]
+                    )
+
+                    companies[index].fcf = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Free Cash Flow"]
+                    )
+
+                    companies[index].dividend_cover = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Dividend Cover"]
+                    )
+
+                    companies[index].capital_employed = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Capital Employed"]
+                    )
+
+                    companies[index].roce = self._convert_float(
+                        df_update.loc[
+                            df_update.index[cur_row], "Return on Capital Employed (ROCE)"
+                        ]
+                    )
+
+                    companies[index].dcf_intrinsic_value = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Intrinsic Value"]
+                    )
+
+                    companies[index].margin_safety = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Margin of Safety"]
+                    )
+
+                    companies[index].latest_margin_of_safety = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Latest Margin of Safety"]
+                    )
+
+                    companies[index].estimated_growth_rate = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Estimated Growth Rate"]
+                    )
+
+                    companies[index].estimated_discount_rate = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Estimated Discount Rate"]
+                    )
+
+                    companies[index].estimated_long_term_growth_rate = self._convert_float(
+                        df_update.loc[
+                            df_update.index[cur_row], "Estimated Long Term Growth Rate"
+                        ]
+                    )
+
+                    companies[index].pick_source = df_update.loc[
+                        df_update.index[cur_row], "company_source__value"
                     ]
-                )
 
-                companies[index].price_to_earnings = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Price to Earnings (P/E)"]
-                )
-
-                companies[index].price_to_equity = self._convert_float(
-                    df_update.loc[
-                        df_update.index[cur_row], "Price to Book Value (Equity)"
+                    companies[index].exchange_country = df_update.loc[
+                        df_update.index[cur_row], "country__value"
                     ]
-                )
 
-                companies[index].earnings_yield = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Earnings Yield"]
-                )
-
-                companies[index].annual_yield_return = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Annual Yield (Return)"]
-                )
-
-                companies[index].fcf = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Free Cash Flow"]
-                )
-
-                companies[index].dividend_cover = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Dividend Cover"]
-                )
-
-                companies[index].capital_employed = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Capital Employed"]
-                )
-
-                companies[index].roce = self._convert_float(
-                    df_update.loc[
-                        df_update.index[cur_row], "Return on Capital Employed (ROCE)"
+                    companies[index].currency_symbol = df_update.loc[
+                        df_update.index[cur_row], "currency__symbol"
                     ]
-                )
 
-                companies[index].dcf_intrinsic_value = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Intrinsic Value"]
-                )
-
-                companies[index].margin_safety = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Margin of Safety"]
-                )
-
-                companies[index].latest_margin_of_safety = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Latest Margin of Safety"]
-                )
-
-                companies[index].estimated_growth_rate = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Estimated Growth Rate"]
-                )
-
-                companies[index].estimated_discount_rate = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Estimated Discount Rate"]
-                )
-
-                companies[index].estimated_long_term_growth_rate = self._convert_float(
-                    df_update.loc[
-                        df_update.index[cur_row], "Estimated Long Term Growth Rate"
+                    companies[index].latest_financial_date = df_update.loc[
+                        df_update.index[cur_row], "financial_latest_date"
                     ]
-                )
 
-                companies[index].pick_source = df_update.loc[
-                    df_update.index[cur_row], "company_source__value"
-                ]
+                    companies[index].latest_share_price_date = df_update.loc[
+                        df_update.index[cur_row], "share_latest_date"
+                    ]
 
-                companies[index].exchange_country = df_update.loc[
-                    df_update.index[cur_row], "country__value"
-                ]
+                    companies[index].latest_share_price = df_update.loc[
+                        df_update.index[cur_row], "latest_share_price"
+                    ]
 
-                companies[index].currency_symbol = df_update.loc[
-                    df_update.index[cur_row], "currency__symbol"
-                ]
-
-                companies[index].latest_financial_date = df_update.loc[
-                    df_update.index[cur_row], "financial_latest_date"
-                ]
-
-                companies[index].latest_share_price_date = df_update.loc[
-                    df_update.index[cur_row], "share_latest_date"
-                ]
-
-                companies[index].latest_share_price = df_update.loc[
-                    df_update.index[cur_row], "latest_share_price"
-                ]
-
-                companies[index].market_cap = self._convert_float(
-                    df_update.loc[df_update.index[cur_row], "Market Capitalisation"]
-                )
+                    companies[index].market_cap = self._convert_float(
+                        df_update.loc[df_update.index[cur_row], "Market Capitalisation"]
+                    )
 
         print("Updating Dashboard Table")
 
