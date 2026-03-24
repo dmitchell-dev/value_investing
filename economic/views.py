@@ -36,6 +36,14 @@ class CapeChartDataView(View):
 
         # print(df)
 
+        if df.empty:
+            data = {
+                "x_data": x_data,
+                "y_data": y_data,
+                "param_name": param_name,
+            }
+            return JsonResponse(data)
+
         df_pivot = df.pivot(
             columns="time_stamp",
             index="company_id",

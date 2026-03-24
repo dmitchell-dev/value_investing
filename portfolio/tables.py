@@ -1,8 +1,7 @@
 import django_tables2 as tables
 from django_tables2.utils import A
 
-from datetime import datetime
-import pytz
+from datetime import datetime, timezone
 from dateutil import relativedelta
 
 from .models import WishList
@@ -24,7 +23,7 @@ class NameTable(tables.Table):
     total_profit = tables.Column(verbose_name="Profit")
 
     def __init__(self, *args, **kwargs):
-        super(NameTable, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def render_fees_total(self, value):
         return f"£{value:.2f}"
@@ -53,7 +52,7 @@ class WishListTable(tables.Table):
     company_id = tables.LinkColumn("dashboard_company:dashboard_detail", args=[A("pk")])
 
     def __init__(self, *args, **kwargs):
-        super(WishListTable, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.maxpts = 0.5
 
     def render_reporting_stock_price(self, value):
@@ -66,7 +65,7 @@ class WishListTable(tables.Table):
         return f"£{value:.2f}"
 
     def render_latest_financial_date(self, value, record):
-        delta = relativedelta.relativedelta(datetime.now(pytz.utc), record.latest_financial_date)
+        delta = relativedelta.relativedelta(datetime.now(timezone.utc), record.latest_financial_date)
         if delta.years == 0:
             year_str = ""
         else:
@@ -75,7 +74,7 @@ class WishListTable(tables.Table):
         return rtn_str
 
     def render_latest_share_price_date(self, value, record):
-        delta = relativedelta.relativedelta(datetime.now(pytz.utc), record.latest_share_price_date)
+        delta = relativedelta.relativedelta(datetime.now(timezone.utc), record.latest_share_price_date)
         if delta.years == 0:
             year_str = ""
         else:

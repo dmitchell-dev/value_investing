@@ -1,7 +1,6 @@
 import django_tables2 as tables
 
-from datetime import datetime
-import pytz
+from datetime import datetime, timezone
 from dateutil import relativedelta
 
 from django_tables2.utils import A
@@ -15,7 +14,7 @@ class DashboardCompanyTable(tables.Table):
     )
 
     def __init__(self, *args, **kwargs):
-        super(DashboardCompanyTable, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def render_revenue(self, value, record):
         return f"{record.currency_symbol}{value:.2f}"
@@ -30,7 +29,7 @@ class DashboardCompanyTable(tables.Table):
         return f"{record.currency_symbol}{value:.2f}"
 
     def render_latest_financial_date(self, value, record):
-        delta = relativedelta.relativedelta(datetime.now(pytz.utc), record.latest_financial_date)
+        delta = relativedelta.relativedelta(datetime.now(timezone.utc), record.latest_financial_date)
         if delta.years == 0:
             year_str = ""
         else:
@@ -39,7 +38,7 @@ class DashboardCompanyTable(tables.Table):
         return rtn_str
 
     def render_latest_share_price_date(self, value, record):
-        delta = relativedelta.relativedelta(datetime.now(pytz.utc), record.latest_share_price_date)
+        delta = relativedelta.relativedelta(datetime.now(timezone.utc), record.latest_share_price_date)
         if delta.years == 0:
             year_str = ""
         else:

@@ -49,7 +49,7 @@ class Transactions(models.Model):
         else:
             pass
 
-        super(Transactions, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 class Cash(models.Model):
@@ -84,7 +84,7 @@ class Cash(models.Model):
         else:
             pass
 
-        super(Cash, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 class WishList(models.Model):

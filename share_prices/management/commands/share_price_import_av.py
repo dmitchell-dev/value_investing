@@ -1,4 +1,3 @@
-from multiprocessing.sharedctypes import Value
 from django.core.management.base import BaseCommand
 from ancillary_info.models import Companies, Params
 from share_prices.models import SharePrices
