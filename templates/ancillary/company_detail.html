@@ -1,131 +1,141 @@
 {% extends '_base.html' %}
 
-{% block title %}Companies{% endblock title %}
+{% block title %}{{ company.company_name }}{% endblock title %}
 
 {% block sidebar %}
-    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
-        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
-            <span class="sidebar-heading">Companies</span>
-            <hr>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'ancillary:company_update' company.pk %}">
-                    <i class="fa fa-wrench" aria-hidden="true"></i>
-                    Update Company
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'ancillary:company_delete' company.pk %}">
-                    <i class="fa fa-trash" aria-hidden="true"></i>
-                    Delete Company
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
+<div class="sidebar-wrapper">
+  <span class="sidebar-heading">Companies</span>
+  <hr>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'ancillary:company_update' company.pk %}">
+        <i class="fa fa-wrench"></i> Update Company
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'ancillary:company_delete' company.pk %}" style="color: var(--accent-red) !important;">
+        <i class="fa fa-trash"></i> Delete Company
+      </a>
+    </li>
+  </ul>
+  <hr>
+  <div class="sidebar-info">
+    <div><span class="label">TIDM:</span> <span class="value">{{ company.tidm }}</span></div>
+    <div class="mt-1"><span class="label">Exchange:</span> <span class="value">{{ company.exchange }}</span></div>
+    <div class="mt-1"><span class="label">Sector:</span> <span class="value">{{ company.sector }}</span></div>
+  </div>
+</div>
 {% endblock sidebar %}
 
 {% block content %}
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="text-center alert alert-{{ message.tags }}">
-                {{ message|safe }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    <div class="container">
-        <div class="row">
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Name</h5>
-                        <p class="card-text">{{ company.company_name }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">TIDM</h5>
-                        <p class="card-text">{{ company.tidm }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-3">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Type</h5>
-                        <p class="card-text">{{ company.comp_type }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Sector</h5>
-                        <p class="card-text">{{ company.sector }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Industry</h5>
-                        <p class="card-text">{{ company.industry }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Exchange</h5>
-                        <p class="card-text">{{ company.exchange }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Country</h5>
-                        <p class="card-text">{{ company.country }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Currency</h5>
-                        <p class="card-text">{{ company.currency }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Source</h5>
-                        <p class="card-text">{{ company.company_source }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Summary</h5>
-                        <p class="card-text">{{ company.company_summary }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message|safe }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+  {% endfor %}
+{% endif %}
+
+<div class="page-header">
+  <h1><i class="fas fa-building me-2"></i>{{ company.company_name }}</h1>
+  <p>{{ company.tidm }} &mdash; {{ company.exchange }}</p>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Name</div>
+        <div class="card-text">{{ company.company_name }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">TIDM</div>
+        <div class="card-text">{{ company.tidm }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-sm-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Type</div>
+        <div class="card-text">{{ company.comp_type }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Sector</div>
+        <div class="card-text">{{ company.sector }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Industry</div>
+        <div class="card-text">{{ company.industry }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Exchange</div>
+        <div class="card-text">{{ company.exchange }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Country</div>
+        <div class="card-text">{{ company.country }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Currency</div>
+        <div class="card-text">{{ company.currency }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">Source</div>
+        <div class="card-text">{{ company.company_source }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header"><i class="fas fa-align-left me-2"></i>Summary</div>
+      <div class="card-body">
+        <p class="card-text" style="line-height: 1.7;">{{ company.company_summary }}</p>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock content %}

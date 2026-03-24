@@ -1,16 +1,38 @@
 {% extends '_base.html' %}
 {% load render_table from django_tables2 %}
 
-{% block title %}Companies Search{% endblock title %}
+{% block title %}Company Search Results{% endblock title %}
 
 {% block sidebar %}
-
-    <span class="sidebar-heading">Company Search Results</span>
-
+<div class="sidebar-wrapper">
+  <span class="sidebar-heading">Company Search</span>
+  <hr>
+  <div class="px-2 pb-2">
+    <form class="default-search" action="{% url 'ancillary:search_results' %}" method="get">
+      <input name="q" type="text" placeholder="Search again…" aria-label="Search" value="{{ request.GET.q }}">
+      <button type="submit" class="btn btn-primary btn-sm">
+        <i class="fas fa-search"></i>
+      </button>
+    </form>
+  </div>
+  <hr>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'ancillary:company_list' %}">
+        <i class="fas fa-arrow-left"></i> All Companies
+      </a>
+    </li>
+  </ul>
+</div>
 {% endblock sidebar %}
 
 {% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-search me-2"></i>Search Results</h1>
+  {% if request.GET.q %}
+    <p>Results for <strong>{{ request.GET.q }}</strong></p>
+  {% endif %}
+</div>
 
-    {% render_table results_table %}
-
+{% render_table results_table %}
 {% endblock content %}

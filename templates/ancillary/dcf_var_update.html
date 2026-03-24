@@ -1,23 +1,46 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Companies DCF Variables Update{% endblock title %}
+{% block title %}DCF Variables Update{% endblock title %}
 
 {% block content %}
-    <h1>DCF Variables Update</h1>
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+
+    <div class="page-header">
+      <h1><i class="fas fa-calculator me-2" style="color: var(--accent-yellow);"></i>DCF Variables Update</h1>
+      <p>{{ company_name }}</p>
+    </div>
+
     {% if messages %}
-        {% for message in messages %}
-            <div class="text-center alert alert-{{ message.tags }}">
-                {{ message|safe }}
-            </div>
-        {% endfor %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message|safe }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
     {% endif %}
-    <p>{{ company_name }}</p>
 
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <input type="submit" value="Save" />
-    </form>
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-sliders-h me-2"></i>Discounted Cash Flow Parameters
+      </div>
+      <div class="card-body p-4">
+        <form action="" method="post">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-success">
+              <i class="fas fa-save me-1"></i> Save Changes
+            </button>
+            <a href="{% url 'ancillary:company_list' %}" class="btn btn-secondary">
+              <i class="fas fa-arrow-left me-1"></i> Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
 
+  </div>
+</div>
 {% endblock content %}

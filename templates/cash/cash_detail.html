@@ -1,60 +1,67 @@
 {% extends '_base.html' %}
 
-{% block title %}Cash{% endblock title %}
+{% block title %}Cash Transaction Detail{% endblock title %}
 
 {% block sidebar %}
-    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
-        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
-            <span class="sidebar-heading">Cash</span>
-            <hr>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'portfolio:cash_update' cash.pk %}">
-                    <i class="fa fa-wrench" aria-hidden="true"></i>
-                    Update Cash Transaction
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'portfolio:cash_delete' cash.pk %}">
-                    <i class="fa fa-trash" aria-hidden="true"></i>
-                    Delete Cash Transaction
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
+<div class="sidebar-wrapper">
+  <span class="sidebar-heading">Cash</span>
+  <hr>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:cash_update' cash.pk %}">
+        <i class="fa fa-wrench"></i> Update Transaction
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:cash_delete' cash.pk %}" style="color: var(--accent-red) !important;">
+        <i class="fa fa-trash"></i> Delete Transaction
+      </a>
+    </li>
+  </ul>
+  <hr>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:cash_list' %}">
+        <i class="fas fa-arrow-left"></i> Back to Cash List
+      </a>
+    </li>
+  </ul>
+</div>
 {% endblock sidebar %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Cash Value</h5>
-                        <p class="card-text">£{{ cash.cash_value }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Decision</h5>
-                        <p class="card-text">{{ cash.decision }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Date Dealt</h5>
-                        <p class="card-text">{{ cash.date_dealt }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="page-header">
+  <h1><i class="fas fa-money-bill-wave me-2" style="color: var(--accent-green);"></i>Cash Transaction Detail</h1>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Cash Value</div>
+        <div class="card-text">£{{ cash.cash_value }}</div>
+      </div>
     </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Decision</div>
+        <div class="card-text">{{ cash.decision }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">Date Dealt</div>
+        <div class="card-text">{{ cash.date_dealt }}</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock content %}

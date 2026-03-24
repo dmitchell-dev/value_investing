@@ -1,32 +1,54 @@
 {% extends '_base.html' %}
 {% load render_table from django_tables2 %}
 
-{% block title %}DCF Variables{% endblock title %}
+{% block title %}DCF Variables — {{ company_name }}{% endblock title %}
 
 {% block sidebar %}
-
-    <span class="sidebar-heading">DCF Variables - {{ company_name }}</span>
-    <hr>
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'ancillary:dcf_var_update' company.pk %}">
-            <i class="fa fa-wrench" aria-hidden="true"></i>
-            Update DCF
-            </a>
-        </li>
-    </ul>
+<div class="sidebar-wrapper">
+  <span class="sidebar-heading">DCF Variables</span>
+  <hr>
+  <div class="sidebar-info mb-2">
+    <span class="value fw-semibold">{{ company_name }}</span>
+  </div>
+  <hr>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'ancillary:dcf_var_update' company.pk %}">
+        <i class="fa fa-wrench"></i> Update DCF Variables
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'ancillary:company_list' %}">
+        <i class="fas fa-arrow-left"></i> All Companies
+      </a>
+    </li>
+  </ul>
+</div>
 {% endblock sidebar %}
 
 {% block content %}
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="text-center alert alert-{{ message.tags }}">
-                {{ message|safe }}
-            </div>
-        {% endfor %}
-    {% endif %}
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message|safe }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+{% endif %}
 
+<div class="page-header">
+  <h1><i class="fas fa-calculator me-2" style="color: var(--accent-blue);"></i>DCF Variables</h1>
+  <p>Discounted Cash Flow inputs for <strong>{{ company_name }}</strong></p>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <i class="fas fa-sliders-h me-2"></i>DCF Model Parameters
+  </div>
+  <div class="card-body p-0">
     {% render_table data %}
-    
+  </div>
+</div>
+
 {% endblock content %}

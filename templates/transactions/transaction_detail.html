@@ -1,94 +1,107 @@
 {% extends '_base.html' %}
 
-{% block title %}Transactions{% endblock title %}
+{% block title %}Transaction Detail{% endblock title %}
 
 {% block sidebar %}
-    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
-        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
-            <span class="sidebar-heading">Transactions</span>
-            <hr>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'portfolio:transaction_update' transaction.pk %}">
-                    <i class="fa fa-wrench" aria-hidden="true"></i>
-                    Update Transaction
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'portfolio:transaction_delete' transaction.pk %}">
-                    <i class="fa fa-trash" aria-hidden="true"></i>
-                    Delete Transaction
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
+<div class="sidebar-wrapper">
+  <span class="sidebar-heading">Transactions</span>
+  <hr>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:transaction_update' transaction.pk %}">
+        <i class="fa fa-wrench"></i> Update Transaction
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:transaction_delete' transaction.pk %}" style="color: var(--accent-red) !important;">
+        <i class="fa fa-trash"></i> Delete Transaction
+      </a>
+    </li>
+  </ul>
+  <hr>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:transaction_list' %}">
+        <i class="fas fa-arrow-left"></i> Back to Transactions
+      </a>
+    </li>
+  </ul>
+</div>
 {% endblock sidebar %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Company</h5>
-                        <p class="card-text">{{ transaction.company }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Decision</h5>
-                        <p class="card-text">{{ transaction.decision }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Number of Stock</h5>
-                        <p class="card-text">{{ transaction.num_stock }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Investment Price</h5>
-                        <p class="card-text">£{{ transaction.price }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Investment fees</h5>
-                        <p class="card-text">£{{ transaction.fees }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Date Dealt</h5>
-                        <p class="card-text">{{ transaction.date_dealt }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Reference</h5>
-                        <p class="card-text">{{ transaction.reference }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="page-header">
+  <h1><i class="fas fa-exchange-alt me-2" style="color: var(--accent-blue);"></i>Transaction Detail</h1>
+  <p>{{ transaction.reference }}</p>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Company</div>
+        <div class="card-text">{{ transaction.company }}</div>
+      </div>
     </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Decision</div>
+        <div class="card-text">
+          <span class="badge {% if transaction.decision == 'Buy' %}bg-success{% elif transaction.decision == 'Sell' %}bg-danger{% else %}bg-secondary{% endif %}">
+            {{ transaction.decision }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-sm-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Number of Stock</div>
+        <div class="card-text">{{ transaction.num_stock }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Investment Price</div>
+        <div class="card-text">£{{ transaction.price }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Investment Fees</div>
+        <div class="card-text">£{{ transaction.fees }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Date Dealt</div>
+        <div class="card-text">{{ transaction.date_dealt }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Reference</div>
+        <div class="card-text text-secondary">{{ transaction.reference }}</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock content %}

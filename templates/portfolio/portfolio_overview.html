@@ -10,73 +10,82 @@ updated_at = models.DateTimeField(auto_now=True)
 -->
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Company</h5>
-                        <p class="card-text">{{ transaction.company }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Decision</h5>
-                        <p class="card-text">{{ transaction.decision }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Number of Stock</h5>
-                        <p class="card-text">{{ transaction.num_stock }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Transaction Price</h5>
-                        <p class="card-text">£{{ transaction.price }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Transaction fees</h5>
-                        <p class="card-text">£{{ transaction.fees }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Date Dealt</h5>
-                        <p class="card-text">{{ transaction.date_dealt }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Reference</h5>
-                        <p class="card-text">{{ transaction.reference }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="page-header">
+  <h1><i class="fas fa-exchange-alt me-2" style="color: var(--accent-blue);"></i>Transaction Detail</h1>
+</div>
 
-        <a class="btn btn-primary" href="{% url 'portfolio:transaction_update' transaction.pk %}">Edit</a>
-        <a class="btn btn-danger" href="{% url 'portfolio:transaction_delete' transaction.pk %}">Delete</a>
-
+<div class="row g-3 mb-3">
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Company</div>
+        <div class="card-text">{{ transaction.company }}</div>
+      </div>
     </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Decision</div>
+        <div class="card-text">{{ transaction.decision }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-sm-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Number of Stock</div>
+        <div class="card-text">{{ transaction.num_stock }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Transaction Price</div>
+        <div class="card-text">£{{ transaction.price }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Transaction Fees</div>
+        <div class="card-text">£{{ transaction.fees }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Date Dealt</div>
+        <div class="card-text">{{ transaction.date_dealt }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Reference</div>
+        <div class="card-text">{{ transaction.reference }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex gap-2">
+  <a class="btn btn-primary" href="{% url 'portfolio:transaction_update' transaction.pk %}">
+    <i class="fas fa-edit me-1"></i> Edit
+  </a>
+  <a class="btn btn-danger" href="{% url 'portfolio:transaction_delete' transaction.pk %}">
+    <i class="fas fa-trash me-1"></i> Delete
+  </a>
+</div>
 
 {% endblock content %}

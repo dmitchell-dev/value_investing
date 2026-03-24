@@ -1,12 +1,40 @@
 {% extends '_base.html' %}
-{% load crispy_forms_tags %}
 
-{% block title %}Companies{% endblock title %}
+{% block title %}Delete Company{% endblock title %}
 
 {% block content %}
-    <h1>Company Delete</h1>
-    <form action="" method="post">{% csrf_token %}
-        <p>Are you sure you want to delete "{{ companies.company_name }}"?</p>
-        <input class="btn btn-success" type="submit" value="Confirm">
-    </form>
+<div class="row justify-content-center">
+  <div class="col-lg-5">
+
+    <div class="page-header">
+      <h1><i class="fas fa-trash me-2" style="color: var(--accent-red);"></i>Delete Company</h1>
+      <p>This action cannot be undone.</p>
+    </div>
+
+    <div class="card" style="border-color: var(--accent-red) !important;">
+      <div class="card-header" style="background-color: rgba(248,81,73,0.1) !important; border-bottom-color: var(--accent-red) !important;">
+        <i class="fas fa-exclamation-triangle me-2" style="color: var(--accent-red);"></i>Confirm Deletion
+      </div>
+      <div class="card-body p-4">
+        <p class="mb-4">
+          Are you sure you want to permanently delete
+          <strong style="color: var(--text-primary);">{{ companies.company_name }}</strong>?
+          All associated data will be removed.
+        </p>
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-danger">
+              <i class="fas fa-trash me-1"></i> Yes, Delete
+            </button>
+            <a href="{% url 'ancillary:company_list' %}" class="btn btn-secondary">
+              <i class="fas fa-arrow-left me-1"></i> Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
 {% endblock content %}

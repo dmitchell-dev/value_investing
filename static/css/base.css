@@ -1,134 +1,807 @@
-h1 {
-    color: rgb(100, 74, 155);
+/* ============================================================
+   VALUE INVESTING - DARK MODE DESIGN SYSTEM
+   Bloomberg Terminal meets GitHub Dark
+   ============================================================ */
+
+/* ---------- Google Fonts ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ---------- CSS Custom Properties ---------- */
+:root {
+  --bg:           #0d1117;
+  --surface:      #161b22;
+  --surface-2:    #21262d;
+  --border:       #30363d;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --accent-green: #3fb950;
+  --accent-red:   #f85149;
+  --accent-blue:  #58a6ff;
+  --accent-yellow:#d29922;
+  --navbar-height: 56px;
+  --sidebar-width: 220px;
+  --radius:       0.5rem;
+  --shadow:       0 4px 16px rgba(0,0,0,0.4);
+  --transition:   0.15s ease;
 }
 
-.bookcover {
-    height: 300px;
-    width: auto;
+/* ---------- Reset & Base ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-.icon-blue {
-    color: #4679BD;
-  }
-
-/* Bootstrap does not have css for message.ERROR */
-.alert-error {
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
+html, body {
+  background-color: var(--bg) !important;
+  color: var(--text-primary) !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  scroll-behavior: smooth;
 }
 
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* ---------- Typography ---------- */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary) !important;
+  font-weight: 600;
+}
+
+a {
+  color: var(--accent-blue);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+a:hover {
+  color: #79c0ff;
+  text-decoration: none;
+}
+
+p {
+  color: var(--text-primary);
+}
+
+hr {
+  border-color: var(--border) !important;
+  opacity: 1;
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+  background-color: var(--surface) !important;
+  border-bottom: 1px solid var(--border) !important;
+  height: var(--navbar-height);
+  z-index: 1030;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.4);
+}
+
+.navbar-brand {
+  color: var(--text-primary) !important;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.01em;
+}
+.navbar-brand:hover {
+  color: var(--accent-blue) !important;
+}
+
+.navbar-nav .nav-link {
+  color: var(--text-secondary) !important;
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius);
+  transition: color var(--transition), background-color var(--transition);
+}
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: var(--text-primary) !important;
+  background-color: var(--surface-2);
+}
+
+.navbar-toggler {
+  border-color: var(--border) !important;
+}
+.navbar-toggler-icon {
+  filter: invert(1);
+}
+
+/* Dropdown */
+.dropdown-menu {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  padding: 0.25rem 0;
+}
+.dropdown-item {
+  color: var(--text-secondary) !important;
+  padding: 0.45rem 1rem;
+  font-size: 0.875rem;
+  transition: background-color var(--transition), color var(--transition);
+}
+.dropdown-item:hover, .dropdown-item:focus {
+  background-color: var(--surface-2) !important;
+  color: var(--text-primary) !important;
+}
+.dropdown-divider {
+  border-color: var(--border) !important;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar-wrapper {
+  background-color: var(--surface);
+  border-right: 1px solid var(--border);
+  min-height: calc(100vh - var(--navbar-height));
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  position: sticky;
+  top: var(--navbar-height);
+  height: calc(100vh - var(--navbar-height));
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-wrapper .sidebar-heading {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary) !important;
+  padding: 1rem 1rem 0.25rem;
+  display: block;
+}
+
+.sidebar-wrapper .nav-link {
+  color: var(--text-secondary) !important;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius);
+  margin: 0.1rem 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color var(--transition), background-color var(--transition);
+}
+.sidebar-wrapper .nav-link:hover {
+  color: var(--text-primary) !important;
+  background-color: var(--surface-2);
+}
+.sidebar-wrapper .nav-link.active {
+  color: var(--accent-blue) !important;
+  background-color: rgba(88, 166, 255, 0.1);
+}
+.sidebar-wrapper .nav-link i {
+  width: 16px;
+  text-align: center;
+  color: inherit;
+}
+
+/* Info items in sidebar (non-link) */
+.sidebar-info {
+  padding: 0.25rem 1rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.sidebar-info .label {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.sidebar-info .value {
+  color: var(--text-primary);
+}
+
+/* Legacy sidebar classes (used in existing templates) */
+.col-auto.bg-light,
+div.bg-light.d-flex {
+  background-color: var(--surface) !important;
+}
+
+.sidebar-heading {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary) !important;
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow);
+  transition: box-shadow var(--transition);
+}
+.card:hover {
+  box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+}
+.card-header {
+  background-color: var(--surface-2) !important;
+  border-bottom: 1px solid var(--border) !important;
+  color: var(--text-primary) !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.75rem 1rem;
+}
+.card-body {
+  color: var(--text-primary) !important;
+}
+.card-title {
+  color: var(--text-secondary) !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.4rem;
+}
+.card-text {
+  color: var(--text-primary) !important;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Stat cards (overview/hero style) */
+.stat-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  text-align: center;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.stat-card:hover {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 1px rgba(88, 166, 255, 0.3);
+}
+.stat-card .stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.stat-card .stat-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* ---------- Tables ---------- */
+.table {
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+  font-size: 0.875rem;
+}
+.table > :not(caption) > * > * {
+  background-color: var(--bg) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+  padding: 0.5rem 0.75rem;
+}
+.table thead th {
+  background-color: var(--surface) !important;
+  color: var(--text-secondary) !important;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border) !important;
+}
+.table tbody tr:hover > * {
+  background-color: var(--surface-2) !important;
+}
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+  background-color: rgba(33, 38, 45, 0.5) !important;
+}
+.table-striped > tbody > tr:nth-of-type(even) > * {
+  background-color: var(--bg) !important;
+}
+.table-dark {
+  --bs-table-bg: var(--surface) !important;
+  --bs-table-striped-bg: var(--surface-2) !important;
+  --bs-table-hover-bg: var(--surface-2) !important;
+  --bs-table-border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+.table-sm > :not(caption) > * > * {
+  padding: 0.3rem 0.5rem;
+}
 .table_wide {
-    position: absolute; 
-    left: 25px;
-    width: 95%;
+  width: 100%;
+  overflow-x: auto;
+}
+.table_small_font {
+  font-size: 0.8rem;
 }
 
-.table_small_font{
-    font-size: 12px;
+/* django-tables2 generated tables */
+.table-container {
+  overflow-x: auto;
 }
 
-/*
- * Searchbar
- */
+/* ---------- Forms & Inputs ---------- */
+.form-control, .form-select {
+  background-color: var(--surface-2) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-primary) !important;
+  border-radius: var(--radius) !important;
+  font-size: 0.875rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.form-control:focus, .form-select:focus {
+  background-color: var(--surface-2) !important;
+  border-color: var(--accent-blue) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15) !important;
+  outline: none;
+}
+.form-control::placeholder {
+  color: var(--text-secondary) !important;
+  opacity: 0.7;
+}
+.form-label {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.3rem;
+}
+.form-text {
+  color: var(--text-secondary) !important;
+}
+.invalid-feedback {
+  color: var(--accent-red);
+}
+
+/* Crispy forms overrides */
+.asteriskField {
+  color: var(--accent-red);
+}
+label {
+  color: var(--text-secondary) !important;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--radius);
+  padding: 0.45rem 1rem;
+  transition: all var(--transition);
+}
+.btn-primary {
+  background-color: #1f6feb !important;
+  border-color: #1f6feb !important;
+  color: #fff !important;
+}
+.btn-primary:hover {
+  background-color: #388bfd !important;
+  border-color: #388bfd !important;
+}
+.btn-success {
+  background-color: #238636 !important;
+  border-color: #238636 !important;
+  color: #fff !important;
+}
+.btn-success:hover {
+  background-color: #2ea043 !important;
+  border-color: #2ea043 !important;
+}
+.btn-danger {
+  background-color: #b91c1c !important;
+  border-color: #b91c1c !important;
+  color: #fff !important;
+}
+.btn-danger:hover {
+  background-color: #dc2626 !important;
+  border-color: #dc2626 !important;
+}
+.btn-secondary {
+  background-color: var(--surface-2) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+.btn-secondary:hover {
+  background-color: var(--border) !important;
+}
+.btn-outline-primary {
+  color: var(--accent-blue) !important;
+  border-color: var(--accent-blue) !important;
+}
+.btn-outline-primary:hover {
+  background-color: rgba(88, 166, 255, 0.1) !important;
+}
+
+/* ---------- Badges ---------- */
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3em 0.6em;
+  border-radius: 4px;
+}
+.bg-success {
+  background-color: #238636 !important;
+}
+.bg-danger {
+  background-color: #b91c1c !important;
+}
+.bg-primary {
+  background-color: #1f6feb !important;
+}
+.bg-secondary {
+  background-color: var(--surface-2) !important;
+  color: var(--text-primary) !important;
+}
+.bg-warning {
+  background-color: var(--accent-yellow) !important;
+  color: #000 !important;
+}
+
+/* Financial value utility classes */
+.value-positive {
+  color: var(--accent-green) !important;
+  font-weight: 600;
+}
+.value-negative {
+  color: var(--accent-red) !important;
+  font-weight: 600;
+}
+.value-neutral {
+  color: var(--text-secondary) !important;
+}
+
+/* ---------- Alerts ---------- */
+.alert {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+.alert-success {
+  background-color: rgba(35, 134, 54, 0.15) !important;
+  border-color: #238636 !important;
+  color: var(--accent-green) !important;
+}
+.alert-danger,
+.alert-error {
+  background-color: rgba(185, 28, 28, 0.15) !important;
+  border-color: #b91c1c !important;
+  color: var(--accent-red) !important;
+}
+.alert-warning {
+  background-color: rgba(210, 153, 34, 0.15) !important;
+  border-color: var(--accent-yellow) !important;
+  color: var(--accent-yellow) !important;
+}
+.alert-info {
+  background-color: rgba(88, 166, 255, 0.1) !important;
+  border-color: var(--accent-blue) !important;
+  color: var(--accent-blue) !important;
+}
+.btn-close {
+  filter: invert(1) grayscale(1);
+  opacity: 0.6;
+}
+.btn-close:hover {
+  opacity: 1;
+}
+
+/* ---------- List Groups ---------- */
+.list-group-item {
+  background-color: var(--surface) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+  font-size: 0.875rem;
+  padding: 0.65rem 1rem;
+  transition: background-color var(--transition);
+}
+.list-group-item:hover {
+  background-color: var(--surface-2) !important;
+}
+.list-group-flush .list-group-item {
+  border-left: 0;
+  border-right: 0;
+}
+
+/* ---------- Accordion ---------- */
+.accordion-item {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  margin-bottom: 0.25rem;
+}
+.accordion-button {
+  background-color: var(--surface-2) !important;
+  color: var(--text-primary) !important;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: var(--radius) !important;
+}
+.accordion-button:not(.collapsed) {
+  background-color: var(--surface) !important;
+  color: var(--accent-blue) !important;
+  box-shadow: none !important;
+}
+.accordion-button::after {
+  filter: invert(1);
+}
+.accordion-button:focus {
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15) !important;
+}
+.accordion-body {
+  background-color: var(--surface) !important;
+  color: var(--text-primary) !important;
+  font-size: 0.875rem;
+}
+
+/* ---------- Modals ---------- */
+.modal-content {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  color: var(--text-primary) !important;
+}
+.modal-header {
+  border-bottom: 1px solid var(--border) !important;
+}
+.modal-footer {
+  border-top: 1px solid var(--border) !important;
+}
+.modal-backdrop.show {
+  opacity: 0.7;
+}
+
+/* ---------- Pagination (django-tables2) ---------- */
+.pagination .page-link {
+  background-color: var(--surface) !important;
+  border-color: var(--border) !important;
+  color: var(--accent-blue) !important;
+  font-size: 0.875rem;
+}
+.pagination .page-link:hover {
+  background-color: var(--surface-2) !important;
+  color: var(--text-primary) !important;
+}
+.pagination .page-item.active .page-link {
+  background-color: #1f6feb !important;
+  border-color: #1f6feb !important;
+  color: #fff !important;
+}
+.pagination .page-item.disabled .page-link {
+  background-color: var(--bg) !important;
+  color: var(--text-secondary) !important;
+}
+
+/* ---------- Plotly Chart Containers ---------- */
+.responsive-plot,
+.plotly-chart {
+  width: 100%;
+  min-height: 300px;
+  background-color: transparent;
+}
+
+/* Override white Plotly backgrounds via JS-injected SVG */
+.js-plotly-plot .plotly .main-svg {
+  background: transparent !important;
+}
+
+/* ---------- Search Form ---------- */
+form.default-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  flex-wrap: wrap;
+}
 form.default-search input[type=text] {
-  padding: 10px;
-  font-size: 15px;
-  border: 1px solid grey;
-  margin-right: 15px;
-  margin-left: 15px;
-  float: left;
-  width: 50%;
-  height: 38px;
-  background: #f1f1f1;
+  background-color: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  padding: 0.45rem 0.75rem;
+  font-size: 0.875rem;
+  width: 150px;
+  transition: border-color var(--transition);
+  float: none;
+  height: auto;
+  margin: 0;
+}
+form.default-search input[type=text]:focus {
+  border-color: var(--accent-blue);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
 }
 
-/*
- * Sidebar
- */
+/* ---------- Text Utilities Override ---------- */
+.text-muted {
+  color: var(--text-secondary) !important;
+}
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+.text-light {
+  color: var(--text-primary) !important;
+}
+.text-dark {
+  color: var(--text-primary) !important;
+}
+.text-success {
+  color: var(--accent-green) !important;
+}
+.text-danger {
+  color: var(--accent-red) !important;
+}
+.text-warning {
+  color: var(--accent-yellow) !important;
+}
+.text-info {
+  color: var(--accent-blue) !important;
+}
+.text-primary {
+  color: var(--accent-blue) !important;
+}
 
- .sidebar {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 100; /* Behind the navbar */
-    padding: 60px 0 0; /* Height of navbar */
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-  }
+/* ---------- Background Utilities Override ---------- */
+.bg-light {
+  background-color: var(--surface) !important;
+  color: var(--text-primary) !important;
+}
+.bg-white {
+  background-color: var(--surface) !important;
+  color: var(--text-primary) !important;
+}
+.bg-dark {
+  background-color: var(--bg) !important;
+}
 
-  .sidebar-sticky {
-    position: relative;
-    top: 0;
-    height: calc(100vh - 48px);
-    padding-top: .5rem;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-  }
-  
-  @supports ((position: -webkit-sticky) or (position: sticky)) {
-    .sidebar-sticky {
-      position: -webkit-sticky;
-      position: sticky;
-    }
-  }
-  
-  .sidebar .nav-link {
-    font-weight: 500;
-    color: rgb(197, 96, 21);
-  }
-  
-  .sidebar .nav-link .feather {
-    margin-right: 4px;
-    color: #999;
-  }
-  
-  .sidebar .nav-link.active {
-    color: #007bff;
-  }
-  
-  .sidebar .nav-link:hover .feather,
-  .sidebar .nav-link.active .feather {
-    color: inherit;
-  }
-  
-  .sidebar-heading {
-    font-size: .75rem;
-    text-transform: uppercase;
-    margin-left: 15px;
-    color: #999;
-  }
+/* ---------- Border Utilities ---------- */
+.border {
+  border-color: var(--border) !important;
+}
 
-/*
- * Content
- */
+/* ---------- Shadow Override ---------- */
+.shadow, .shadow-sm, .shadow-lg {
+  box-shadow: var(--shadow) !important;
+}
 
- [role="main"] {
-    padding-top: 48px; /* Space for fixed navbar */
-  }
+/* ---------- Icon Colors ---------- */
+.icon-blue {
+  color: var(--accent-blue) !important;
+}
 
-/*
- * Navbar
- */
+/* ---------- Main Layout ---------- */
+.main-layout {
+  display: flex;
+  min-height: calc(100vh - var(--navbar-height));
+  margin-top: var(--navbar-height);
+}
 
- .navbar {
-    /* position: sticky; */
-    z-index: 101; /* In front of the sidebar */
-  }
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 1.5rem;
+  background-color: var(--bg);
+}
 
-  .navbar .form-control {
-    padding: .75rem 1rem;
-    border-width: 0;
-    border-radius: 0;
-  }
-  
-  .form-control-dark {
-    color: #fff;
-    background-color: rgba(255, 255, 255, .1);
-    border-color: rgba(255, 255, 255, .1);
-  }
-  
-  .form-control-dark:focus {
-    border-color: transparent;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
-  }
+/* ---------- Page Header ---------- */
+.page-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.page-header h1, .page-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+.page-header p {
+  color: var(--text-secondary);
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+}
+
+/* ---------- Flash Messages ---------- */
+.messages-container {
+  margin-bottom: 1rem;
+}
+
+/* ---------- Hero Section (Home) ---------- */
+.hero-section {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+.hero-section h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+}
+.hero-section p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  max-width: 560px;
+  margin: 0 auto 2rem;
+}
+
+/* Quick nav cards on home */
+.quick-nav-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+.quick-nav-card:hover {
+  border-color: var(--accent-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  text-decoration: none;
+}
+.quick-nav-card .icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--accent-blue);
+}
+.quick-nav-card .title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.quick-nav-card .desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* ---------- Data/DL rows ---------- */
+dl dt {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+dl dd {
+  color: var(--text-primary);
+}
+
+/* ---------- Container tweaks ---------- */
+.container, .container-fluid {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* ---------- Rounded adjustments ---------- */
+.rounded-3 {
+  border-radius: var(--radius) !important;
+}
+
+/* ---------- Select2 / django-tables2 filter row ---------- */
+select.form-select option {
+  background-color: var(--surface-2);
+  color: var(--text-primary);
+}

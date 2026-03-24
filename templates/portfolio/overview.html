@@ -2,109 +2,148 @@
 {% load crispy_forms_tags %}
 {% load render_table from django_tables2 %}
 
-{% block title %}Portfolio{% endblock title %}
+{% block title %}Portfolio Overview{% endblock title %}
 
 {% block sidebar %}
-    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
-        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
-            <span class="sidebar-heading">Portfolio Overview</span>
-        </div>
-    </div>
+<div class="sidebar-wrapper">
+  <span class="sidebar-heading">Portfolio</span>
+  <hr>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link active" href="{% url 'portfolio:portfolio_overview' %}">
+        <i class="fas fa-chart-pie"></i> Overview
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:wishlist_list' %}">
+        <i class="fas fa-star"></i> Wish List
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:transaction_list' %}">
+        <i class="fas fa-exchange-alt"></i> Transactions
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:cash_list' %}">
+        <i class="fas fa-money-bill-wave"></i> Cash
+      </a>
+    </li>
+  </ul>
+</div>
 {% endblock sidebar %}
 
 {% block content %}
-    
-    <div class="container border shadow bg-light rounded py-2 mb-3">
-        <div class="row">
-            <div class="col-3">
-                <div class="card border-0 shadow p-3 mb-3 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Shares Purchased</h5>
-                        <p class="card-text">{{ total_dict.total_initial_value }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card border-0 shadow p-3 mb-3 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Shares Holding</h5>
-                        <p class="card-text">{{ total_dict.total_latest_value }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card border-0 shadow p-3 mb-3 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Share Change</h5>
-                        <p class="card-text">{{ total_dict.total_value_change }} ({{ total_dict.total_pct_value_change }})</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card border-0 shadow p-3 mb-3 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Cash Holding</h5>
-                        <p class="card-text">{{ total_dict.latest_cash_bal }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-3 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Fees</h5>
-                        <p class="card-text">{{ total_dict.total_fees }} ({{ total_dict.total_pct_fees }})</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-3 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Sales Income</h5>
-                        <p class="card-text">{{ total_dict.income_from_selling }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-3 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Profit</h5>
-                        <p class="card-text">{{ total_dict.total_profit }} ({{ total_dict.total_pct_profit_change }})</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="page-header">
+  <h1><i class="fas fa-chart-pie me-2" style="color: var(--accent-blue);"></i>Portfolio Overview</h1>
+  <p>Summary of holdings, performance, and cash position.</p>
+</div>
 
-        <div class="accordion shadow mb-3" id="accordionExample">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingTwo">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                Detailed Summary
-                </button>
-                </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                        {% if results_table %}
-                            {% render_table results_table %}
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-6">
-                {% if graph %}
-                    {{ graph|safe }}
-                {% endif %}
-            </div>
-            <div class="col-6">
-                {% if graph2 %}
-                    {{ graph2|safe }}
-                {% endif %}
-            </div>
-        </div>
+<!-- Top stats row -->
+<div class="row g-3 mb-3">
+  <div class="col-sm-6 col-lg-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Shares Purchased</div>
+        <div class="card-text">{{ total_dict.total_initial_value }}</div>
+      </div>
     </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Shares Holding</div>
+        <div class="card-text">{{ total_dict.total_latest_value }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Share Change</div>
+        <div class="card-text">{{ total_dict.total_value_change }} ({{ total_dict.total_pct_value_change }})</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Cash Holding</div>
+        <div class="card-text">{{ total_dict.latest_cash_bal }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Secondary stats row -->
+<div class="row g-3 mb-3">
+  <div class="col-sm-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Fees</div>
+        <div class="card-text">{{ total_dict.total_fees }} ({{ total_dict.total_pct_fees }})</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Sales Income</div>
+        <div class="card-text">{{ total_dict.income_from_selling }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Profit</div>
+        <div class="card-text">{{ total_dict.total_profit }} ({{ total_dict.total_pct_profit_change }})</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detailed summary accordion -->
+<div class="accordion mb-3" id="accordionSummary">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingTwo">
+      <button class="accordion-button collapsed" type="button"
+              data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+              aria-expanded="false" aria-controls="collapseTwo">
+        <i class="fas fa-table me-2"></i>Detailed Summary
+      </button>
+    </h2>
+    <div id="collapseTwo" class="accordion-collapse collapse"
+         aria-labelledby="headingTwo" data-bs-parent="#accordionSummary">
+      <div class="accordion-body p-0">
+        {% if results_table %}
+          {% render_table results_table %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts row -->
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body p-2">
+        {% if graph %}
+          {{ graph|safe }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body p-2">
+        {% if graph2 %}
+          {{ graph2|safe }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock content %}

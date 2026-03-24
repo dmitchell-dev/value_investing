@@ -1,12 +1,37 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Cash{% endblock title %}
+{% block title %}Add Cash Transaction{% endblock title %}
 
 {% block content %}
-    <h1>Cash Create</h1>
-    <form action="" method="post">{% csrf_token %}
-        {{ form|crispy }}
-        <input type="submit" value="Save" />
-    </form>
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+
+    <div class="page-header">
+      <h1><i class="fas fa-plus-circle me-2" style="color: var(--accent-green);"></i>Add Cash Transaction</h1>
+      <p>Record a new cash deposit, withdrawal, or dividend.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-money-bill-wave me-2"></i>Cash Transaction Details
+      </div>
+      <div class="card-body p-4">
+        <form action="" method="post">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-success">
+              <i class="fas fa-save me-1"></i> Save Transaction
+            </button>
+            <a href="{% url 'portfolio:cash_list' %}" class="btn btn-secondary">
+              <i class="fas fa-arrow-left me-1"></i> Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
 {% endblock content %}

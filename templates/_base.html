@@ -1,89 +1,159 @@
 <!-- templates/_base.html -->
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="utf-8">
     <title>Value Investing - {% block title %}{% endblock title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--Bootstrap-->
+    <!-- Bootstrap 5.3.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmMpQE5L5ha/tiPGTFXV1tVdFIDU" crossorigin="anonymous"></script>
-    <!--CSS-->
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <!--Google Fonts-->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;900&display=swap" rel="stylesheet">
-    <!--Font Awesome-->
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/9744971a31.js" crossorigin="anonymous"></script>
-    <!--Chart JS-->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    <!--Plotly-->
+    <!-- Custom CSS (dark design system) -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <!-- Plotly -->
     <script src="{% static 'js/libs/plotly-latest.min.js' %}"></script>
-    <!--HTMX-->
+    <!-- HTMX 2.0.4 -->
     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
-
-
 </head>
 <body>
+
+  <!-- ===== NAVBAR ===== -->
   <header>
-    <!-- Fixed navbar -->
-    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light border-bottom shadow-sm">
+    <nav class="navbar navbar-expand-lg fixed-top">
       <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'home' %}">Value Investing</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+        <!-- Brand -->
+        <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+          <i class="fas fa-chart-line me-2" style="color: var(--accent-green);"></i>Value Investing
+        </a>
+
+        <!-- Mobile toggler -->
+        <button class="navbar-toggler border-0" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <!-- Nav links -->
+        <div class="collapse navbar-collapse" id="navbarMain">
           {% with request.resolver_match.url_name as url_name %}
-            <ul class="navbar-nav mr-auto">
-              <li class="nav-item">
-                <a class="nav-link {% if url_name == 'cape_home' %}active{% endif %}" href="{% url 'economic_data:cape_home' %}">Economic Data</span></a>
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link {% if url_name == 'cape_home' %}active{% endif %}"
+                 href="{% url 'economic_data:cape_home' %}">
+                <i class="fas fa-globe-americas me-1"></i>Economic Data
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if url_name == 'company_list' %}active{% endif %}"
+                 href="{% url 'ancillary:company_list' %}">
+                <i class="fas fa-building me-1"></i>Companies
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if url_name == 'dashboard_list' %}active{% endif %}"
+                 href="{% url 'dashboard_company:dashboard_list' %}">
+                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#"
+                 id="navbarPortfolio" role="button"
+                 data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-briefcase me-1"></i>Portfolio
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarPortfolio">
+                <li>
+                  <a class="dropdown-item" href="{% url 'portfolio:portfolio_overview' %}">
+                    <i class="fas fa-chart-pie me-2"></i>Overview
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'portfolio:wishlist_list' %}">
+                    <i class="fas fa-star me-2"></i>Wish List
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'portfolio:transaction_list' %}">
+                    <i class="fas fa-exchange-alt me-2"></i>Transactions
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'portfolio:cash_list' %}">
+                    <i class="fas fa-money-bill-wave me-2"></i>Cash Transactions
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if url_name == 'about' %}active{% endif %}"
+                 href="{% url 'about' %}">
+                <i class="fas fa-info-circle me-1"></i>About
+              </a>
+            </li>
+          </ul>
+
+          <!-- Auth controls (right-aligned) -->
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            {% if user.is_authenticated %}
+              <li class="nav-item d-flex align-items-center me-2">
+                <span class="text-secondary small">
+                  <i class="fas fa-user-circle me-1"></i>{{ user.email }}
+                </span>
               </li>
               <li class="nav-item">
-                <a class="nav-link {% if url_name == 'company_list' %}active{% endif %}" href="{% url 'ancillary:company_list' %}">Companies</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link {% if url_name == 'dashboard_list' %}active{% endif %}" href="{% url 'dashboard_company:dashboard_list' %}">Dashboard</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-                  Portfolio
+                <a class="nav-link {% if url_name == 'account_logout' %}active{% endif %}"
+                   href="{% url 'account_logout' %}">
+                  <i class="fas fa-sign-out-alt me-1"></i>Log Out
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="{% url 'portfolio:portfolio_overview' %}">Overview</a>
-                  <a class="dropdown-item" href="{% url 'portfolio:wishlist_list' %}">Wish List</a>
-                  <a class="dropdown-item" href="{% url 'portfolio:transaction_list' %}">Transactions</a>
-                  <a class="dropdown-item" href="{% url 'portfolio:cash_list' %}">Cash Transactions</a>
-                </div>
               </li>
+            {% else %}
               <li class="nav-item">
-                <a class="nav-link {% if url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">About</a>
+                <a class="nav-link {% if url_name == 'account_login' %}active{% endif %}"
+                   href="{% url 'account_login' %}">
+                  <i class="fas fa-sign-in-alt me-1"></i>Log In
+                </a>
               </li>
-              {% if user.is_authenticated %}
-                <li class="nav-item">
-                  <a class="nav-link {% if url_name == 'account_logout' %}active{% endif %}" href="{% url 'account_logout' %}">Log Out</a>
-                </li>
-              {% else %}
-                <li class="nav-item">
-                  <a class="nav-link {% if url_name == 'account_login' %}active{% endif %}" href="{% url 'account_login' %}">Log In</a>
-                </li>
-              {% endif %}
-            </ul>
+            {% endif %}
+          </ul>
           {% endwith %}
-        </div>
-      </div>
+        </div><!-- /.collapse -->
+
+      </div><!-- /.container-fluid -->
     </nav>
   </header>
 
-  <div class="container-fluid">
-    <div class="row flex-nowrap">
-      {% block sidebar %}
-      {% endblock sidebar %}
-      <div class="col py-3">
-        {% block content %}
-        {% endblock content %}
-      </div>
-    </div>
+  <!-- ===== MAIN LAYOUT ===== -->
+  <div class="main-layout">
+
+    <!-- Sidebar -->
+    {% block sidebar %}{% endblock sidebar %}
+
+    <!-- Content -->
+    <main class="main-content">
+
+      <!-- Flash messages -->
+      {% if messages %}
+        <div class="messages-container">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message|safe }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% block content %}{% endblock content %}
+
+    </main>
   </div>
 
   <!-- JavaScript -->

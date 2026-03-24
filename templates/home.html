@@ -5,12 +5,87 @@
 {% block title %}Home{% endblock title %}
 
 {% block content %}
-    <img class="homeimage" src="{% static 'img/investing.jpg' %}">
-    {% if user.is_authenticated %}
-        <p>Hi {{ user.email }}!</p>
-        <p><a href="{% url 'account_logout' %}">Log Out</a></p>
-    {% else %}
-        <p>You are not logged in</p>
-        <a href="{% url 'account_login' %}">Log In</a>
-    {% endif %}
+<div class="hero-section">
+  <h1>Value Investing Dashboard</h1>
+  <p>A professional toolkit for analysing equities using Warren Buffett's principles — intrinsic value, margin of safety, and long-term fundamentals.</p>
+
+  {% if user.is_authenticated %}
+    <p class="text-secondary mb-4">
+      <i class="fas fa-user-circle me-1" style="color: var(--accent-green);"></i>
+      Signed in as <strong class="text-primary">{{ user.email }}</strong>
+    </p>
+  {% else %}
+    <a href="{% url 'account_login' %}" class="btn btn-primary mb-4">
+      <i class="fas fa-sign-in-alt me-1"></i> Log In to Get Started
+    </a>
+  {% endif %}
+</div>
+
+<!-- Quick nav cards -->
+<div class="container" style="max-width: 960px;">
+  <div class="row g-3">
+    <div class="col-sm-6 col-lg-3">
+      <a href="{% url 'dashboard_company:dashboard_list' %}" class="quick-nav-card">
+        <div class="icon"><i class="fas fa-tachometer-alt"></i></div>
+        <div class="title">Dashboard</div>
+        <div class="desc">Screen and analyse companies with Warren's Rules</div>
+      </a>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <a href="{% url 'portfolio:portfolio_overview' %}" class="quick-nav-card">
+        <div class="icon"><i class="fas fa-briefcase"></i></div>
+        <div class="title">Portfolio</div>
+        <div class="desc">Track holdings, returns, and profit &amp; loss</div>
+      </a>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <a href="{% url 'economic_data:cape_home' %}" class="quick-nav-card">
+        <div class="icon"><i class="fas fa-globe-americas"></i></div>
+        <div class="title">Economic Data</div>
+        <div class="desc">CAPE ratio and macro market valuation charts</div>
+      </a>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <a href="{% url 'ancillary:company_list' %}" class="quick-nav-card">
+        <div class="icon"><i class="fas fa-building"></i></div>
+        <div class="title">Companies</div>
+        <div class="desc">Manage and import company fundamentals</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Secondary nav row -->
+  <div class="row g-3 mt-1">
+    <div class="col-sm-6 col-lg-4">
+      <a href="{% url 'portfolio:wishlist_list' %}" class="quick-nav-card">
+        <div class="icon"><i class="fas fa-star" style="color: var(--accent-yellow);"></i></div>
+        <div class="title">Wish List</div>
+        <div class="desc">Monitor watchlisted stocks and margin of safety</div>
+      </a>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+      <a href="{% url 'portfolio:transaction_list' %}" class="quick-nav-card">
+        <div class="icon"><i class="fas fa-exchange-alt" style="color: var(--accent-green);"></i></div>
+        <div class="title">Transactions</div>
+        <div class="desc">Record buys, sells, and settlement details</div>
+      </a>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+      <a href="{% url 'portfolio:cash_list' %}" class="quick-nav-card">
+        <div class="icon"><i class="fas fa-money-bill-wave" style="color: var(--accent-green);"></i></div>
+        <div class="title">Cash</div>
+        <div class="desc">Log cash deposits, withdrawals, and balances</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+{% if not user.is_authenticated %}
+<div class="text-center mt-5">
+  <p class="text-secondary small">
+    <i class="fas fa-lock me-1"></i>
+    <a href="{% url 'account_login' %}">Log in</a> to access all features.
+  </p>
+</div>
+{% endif %}
 {% endblock content %}

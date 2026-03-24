@@ -3,11 +3,21 @@
 {% block title %}HTMX Explore{% endblock title %}
 
 {% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-code me-2" style="color: var(--accent-blue);"></i>HTMX Explore</h1>
+  <p>Interactive data exploration powered by HTMX.</p>
+</div>
 
+<div class="card">
+  <div class="card-header">
+    <i class="fas fa-chart-area me-2"></i>Chart Explorer
+  </div>
+  <div class="card-body">
     <div name="q" hx-trigger="load" hx-get="/htmx-explore" hx-target="#frameworks" id="frameworks">
-        {% if graph %}
-            {{ graph|safe }}
-        {% endif %}
-    <div>
-
+      {% if graph %}
+        {{ graph|safe }}
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% endblock content %}

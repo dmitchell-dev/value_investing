@@ -1,15 +1,40 @@
-<!-- templates/registration/login.html -->
+<!-- templates/account/login.html -->
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
 
 {% block title %}Log In{% endblock title %}
 
 {% block content %}
-    <h2>Log In</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button class="btn btn-success" type="submit">Log In</button>
-    </form>
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+  <div class="col-sm-10 col-md-6 col-lg-4">
 
+    <!-- Brand header -->
+    <div class="text-center mb-4">
+      <div style="font-size: 2.5rem; color: var(--accent-green);">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <h2 class="mt-2 fw-bold">Value Investing</h2>
+      <p class="text-secondary small">Sign in to your account</p>
+    </div>
+
+    <div class="card">
+      <div class="card-body p-4">
+        <form method="post">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <div class="d-grid mt-3">
+            <button class="btn btn-primary" type="submit">
+              <i class="fas fa-sign-in-alt me-2"></i>Log In
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <p class="text-center text-secondary small mt-3">
+      <i class="fas fa-lock me-1"></i>Secure access — authorised users only.
+    </p>
+
+  </div>
+</div>
 {% endblock content %}

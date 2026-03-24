@@ -3,52 +3,77 @@
 {% block title %}Transactions{% endblock title %}
 
 {% block sidebar %}
-    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
-        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
-            <span class="sidebar-heading">Transactions</span>
-            <hr>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'portfolio:transaction_create' %}">
-                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                    Add Transaction
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
+<div class="sidebar-wrapper">
+  <span class="sidebar-heading">Transactions</span>
+  <hr>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:transaction_create' %}">
+        <i class="fa fa-plus-circle"></i> Add Transaction
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:portfolio_overview' %}">
+        <i class="fas fa-chart-pie"></i> Portfolio Overview
+      </a>
+    </li>
+  </ul>
+</div>
 {% endblock sidebar %}
 
 {% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-exchange-alt me-2" style="color: var(--accent-blue);"></i>Transactions</h1>
+  <p>Full history of share purchases, sales, and settlements.</p>
+</div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
+<div class="card">
+  <div class="card-header">
+    <i class="fas fa-list me-2"></i>Transaction History
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-sm mb-0">
+        <thead>
+          <tr>
             <th scope="col">Name</th>
             <th scope="col">Decision</th>
             <th scope="col">Date Dealt</th>
             <th scope="col">Date Settled</th>
             <th scope="col">Reference</th>
             <th scope="col">No. Shares</th>
-            <th scope="col">No. Shares Balance</th>
+            <th scope="col">Shares Balance</th>
             <th scope="col">Price</th>
             <th scope="col">Fees</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for transaction in transaction_list %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for transaction in transaction_list %}
             <tr>
-                <td><a href="{{ transaction.get_absolute_url }}">{{ transaction.company }}</a></td>
-                <td>{{ transaction.decision }}</td> 
-                <td>{{ transaction.date_dealt }}</td>
-                <td>{{ transaction.date_settled }}</td>
-                <td>{{ transaction.reference }}</td>
-                <td>{{ transaction.num_stock }}</td>
-                <td>{{ transaction.num_stock_balance }}</td>
-                <td>£{{ transaction.price|floatformat:"2g" }}</td>
-                <td>£{{ transaction.fees|floatformat:"2g" }}</td>
+              <td><a href="{{ transaction.get_absolute_url }}">{{ transaction.company }}</a></td>
+              <td>
+                <span class="badge {% if transaction.decision == 'Buy' %}bg-success{% elif transaction.decision == 'Sell' %}bg-danger{% else %}bg-secondary{% endif %}">
+                  {{ transaction.decision }}
+                </span>
+              </td>
+              <td>{{ transaction.date_dealt }}</td>
+              <td>{{ transaction.date_settled }}</td>
+              <td class="text-secondary">{{ transaction.reference }}</td>
+              <td>{{ transaction.num_stock }}</td>
+              <td>{{ transaction.num_stock_balance }}</td>
+              <td>£{{ transaction.price|floatformat:"2g" }}</td>
+              <td class="text-secondary">£{{ transaction.fees|floatformat:"2g" }}</td>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+          {% empty %}
+            <tr>
+              <td colspan="9" class="text-center text-secondary py-4">
+                <i class="fas fa-inbox me-2"></i>No transactions recorded yet.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 {% endblock content %}

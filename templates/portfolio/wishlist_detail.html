@@ -1,105 +1,122 @@
 {% extends '_base.html' %}
 
-{% block title %}Wish List{% endblock title %}
+{% block title %}Wish List — {{ wishlist.company }}{% endblock title %}
 
 {% block sidebar %}
-    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
-        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
-            <span class="sidebar-heading">Wish List</span>
-            <hr>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'portfolio:wishlist_update' wishlist.pk %}">
-                    <i class="fa fa-wrench" aria-hidden="true"></i>
-                    Update Item
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'portfolio:wishlist_delete' wishlist.pk %}">
-                    <i class="fa fa-trash" aria-hidden="true"></i>
-                    Delete Item
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
+<div class="sidebar-wrapper">
+  <span class="sidebar-heading">Wish List</span>
+  <hr>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:wishlist_update' wishlist.pk %}">
+        <i class="fa fa-wrench"></i> Update Item
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:wishlist_delete' wishlist.pk %}" style="color: var(--accent-red) !important;">
+        <i class="fa fa-trash"></i> Delete Item
+      </a>
+    </li>
+  </ul>
+  <hr>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:wishlist_list' %}">
+        <i class="fas fa-arrow-left"></i> Back to Wish List
+      </a>
+    </li>
+  </ul>
+</div>
 {% endblock sidebar %}
 
-
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Company</h5>
-                        <p class="card-text">{{ wishlist.company }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Reporting Stock Price</h5>
-                        <p class="card-text">£{{ wishlist.reporting_stock_price }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Current Stock Price</h5>
-                        <p class="card-text">£{{ wishlist.current_stock_price }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Reporting Margin of Safety</h5>
-                        <p class="card-text">{{ wishlist.reporting_mos }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Current Margin of Safety</h5>
-                        <p class="card-text">{{ wishlist.current_mos }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Buy Margin of Safety</h5>
-                        <p class="card-text">{{ wishlist.buy_mos }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Created At</h5>
-                        <p class="card-text">{{ wishlist.created_at }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="card border-0 shadow p-3 mb-5 bg-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Updated At</h5>
-                        <p class="card-text">{{ wishlist.updated_at }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="page-header">
+  <h1><i class="fas fa-star me-2" style="color: var(--accent-yellow);"></i>{{ wishlist.company }}</h1>
+  <p>Wish list entry details and margin of safety.</p>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">Company</div>
+        <div class="card-text">{{ wishlist.company }}</div>
+      </div>
     </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Reporting Stock Price</div>
+        <div class="card-text">£{{ wishlist.reporting_stock_price }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Current Stock Price</div>
+        <div class="card-text">£{{ wishlist.current_stock_price }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-sm-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Reporting Margin of Safety</div>
+        <div class="card-text">
+          <span class="{% if wishlist.reporting_mos <= 0.5 and wishlist.reporting_mos >= 0 %}value-positive{% else %}value-negative{% endif %}">
+            {{ wishlist.reporting_mos }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Current Margin of Safety</div>
+        <div class="card-text">
+          <span class="{% if wishlist.current_mos <= 0.5 and wishlist.current_mos >= 0 %}value-positive{% else %}value-negative{% endif %}">
+            {{ wishlist.current_mos }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Buy Margin of Safety</div>
+        <div class="card-text" style="color: var(--accent-yellow);">{{ wishlist.buy_mos }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Created At</div>
+        <div class="card-text">{{ wishlist.created_at }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="card-title">Updated At</div>
+        <div class="card-text">{{ wishlist.updated_at }}</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock content %}

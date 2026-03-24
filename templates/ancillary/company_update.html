@@ -1,12 +1,37 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Companies{% endblock title %}
+{% block title %}Edit Company{% endblock title %}
 
 {% block content %}
-    <h1>Company Edit</h1>
-    <form action="" method="post">{% csrf_token %}
-        {{ form|crispy }}
-        <input type="submit" value="Save" />
-    </form>
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+
+    <div class="page-header">
+      <h1><i class="fas fa-wrench me-2" style="color: var(--accent-yellow);"></i>Edit Company</h1>
+      <p>Update company details and metadata.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-building me-2"></i>Company Details
+      </div>
+      <div class="card-body p-4">
+        <form action="" method="post">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-success">
+              <i class="fas fa-save me-1"></i> Save Changes
+            </button>
+            <a href="{% url 'ancillary:company_list' %}" class="btn btn-secondary">
+              <i class="fas fa-arrow-left me-1"></i> Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
 {% endblock content %}

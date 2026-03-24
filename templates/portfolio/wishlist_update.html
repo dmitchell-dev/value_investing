@@ -1,12 +1,37 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Wish List{% endblock title %}
+{% block title %}Edit Wish List Item{% endblock title %}
 
 {% block content %}
-    <h1>Wishlist Edit</h1>
-    <form action="" method="post">{% csrf_token %}
-        {{ form|crispy }}
-        <input type="submit" value="Save" />
-    </form>
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+
+    <div class="page-header">
+      <h1><i class="fas fa-star me-2" style="color: var(--accent-yellow);"></i>Edit Wish List Item</h1>
+      <p>Update margin of safety targets and stock prices.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-edit me-2"></i>Wish List Details
+      </div>
+      <div class="card-body p-4">
+        <form action="" method="post">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-success">
+              <i class="fas fa-save me-1"></i> Save Changes
+            </button>
+            <a href="{% url 'portfolio:wishlist_list' %}" class="btn btn-secondary">
+              <i class="fas fa-arrow-left me-1"></i> Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
 {% endblock content %}

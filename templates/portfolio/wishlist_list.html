@@ -4,15 +4,34 @@
 {% block title %}Wish List{% endblock title %}
 
 {% block sidebar %}
-    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
-        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
-            <span class="sidebar-heading">Wish List</span>
-        </div>
-    </div>
+<div class="sidebar-wrapper">
+  <span class="sidebar-heading">Wish List</span>
+  <hr>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link active" href="{% url 'portfolio:wishlist_list' %}">
+        <i class="fas fa-star"></i> Wish List
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'portfolio:portfolio_overview' %}">
+        <i class="fas fa-chart-pie"></i> Portfolio Overview
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'dashboard_company:wishlist_filtered_results' %}">
+        <i class="fas fa-filter"></i> Filter Dashboard
+      </a>
+    </li>
+  </ul>
+</div>
 {% endblock sidebar %}
 
 {% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-star me-2" style="color: var(--accent-yellow);"></i>Wish List</h1>
+  <p>Watchlisted companies with margin of safety tracking.</p>
+</div>
 
-    {% render_table table %}
-
+{% render_table table %}
 {% endblock content %}
