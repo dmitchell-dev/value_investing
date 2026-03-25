@@ -47,6 +47,11 @@ class DashboardCompany(models.Model):
     latest_share_price_date = models.DateTimeField(null=True)
     latest_share_price = models.FloatField(null=True)
     market_cap = models.FloatField(null=True)
+    net_margin = models.FloatField(null=True)
+    gross_margin = models.FloatField(null=True)
+    operating_margin = models.FloatField(null=True)
+    interest_coverage = models.FloatField(null=True)
+    dividend_payout_ratio = models.FloatField(null=True)
 
     objects = DashboardCompanyQueryset.as_manager()
 

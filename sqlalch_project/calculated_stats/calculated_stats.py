@@ -34,6 +34,11 @@ from .manager import (
     debt_ratio,
     pe_10_year,
     dp_10_year,
+    net_margin,
+    gross_margin,
+    operating_margin,
+    interest_coverage,
+    dividend_payout_ratio,
 )
 
 

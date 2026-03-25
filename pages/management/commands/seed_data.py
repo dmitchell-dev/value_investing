@@ -54,6 +54,17 @@ COMPANIES_DATA = [
         "lt_debt":      [91.8,  98.1, 109.3, 119.7, 112.4,  93.7,  75.4],
         "capex":        [10.7,  10.7,  11.1,   8.3,   7.3,   9.1,  10.5],
         "op_cashflow":  [110.5, 122.2, 104.0,  80.7,  69.4,  77.4,  63.6],
+        # Margin / coverage inputs — gross profit ~43%, op margin ~30%
+        "gross_profit": [169.5, 164.8, 157.3, 118.0, 111.9, 114.2,  98.6],
+        "op_income":    [118.3, 114.9, 109.7,  82.4,  78.1,  79.7,  68.8],
+        "interest_expense": [-3.8, -2.9, -2.6, -2.8, -3.2, -3.6, -3.2],
+        "dna":          [11.5,  11.3,  11.3,   9.7,   9.5,  10.9,  10.5],
+        "shares_outstanding": [15.40, 15.55, 15.91, 16.44, 16.98, 17.53, 19.02],
+        "total_current_assets":  [143.6, 135.4, 153.8, 134.8, 143.7, 162.8, 163.2],
+        "total_current_liabilities": [145.3, 153.8, 176.4, 125.5, 105.4, 116.9, 105.7],
+        "total_liabilities": [290.5, 284.3, 281.1, 257.7, 248.0, 258.6, 256.2],
+        "total_cash":   [61.2,  29.4,  48.3,  38.0,  37.1,  48.8,  69.7],
+        "dividend_payout": [-14.5, -14.2, -14.0, -13.5, -13.1, -12.8, -13.3],
         "share_price":  189.3,
         "dcf_iv":       215.0,
         "growth_rate":  0.08,
@@ -86,6 +97,17 @@ COMPANIES_DATA = [
         "lt_debt":      [47.2,  41.6,  50.1,  59.6,  67.0,  72.2,  76.1],
         "capex":        [28.1,  23.9,  20.6,  15.4,  11.6,  11.5,   8.1],
         "op_cashflow":  [87.9,  89.0,  76.7,  60.7,  43.9,  52.2,  33.3],
+        # Margin / coverage inputs — gross margin ~69%, op margin ~42%
+        "gross_profit": [146.2, 136.8, 116.0,  98.7,  76.2,  86.8,  66.2],
+        "op_income":    [ 88.5,  83.2,  70.6,  60.1,  46.4,  52.8,  40.3],
+        "interest_expense": [-1.9, -1.7, -2.1, -2.5, -2.7, -2.7, -2.3],
+        "dna":          [14.5,  13.6,  12.0,   9.8,   7.7,   9.3,   6.8],
+        "shares_outstanding": [7.43, 7.45, 7.50, 7.61, 7.68, 7.75, 7.80],
+        "total_current_assets":  [184.3, 147.5, 169.7, 184.3, 155.6, 184.6, 167.5],
+        "total_current_liabilities": [125.3, 118.5,  97.4,  86.1,  72.3,  69.8,  58.0],
+        "total_liabilities": [205.7, 198.3, 191.9, 183.0, 176.1, 148.0, 122.5],
+        "total_cash":   [78.4,  80.6,  99.5, 130.3, 143.3, 137.2, 132.9],
+        "dividend_payout": [-20.2, -18.5, -16.8, -15.5, -14.1, -13.0, -12.2],
         "share_price":  415.2,
         "dcf_iv":       480.0,
         "growth_rate":  0.12,
@@ -118,6 +140,17 @@ COMPANIES_DATA = [
         "lt_debt":      [23.1, 24.5, 25.3, 23.8, 22.5, 21.1, 20.0],
         "capex":        [1.3,  1.4,  1.5,  1.3,  1.2,  1.3,  1.4],
         "op_cashflow":  [6.8,  7.3,  7.1,  6.5,  6.3,  6.9,  6.7],
+        # Margin / coverage inputs — gross margin ~42%, op margin ~16%
+        "gross_profit": [25.0, 25.2, 22.0, 21.3, 21.4, 22.1, 22.6],
+        "op_income":    [ 9.5,  9.6,  8.4,  8.1,  8.2,  8.4,  8.6],
+        "interest_expense": [-0.8, -0.7, -0.7, -0.7, -0.6, -0.6, -0.5],
+        "dna":          [2.2,  2.2,  2.1,  2.0,  2.0,  2.1,  2.1],
+        "shares_outstanding": [2.60, 2.62, 2.64, 2.65, 2.67, 2.68, 2.70],
+        "total_current_assets":  [8.9,  8.5,  7.8,  7.2,  6.9,  7.1,  6.8],
+        "total_current_liabilities": [14.2, 13.8, 13.1, 12.5, 11.8, 12.2, 11.5],
+        "total_liabilities": [54.2, 53.1, 54.6, 52.1, 49.9, 51.0, 52.1],
+        "total_cash":   [3.2,  3.1,  2.8,  2.5,  2.3,  2.6,  2.4],
+        "dividend_payout": [-4.4, -4.4, -4.4, -4.4, -4.4, -4.3, -4.2],
         "share_price":  38.75,
         "dcf_iv":       44.50,
         "growth_rate":  0.05,
@@ -150,6 +183,17 @@ COMPANIES_DATA = [
         "lt_debt":      [44.0,  35.5,  38.9,  51.7,  66.7,  58.8,  52.1],
         "capex":        [15.2,  16.3,  12.1,  13.8,  11.2,  14.7,  16.1],
         "op_cashflow":  [22.1,  29.7,  14.3,  18.2,   7.8,  26.4,  20.9],
+        # Margin / coverage inputs — gross margin ~15%, op margin ~5%
+        "gross_profit": [32.0,  37.2,  23.7,  27.5,  27.1,  33.4,  36.0],
+        "op_income":    [10.7,  12.4,   7.9,   9.2,   9.0,  11.1,  12.0],
+        "interest_expense": [-3.2, -3.0, -2.8, -2.7, -3.1, -3.4, -3.2],
+        "dna":          [14.0,  13.8,  13.0,  13.5,  13.8,  14.0,  13.5],
+        "shares_outstanding": [20.8, 21.0, 21.1, 21.1, 21.0, 20.2, 20.7],
+        "total_current_assets":  [42.0,  43.5,  38.0,  41.2,  39.8,  44.1,  46.5],
+        "total_current_liabilities": [65.3,  72.1,  58.3,  67.4,  63.2,  74.6,  78.2],
+        "total_liabilities": [189.8, 199.2, 182.2, 182.9, 179.8, 186.5, 191.9],
+        "total_cash":   [22.5,  23.1,  22.5,  24.1,  32.1,  31.3,  26.1],
+        "dividend_payout": [-5.0,  -4.6,  -4.4,  -4.4,  -2.1,  -4.2,  -5.0],
         "share_price":  4.52,
         "dcf_iv":       5.20,
         "growth_rate":  0.03,
@@ -182,6 +226,17 @@ COMPANIES_DATA = [
         "lt_debt":      [188.2,191.3, 204.6, 189.2, 171.4, 149.2, 142.1],
         "capex":        [2.1,  2.3,   1.9,   2.2,   2.5,   2.8,   3.0],
         "op_cashflow":  [16.5, 19.2,   4.8,   9.1,   3.2,  12.1,   8.3],
+        # Margin / coverage inputs — for a bank gross/op margins differ from manufacturing
+        "gross_profit": [33.1, 27.8,  24.8,  25.2,  28.1,  26.9,  28.1],
+        "op_income":    [20.0, 24.0,  -1.5,   8.5,  -1.2,  12.0,   7.0],
+        "interest_expense": [-15.0, -10.5, -7.2, -9.1, -11.4, -12.3, -13.5],
+        "dna":          [2.5,  2.4,   2.3,   2.3,   2.4,   2.6,   2.8],
+        "shares_outstanding": [19.7, 20.1, 20.0, 20.3, 20.0, 21.2, 21.7],
+        "total_current_assets":  [250,   230,   240,   210,   220,   200,   195],
+        "total_current_liabilities": [800,   750,   780,   720,   760,   730,   710],
+        "total_liabilities": [2839.9, 2729.7, 2800.6, 2523.5, 2734.7, 2528.5, 2367.8],
+        "total_cash":   [350,   320,   340,   300,   310,   290,   280],
+        "dividend_payout": [-12.0,  -6.0,  -3.0,  -6.1,  -6.0, -10.8, -11.1],
         "share_price":  6.72,
         "dcf_iv":       7.50,
         "growth_rate":  0.04,
@@ -214,6 +269,17 @@ COMPANIES_DATA = [
         "lt_debt":      [18.6, 19.5, 27.3, 26.8, 24.1, 20.2, 18.5],
         "capex":        [1.5,  1.6,  1.8,  1.7,  1.9,  2.0,  2.1],
         "op_cashflow":  [5.9,  6.7,  7.8,  7.1,  5.8,  4.6,  3.9],
+        # Margin / coverage inputs — gross margin ~65%, op margin ~22%
+        "gross_profit": [19.7, 19.0, 22.2, 22.0, 21.5, 23.5, 21.3],
+        "op_income":    [ 6.7,  6.4,  7.5,  7.4,  7.3,  8.0,  7.2],
+        "interest_expense": [-0.8, -0.9, -1.1, -1.2, -1.3, -0.9, -0.8],
+        "dna":          [6.5,  6.0,  8.2,  8.1,  7.6,  6.1,  5.8],
+        "shares_outstanding": [4.92, 4.94, 4.96, 4.98, 4.95, 5.10, 5.13],
+        "total_current_assets":  [11.5, 11.2, 14.2, 14.0, 13.8,  9.1,  8.5],
+        "total_current_liabilities": [15.3, 14.8, 14.2, 16.5, 14.2, 11.2, 10.8],
+        "total_liabilities": [47.1, 46.6, 63.3, 64.7, 63.1, 39.1, 36.1],
+        "total_cash":   [4.5,  4.3,  7.8,  5.9,  4.0,  3.2,  2.9],
+        "dividend_payout": [-2.8, -2.8, -4.0, -4.0, -4.0, -4.1, -4.1],
         "share_price":  14.82,
         "dcf_iv":       17.00,
         "growth_rate":  0.06,
@@ -224,7 +290,7 @@ COMPANIES_DATA = [
 
 PARAMS_DATA = [
     # (name, col_name, report_type, limit_logic, limit_value, data_type, description)
-    ("Revenue",              "revenue",            "Income Statement", ">", "0",   "float", "Total revenue / turnover"),
+    ("Total Revenue",        "revenue",            "Income Statement", ">", "0",   "float", "Total revenue / turnover"),
     ("Net Income",           "net_income",         "Income Statement", ">", "0",   "float", "Net income after tax"),
     ("EPS",                  "eps",                "Income Statement", ">", "0",   "float", "Earnings per share (diluted)"),
     ("Dividends Per Share",  "dividends",          "Income Statement", ">", "0",   "float", "Dividends paid per share"),
@@ -234,11 +300,52 @@ PARAMS_DATA = [
     ("Total Assets",         "total_assets",       "Balance Sheet",    ">", "0",   "float", "Total assets"),
     ("Total Equity",         "total_equity",       "Balance Sheet",    ">", "0",   "float", "Total shareholders equity"),
     ("Long Term Debt",       "lt_debt",            "Balance Sheet",    "<", "inf", "float", "Long-term debt and borrowings"),
-    ("Debt to Equity",       "debt_to_equity",     "Calculated",       "<", "1",   "float", "Total debt divided by equity"),
-    ("Return on Equity",     "return_on_equity",   "Calculated",       ">", "0.1", "float", "Net income / total equity"),
-    ("Price to Earnings",    "price_to_earnings",  "Calculated",       "<", "25",  "float", "Share price / EPS"),
-    ("DCF Intrinsic Value",  "dcf_intrinsic_value","Calculated",       ">", "0",   "float", "Discounted cash flow intrinsic value"),
-    ("Margin of Safety",     "margin_of_safety",   "Calculated",       ">", "0.2", "float", "Margin of safety vs current price"),
+    # Balance sheet items needed for ratio calculations
+    ("Total Current Assets",      "total_current_assets",      "Balance Sheet", ">", "0",   "float", "Current assets (short-term)"),
+    ("Total Current Liabilities", "total_current_liabilities", "Balance Sheet", ">", "0",   "float", "Current liabilities (short-term)"),
+    ("Total Liabilities",         "total_liabilities",         "Balance Sheet", ">", "0",   "float", "Total liabilities"),
+    ("Total Cash and Short Term", "total_cash",                "Balance Sheet", ">", "0",   "float", "Cash and short-term investments"),
+    ("Shares Outstanding",        "shares_outstanding",        "Balance Sheet", ">", "0",   "float", "Diluted shares outstanding (billions)"),
+    # Cash flow items
+    ("Dividend Payout",           "dividend_payout",           "Cash Flow",     "<", "0",   "float", "Total dividends paid (negative cash outflow)"),
+    # Income statement items needed for margin calculations
+    ("Gross Profit",         "gross_profit",       "Income Statement", ">", "0",   "float", "Revenue minus cost of goods sold"),
+    ("Operating Income",     "op_income",          "Income Statement", ">", "0",   "float", "EBIT — earnings before interest and tax"),
+    ("Interest Expense",     "interest_expense",   "Income Statement", "<", "0",   "float", "Finance costs / interest paid (negative)"),
+    ("Depreciation and Amortization", "dna",       "Cash Flow",        ">", "0",   "float", "Non-cash D&A added back in cash flow statement"),
+    # Calculated output params — names must match managers.py index labels exactly
+    # so calculate_stats can look them up by param_name
+    ("Debt to Equity",               "debt_to_equity",        "Calculated", "<", "1",    "float", "Total debt divided by equity"),
+    ("Return on Equity",             "return_on_equity",      "Calculated", ">", "15",   "float", "Net income / total equity as % (>15%)"),
+    ("ROCE",                         "roce",                  "Calculated", ">", "7",    "float", "Return on capital employed as % (>7%)"),
+    ("Price to Earnings",            "price_to_earnings",     "Calculated", "<", "25",   "float", "Market cap / net income"),
+    ("Price to Book Value (Equity)", "price_to_book",         "Calculated", "<", "1.5",  "float", "Share price / equity per share"),
+    ("DCF Intrinsic Value",          "dcf_intrinsic_value",   "Calculated", ">", "0",    "float", "Discounted cash flow intrinsic value per share"),
+    ("Margin of Safety",             "margin_of_safety",      "Calculated", ">", "20",   "float", "(IV - Price) / IV x 100"),
+    ("Latest Margin of Safety",      "latest_mos",            "Calculated", ">", "20",   "float", "MOS calculated against today's share price"),
+    ("Share Price",                  "calc_share_price",      "Calculated", ">", "0",    "float", "Share price at report date"),
+    ("Market Capitalisation",        "market_cap_calc",       "Calculated", ">", "0",    "float", "Market capitalisation at report date"),
+    ("Enterprise Value",             "enterprise_value",      "Calculated", ">", "0",    "float", "Market cap + debt - cash"),
+    ("Total Equity",                 "total_equity_calc",     "Calculated", ">", "0",    "float", "Total shareholders equity (calculated)"),
+    ("Capital Employed",             "capital_employed",      "Calculated", ">", "0",    "float", "Total assets minus current liabilities"),
+    ("Current Ratio",                "current_ratio",         "Calculated", ">", "1.5",  "float", "Current assets / current liabilities (>1.5)"),
+    ("Free Cash Flow",               "fcf_calc",              "Calculated", ">", "0",    "float", "Operating cash flow minus capital expenditure"),
+    ("Owner Earnings",               "owner_earnings",        "Calculated", ">", "0",    "float", "Buffett owner earnings: NI + D&A + CapEx - ΔWWC"),
+    ("Dividends Per Share",          "dps_calc",              "Calculated", ">", "0",    "float", "Dividends per share (calculated)"),
+    ("Equity (Book Value) Per Share","equity_per_share",      "Calculated", ">", "0",    "float", "Total equity / shares outstanding"),
+    ("Dividend Cover",               "dividend_cover",        "Calculated", ">", "2",    "float", "Net income / dividends paid (>2x)"),
+    ("Earnings Yield",               "earnings_yield",        "Calculated", ">", "4",    "float", "Net income / market cap as % (inverse of P/E)"),
+    ("Annual Yield (Return)",        "annual_yield",          "Calculated", ">", "2",    "float", "Dividend payout / market cap as %"),
+    ("Estimated Growth Rate",        "est_growth_rate",       "Calculated", ">", "0",    "float", "DCF assumed short-term FCF growth rate"),
+    ("Estimated Discount Rate",      "est_discount_rate",     "Calculated", ">", "0",    "float", "DCF assumed discount / hurdle rate"),
+    ("Estimated Long Term Growth Rate", "est_ltg_rate",       "Calculated", ">", "0",    "float", "DCF assumed terminal growth rate"),
+    # Profitability & coverage metrics
+    ("Net Margin",                   "net_margin",            "Calculated", ">", "20",   "float", "Net income / revenue as % (>20%)"),
+    ("Gross Margin",                 "gross_margin",          "Calculated", ">", "40",   "float", "Gross profit / revenue as % (>40%)"),
+    ("Operating Margin",             "op_margin",             "Calculated", ">", "15",   "float", "Operating income / revenue as % (>15%)"),
+    ("Interest Coverage",            "interest_coverage",     "Calculated", ">", "5",    "float", "Operating income / interest expense (>5x)"),
+    ("Dividend Payout Ratio",        "div_payout_ratio",      "Calculated", "<", "80",   "float", "% of earnings paid as dividends (<80%)"),
+    ("Return on Invested Capital (ROIC)", "roic",             "Calculated", ">", "15",   "float", "Net income / invested capital as % (>15%)"),
 ]
 
 
@@ -343,7 +450,8 @@ class Command(BaseCommand):
                                   "Calculated", "Share Price"]}
 
         decision_types = {v: DecisionType.objects.get_or_create(value=v)[0]
-                          for v in ["Bought", "Sold", "Deposit", "Withdrawal",
+                          for v in ["No", "Watch", "Hold", "Sold",
+                                    "Bought", "Deposit", "Withdrawal",
                                     "Dividend", "Fee"]}
 
         comp_sources = {v: CompSource.objects.get_or_create(value=v)[0]
@@ -424,16 +532,26 @@ class Command(BaseCommand):
         dates = [date(base_year - i, 12, 31) for i in range(7)]
 
         param_map = {
-            "revenue":       "revenue",
-            "net_income":    "net_income",
-            "eps":           "eps",
-            "dividends":     "dividends",
-            "fcf":           "fcf",
-            "total_equity":  "total_equity",
-            "total_assets":  "total_assets",
-            "lt_debt":       "lt_debt",
-            "capex":         "capex",
-            "op_cashflow":   "op_cashflow",
+            "revenue":                    "revenue",
+            "net_income":                 "net_income",
+            "eps":                        "eps",
+            "dividends":                  "dividends",
+            "fcf":                        "fcf",
+            "total_equity":               "total_equity",
+            "total_assets":               "total_assets",
+            "lt_debt":                    "lt_debt",
+            "capex":                      "capex",
+            "op_cashflow":                "op_cashflow",
+            "gross_profit":               "gross_profit",
+            "op_income":                  "op_income",
+            "interest_expense":           "interest_expense",
+            "dna":                        "dna",
+            "shares_outstanding":         "shares_outstanding",
+            "total_current_assets":       "total_current_assets",
+            "total_current_liabilities":  "total_current_liabilities",
+            "total_liabilities":          "total_liabilities",
+            "total_cash":                 "total_cash",
+            "dividend_payout":            "dividend_payout",
         }
 
         reports = []
@@ -526,7 +644,7 @@ class Command(BaseCommand):
 
     # ------------------------------------------------------------------
     def _seed_dashboard_companies(self, companies, lookups):
-        decision = lookups["decision_types"]["Bought"]
+        decision = lookups["decision_types"]["No"]
         today = date(2024, 12, 31)
 
         for tidm, (company, d) in companies.items():
@@ -538,6 +656,17 @@ class Command(BaseCommand):
             mos = round((iv - price) / iv, 3) if iv > 0 else 0
             sym = d["currency"][0]
 
+            rev = d["revenue"][0]
+            gp = d["gross_profit"][0]
+            oi = d["op_income"][0]
+            ie = d["interest_expense"][0]  # stored negative
+            dps = d["dividends"][0]
+            gm = round(gp / rev * 100, 1) if rev else None
+            om = round(oi / rev * 100, 1) if rev else None
+            nm = round(ne / rev * 100, 1) if rev else None
+            ic = round(oi / abs(ie), 1) if ie else None
+            dpr = round(dps / eps * 100, 1) if eps else None
+
             DashboardCompany.objects.update_or_create(
                 company=company,
                 defaults={
@@ -548,25 +677,25 @@ class Command(BaseCommand):
                     "share_listing": d["exchange"],
                     "company_type": d["comp_type"],
                     "industry_name": d["industry"],
-                    "revenue": d["revenue"][0],
+                    "revenue": rev,
                     "earnings": ne,
-                    "dividends": d["dividends"][0],
+                    "dividends": dps,
                     "capital_expenditure": d["capex"][0],
                     "net_income": ne,
                     "total_equity": te,
                     "share_price": price,
                     "debt_to_equity": round(d["lt_debt"][0] / te, 2),
                     "current_ratio": round(random.uniform(1.2, 2.5), 2),
-                    "return_on_equity": round(ne / te, 3),
+                    "return_on_equity": round(ne / te * 100, 1),
                     "equity_per_share": round(te / random.uniform(15e9, 20e9), 2),
                     "price_to_earnings": round(price / eps, 1),
                     "price_to_equity": round(price / (te / random.uniform(15e9, 20e9)), 1),
-                    "earnings_yield": round(eps / price, 4),
-                    "annual_yield_return": round(d["dividends"][0] / price, 4),
+                    "earnings_yield": round(eps / price * 100, 2),
+                    "annual_yield_return": round(dps / price * 100, 2),
                     "fcf": d["fcf"][0],
-                    "dividend_cover": round(eps / d["dividends"][0], 2) if d["dividends"][0] else 0,
+                    "dividend_cover": round(eps / dps, 2) if dps else 0,
                     "capital_employed": round(te + d["lt_debt"][0], 1),
-                    "roce": round(ne / (te + d["lt_debt"][0]), 3),
+                    "roce": round(ne / (te + d["lt_debt"][0]) * 100, 1),
                     "dcf_intrinsic_value": iv,
                     "margin_safety": mos,
                     "latest_margin_of_safety": mos,
@@ -580,6 +709,11 @@ class Command(BaseCommand):
                     "latest_share_price_date": today,
                     "latest_share_price": price,
                     "market_cap": round(price * random.uniform(15e9, 20e9), 0),
+                    "net_margin": nm,
+                    "gross_margin": gm,
+                    "operating_margin": om,
+                    "interest_coverage": ic,
+                    "dividend_payout_ratio": dpr,
                 },
             )
 

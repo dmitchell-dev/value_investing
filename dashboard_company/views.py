@@ -20,7 +20,7 @@ from django.views import View
 from portfolio.models import WishList
 
 from .models import DashboardCompany
-from ancillary_info.models import Params, Companies
+from ancillary_info.models import Params, Companies, DcfVariables
 from share_prices.models import SharePrices, ShareSplits
 from financial_reports.models import FinancialReports
 from calculated_stats.models import CalculatedStats
@@ -118,10 +118,17 @@ class DashboardDetailView(DetailView):
         except WishList.DoesNotExist:
             does_exist = False
 
+        # DCF Variables for Rule 2
+        try:
+            dcf_vars = DcfVariables.objects.get(company=context["company"].company)
+        except DcfVariables.DoesNotExist:
+            dcf_vars = None
+
         # Add context data
         context["does_exist"] = does_exist
         context["params"] = Params.objects.all()
         context["share_splits"] = share_splits_last
+        context["dcf_vars"] = dcf_vars
 
         return context
 
@@ -277,14 +284,22 @@ def htmx_explore(request, pk):
 
 
 def _param_chart(company_id, DataSource, param_name):
+    empty = {"x_data": [], "y_data": [], "param_name": param_name}
 
-    param_id = Params.objects.filter(param_name=param_name).values()[0]["id"]
+    param_qs = Params.objects.filter(param_name=param_name).values()
+    if not param_qs:
+        return empty
+
+    param_id = param_qs[0]["id"]
 
     df = pd.DataFrame(
         DataSource.objects.order_by("time_stamp")
         .filter(company_id=company_id, parameter_id=param_id)
         .values()
     )
+    if df.empty:
+        return empty
+
     df["value"] = df["value"].astype(float)
 
     y_data = []
@@ -294,13 +309,7 @@ def _param_chart(company_id, DataSource, param_name):
         y_data.append(row["value"])
         x_data.append(row["time_stamp"])
 
-    data = {
-        "x_data": x_data,
-        "y_data": y_data,
-        "param_name": param_name,
-    }
-    # print(data)
-    return data
+    return {"x_data": x_data, "y_data": y_data, "param_name": param_name}
 
 
 def _multi_chart(company_id, DataSource, *args, **kwargs):
@@ -396,7 +405,7 @@ class ShareChartDataView(View):
 class EpsDataView(View):
     def get(self, request, pk):
 
-        data = _param_chart(pk, FinancialReports, "Reported EPS")
+        data = _param_chart(pk, FinancialReports, "EPS")
 
         return JsonResponse(data)
 
@@ -412,7 +421,7 @@ class DividendDataView(View):
 class RoeDataView(View):
     def get(self, request, pk):
 
-        data = _param_chart(pk, CalculatedStats, "Return on Equity (ROE)")
+        data = _param_chart(pk, CalculatedStats, "Return on Equity")
 
         return JsonResponse(data)
 
@@ -430,9 +439,7 @@ class BookValueDataView(View):
 class RoceDataView(View):
     def get(self, request, pk):
 
-        data = _param_chart(
-            pk, CalculatedStats, "Return on Capital Employed (ROCE)"
-        )
+        data = _param_chart(pk, CalculatedStats, "ROCE")
 
         return JsonResponse(data)
 
@@ -440,7 +447,7 @@ class RoceDataView(View):
 class DebtToEquityDataView(View):
     def get(self, request, pk):
 
-        data = _param_chart(pk, CalculatedStats, "Debt to Equity (D/E)")
+        data = _param_chart(pk, CalculatedStats, "Debt to Equity")
 
         return JsonResponse(data)
 
@@ -456,7 +463,7 @@ class DividendCoverDataView(View):
 class PriceToEarningsDataView(View):
     def get(self, request, pk):
 
-        data = _param_chart(pk, CalculatedStats, "Price to Earnings (P/E)")
+        data = _param_chart(pk, CalculatedStats, "Price to Earnings")
 
         return JsonResponse(data)
 
@@ -472,7 +479,7 @@ class PriceToBookValueDataView(View):
 class IntrinsicValueDataView(View):
     def get(self, request, pk):
 
-        data = _param_chart(pk, CalculatedStats, "Intrinsic Value")
+        data = _param_chart(pk, CalculatedStats, "DCF Intrinsic Value")
 
         return JsonResponse(data)
 
@@ -516,6 +523,42 @@ class EquityPerShareDataView(View):
             pk, CalculatedStats, "Equity (Book Value) Per Share"
         )
 
+        return JsonResponse(data)
+
+
+class FreeCashFlowDataView(View):
+    def get(self, request, pk):
+        data = _param_chart(pk, CalculatedStats, "Free Cash Flow")
+        return JsonResponse(data)
+
+
+class NetMarginDataView(View):
+    def get(self, request, pk):
+        data = _param_chart(pk, CalculatedStats, "Net Margin")
+        return JsonResponse(data)
+
+
+class GrossMarginDataView(View):
+    def get(self, request, pk):
+        data = _param_chart(pk, CalculatedStats, "Gross Margin")
+        return JsonResponse(data)
+
+
+class OperatingMarginDataView(View):
+    def get(self, request, pk):
+        data = _param_chart(pk, CalculatedStats, "Operating Margin")
+        return JsonResponse(data)
+
+
+class InterestCoverageDataView(View):
+    def get(self, request, pk):
+        data = _param_chart(pk, CalculatedStats, "Interest Coverage")
+        return JsonResponse(data)
+
+
+class DividendPayoutRatioDataView(View):
+    def get(self, request, pk):
+        data = _param_chart(pk, CalculatedStats, "Dividend Payout Ratio")
         return JsonResponse(data)
 
 

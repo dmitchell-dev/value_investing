@@ -370,6 +370,88 @@
   </div>
 </div>
 
+<!-- Profitability & Coverage -->
+<div class="row g-3 mb-3">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header">
+        <i class="fas fa-percentage me-2" style="color: var(--accent-green);"></i>Profitability Margins
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>
+            <i class="far fa-question-circle text-info me-2"
+               data-bs-toggle="tooltip" data-bs-placement="top"
+               title="{% for param in params %}{% if param.param_name == 'Net Margin' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+            <i class="fas fa-chart-bar me-2 icon-blue" data-bs-toggle="modal" data-bs-target="#netMarginModal"></i>
+            Net Margin (&gt;20%)
+          </span>
+          <span class="badge rounded-pill {% if company.net_margin >= 20 %}bg-success{% elif company.net_margin >= 10 %}bg-warning{% else %}bg-danger{% endif %}">
+            {% if company.net_margin %}{{ company.net_margin|floatformat:1 }}%{% else %}—{% endif %}
+          </span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>
+            <i class="far fa-question-circle text-info me-2"
+               data-bs-toggle="tooltip" data-bs-placement="top"
+               title="{% for param in params %}{% if param.param_name == 'Gross Margin' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+            <i class="fas fa-chart-bar me-2 icon-blue" data-bs-toggle="modal" data-bs-target="#grossMarginModal"></i>
+            Gross Margin (&gt;40%)
+          </span>
+          <span class="badge rounded-pill {% if company.gross_margin >= 40 %}bg-success{% elif company.gross_margin >= 25 %}bg-warning{% else %}bg-danger{% endif %}">
+            {% if company.gross_margin %}{{ company.gross_margin|floatformat:1 }}%{% else %}—{% endif %}
+          </span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>
+            <i class="far fa-question-circle text-info me-2"
+               data-bs-toggle="tooltip" data-bs-placement="top"
+               title="{% for param in params %}{% if param.param_name == 'Operating Margin' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+            <i class="fas fa-chart-bar me-2 icon-blue" data-bs-toggle="modal" data-bs-target="#operatingMarginModal"></i>
+            Operating Margin (&gt;15%)
+          </span>
+          <span class="badge rounded-pill {% if company.operating_margin >= 15 %}bg-success{% elif company.operating_margin >= 8 %}bg-warning{% else %}bg-danger{% endif %}">
+            {% if company.operating_margin %}{{ company.operating_margin|floatformat:1 }}%{% else %}—{% endif %}
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header">
+        <i class="fas fa-shield-alt me-2" style="color: var(--accent-blue);"></i>Debt &amp; Income Quality
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>
+            <i class="far fa-question-circle text-info me-2"
+               data-bs-toggle="tooltip" data-bs-placement="top"
+               title="{% for param in params %}{% if param.param_name == 'Interest Coverage' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+            <i class="fas fa-chart-bar me-2 icon-blue" data-bs-toggle="modal" data-bs-target="#interestCoverageModal"></i>
+            Interest Coverage (&gt;5×)
+          </span>
+          <span class="badge rounded-pill {% if company.interest_coverage >= 5 %}bg-success{% elif company.interest_coverage >= 2 %}bg-warning{% else %}bg-danger{% endif %}">
+            {% if company.interest_coverage %}{{ company.interest_coverage|floatformat:1 }}×{% else %}—{% endif %}
+          </span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>
+            <i class="far fa-question-circle text-info me-2"
+               data-bs-toggle="tooltip" data-bs-placement="top"
+               title="{% for param in params %}{% if param.param_name == 'Dividend Payout Ratio' %}{{ param.param_description }}{% endif %}{% endfor %}"></i>
+            <i class="fas fa-chart-bar me-2 icon-blue" data-bs-toggle="modal" data-bs-target="#dividendPayoutRatioModal"></i>
+            Dividend Payout Ratio (&lt;80%)
+          </span>
+          <span class="badge rounded-pill {% if company.dividend_payout_ratio < 80 %}bg-success{% else %}bg-danger{% endif %}">
+            {% if company.dividend_payout_ratio %}{{ company.dividend_payout_ratio|floatformat:1 }}%{% else %}—{% endif %}
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
 <!-- Rule 2 accordion -->
 <div class="row g-3 mb-3">
   <div class="col-12">
@@ -386,7 +468,45 @@
         <div id="collapseTwo" class="accordion-collapse collapse"
              aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
           <div class="accordion-body" style="line-height: 1.7;">
-            {{ company.company_summary }}
+            {% if company.company_summary %}
+            <p class="mb-3">{{ company.company_summary }}</p>
+            {% endif %}
+            <!-- Growth & Cash Flow metrics -->
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>
+                  <i class="fas fa-chart-bar me-2 icon-blue" data-bs-toggle="modal" data-bs-target="#fcfModal"></i>
+                  Free Cash Flow
+                </span>
+                <span class="badge rounded-pill {% if company.fcf and company.fcf > 0 %}bg-success{% else %}bg-danger{% endif %}">
+                  {% if company.fcf %}{{ company.currency_symbol }}{{ company.fcf|floatformat:0 }}{% else %}—{% endif %}
+                </span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>Revenue</span>
+                <span class="badge rounded-pill bg-primary">
+                  {% if company.revenue %}{{ company.currency_symbol }}{{ company.revenue|floatformat:0 }}{% else %}—{% endif %}
+                </span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>Est. Growth Rate (Short Term)</span>
+                <span class="badge rounded-pill bg-primary">
+                  {% if dcf_vars %}{{ dcf_vars.est_growth_rate|floatformat:1 }}%{% else %}—{% endif %}
+                </span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>Est. Discount Rate (Hurdle Rate)</span>
+                <span class="badge rounded-pill bg-primary">
+                  {% if dcf_vars %}{{ dcf_vars.est_disc_rate|floatformat:1 }}%{% else %}—{% endif %}
+                </span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>Est. Long Term Growth Rate</span>
+                <span class="badge rounded-pill bg-primary">
+                  {% if dcf_vars %}{{ dcf_vars.est_ltg_rate|floatformat:1 }}%{% else %}—{% endif %}
+                </span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -411,6 +531,12 @@
 <div class="modal fade" id="currentRatioModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div id="currentRatioDiv" class="responsive-plot"></div></div></div></div>
 <div class="modal fade" id="capEmpModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div id="capEmpDiv" class="responsive-plot"></div></div></div></div>
 <div class="modal fade" id="earningsYieldModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div id="earningsYieldDiv" class="responsive-plot"></div></div></div></div>
+<div class="modal fade" id="fcfModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div id="fcfDiv" class="responsive-plot"></div></div></div></div>
+<div class="modal fade" id="netMarginModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div id="netMarginDiv" class="responsive-plot"></div></div></div></div>
+<div class="modal fade" id="grossMarginModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div id="grossMarginDiv" class="responsive-plot"></div></div></div></div>
+<div class="modal fade" id="operatingMarginModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div id="operatingMarginDiv" class="responsive-plot"></div></div></div></div>
+<div class="modal fade" id="interestCoverageModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div id="interestCoverageDiv" class="responsive-plot"></div></div></div></div>
+<div class="modal fade" id="dividendPayoutRatioModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div id="dividendPayoutRatioDiv" class="responsive-plot"></div></div></div></div>
 
 {% endblock content %}
 
@@ -421,8 +547,8 @@ $(function () {
     $('[data-bs-toggle="tooltip"]').tooltip()
 });
 
-var index = ["share-price/", "eps/", "dividend/", "roe/", "book-value/", "roce/", "debt-to-equity/", "dividend-cover/", "price-to-earnings/", "price-to-bookvalue/", "intrinsic-value/","annual-yield/", "current-ratio/", "capital-employed/", "earnings-yield/"];
-var div_index = ["sharePriceDiv", "epsDiv", "dividendDiv", "roeDiv", "bookValueDiv", "roceDiv", "debtToEquityDiv", "dividendCoverDiv", "priceToEaringsDiv", "priceToBookDiv", "intrinsicValueDiv", "annualYieldDiv", "currentRatioDiv", "capEmpDiv", "earningsYieldDiv"];
+var index = ["share-price/", "eps/", "dividend/", "roe/", "book-value/", "roce/", "debt-to-equity/", "dividend-cover/", "price-to-earnings/", "price-to-bookvalue/", "intrinsic-value/","annual-yield/", "current-ratio/", "capital-employed/", "earnings-yield/", "free-cash-flow/", "net-margin/", "gross-margin/", "operating-margin/", "interest-coverage/", "dividend-payout-ratio/"];
+var div_index = ["sharePriceDiv", "epsDiv", "dividendDiv", "roeDiv", "bookValueDiv", "roceDiv", "debtToEquityDiv", "dividendCoverDiv", "priceToEaringsDiv", "priceToBookDiv", "intrinsicValueDiv", "annualYieldDiv", "currentRatioDiv", "capEmpDiv", "earningsYieldDiv", "fcfDiv", "netMarginDiv", "grossMarginDiv", "operatingMarginDiv", "interestCoverageDiv", "dividendPayoutRatioDiv"];
 var index_size = index.length;
 
 var f = (function(){

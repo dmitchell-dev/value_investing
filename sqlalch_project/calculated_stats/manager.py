@@ -38,7 +38,7 @@ def return_on_equity(df_pivot):
         drop=True
     )
     if not df_profit.empty and not df_nav.empty:
-        df_roe = df_profit.div(df_nav)
+        df_roe = df_profit.div(df_nav) * 100  # Express as percentage
         df_roe.index = ["Return on Equity (ROE)"]
 
     return df_roe
@@ -677,7 +677,7 @@ def pe_10_year(df_pivot, df_calculated):
                     if math.isnan(current_year_share_price):
                         current_year_share_price = 0
                     ep10_list.append(
-                        (current_year_share_price / statistics.mean(eps_list)) * 100
+                        current_year_share_price / statistics.mean(eps_list)
                     )
 
                     # Remove first
@@ -723,7 +723,7 @@ def dp_10_year(df_pivot, df_calculated):
                         current_year_share_price = 0
                     if statistics.mean(div_list) != 0:
                         dp10_list.append(
-                            (current_year_share_price / statistics.mean(div_list)) * 100
+                            current_year_share_price / statistics.mean(div_list)
                         )
                     else:
                         dp10_list.append(0)
@@ -739,6 +739,206 @@ def dp_10_year(df_pivot, df_calculated):
         df_dp10.index = ["DP10"]
 
     return df_dp10
+
+
+def net_margin(df_pivot):
+    """
+    Net Profit Margin = (Net Income / Total Revenue) × 100
+
+    Warren Buffett context
+    ----------------------
+    Buffett looks for companies with *consistently* high net margins — ideally
+    above 20% — as a hallmark of durable competitive advantage (moat). A
+    business that can reliably convert a large fraction of revenue into profit
+    is rarely reliant on a single product cycle or heavily exposed to commodity
+    pricing.
+
+    Trend matters more than a single year: a margin that is stable or slowly
+    widening over a decade signals pricing power; a declining margin suggests
+    competitive pressure or cost inflation the company cannot pass on.
+
+    Data: Profit for financial year / Turnover, both from the Continuous
+    Operatings section. Returns percentage values (e.g. 22.5 = 22.5%).
+    """
+    df_profit = _dataframe_slice(
+        df_pivot, "Profit for financial year_Continuous Operatings"
+    ).reset_index(drop=True)
+    df_turnover = _dataframe_slice(
+        df_pivot, "Turnover_Continuous Operatings"
+    ).reset_index(drop=True)
+
+    if not df_profit.empty and not df_turnover.empty:
+        df_nm = df_profit.div(df_turnover) * 100
+        df_nm.index = ["Net Margin"]
+    else:
+        nm_list = [None] * df_pivot.shape[1]
+        df_nm = pd.DataFrame(data=nm_list).transpose()
+        df_nm.columns = list(df_pivot.columns)
+        df_nm.index = ["Net Margin"]
+
+    return df_nm
+
+
+def gross_margin(df_pivot):
+    """
+    Gross Profit Margin = (Gross Profit / Total Revenue) × 100
+
+    Warren Buffett context
+    ----------------------
+    Gross margin is the first and most durable indicator of competitive moat.
+    Companies Buffett favours — Coca-Cola, See's Candies, American Express —
+    all exhibit gross margins that are structurally higher than their industry
+    peers and are *stable over time*.
+
+    A gross margin consistently above 40% often indicates:
+      • Brand strength that supports premium pricing
+      • Low cost of goods sold relative to selling price
+      • Limited direct commodity exposure
+
+    Banks and insurance companies do not report a traditional gross profit line;
+    this function guards against an empty slice and returns None for those firms.
+
+    Data: Gross profit / Turnover, both from Continuous Operatings section.
+    Returns percentage values (e.g. 45.0 = 45%).
+    """
+    df_gross = _dataframe_slice(
+        df_pivot, "Gross profit_Continuous Operatings"
+    ).reset_index(drop=True)
+    df_turnover = _dataframe_slice(
+        df_pivot, "Turnover_Continuous Operatings"
+    ).reset_index(drop=True)
+
+    if not df_gross.empty and not df_turnover.empty:
+        df_gm = df_gross.div(df_turnover) * 100
+        df_gm.index = ["Gross Margin"]
+    else:
+        gm_list = [None] * df_pivot.shape[1]
+        df_gm = pd.DataFrame(data=gm_list).transpose()
+        df_gm.columns = list(df_pivot.columns)
+        df_gm.index = ["Gross Margin"]
+
+    return df_gm
+
+
+def operating_margin(df_pivot):
+    """
+    Operating Profit Margin = (Operating Profit / Total Revenue) × 100
+
+    Warren Buffett context
+    ----------------------
+    Operating margin captures the profitability of the core business *before*
+    interest and tax, stripping out capital-structure effects. It answers the
+    question: how efficiently does management convert revenue into operating
+    profit from the actual business activity?
+
+    Buffett historically seeks operating margins above 15%. The gap between
+    gross margin and operating margin reveals the SG&A burden — a wide gap can
+    indicate excessive overhead or heavy reinvestment; a narrow gap suggests a
+    lean, scalable business model.
+
+    Data: Operating profit / Turnover. Returns percentage values.
+    """
+    df_op_profit = _dataframe_slice(
+        df_pivot, "Operating profit_Continuous Operatings"
+    ).reset_index(drop=True)
+    df_turnover = _dataframe_slice(
+        df_pivot, "Turnover_Continuous Operatings"
+    ).reset_index(drop=True)
+
+    if not df_op_profit.empty and not df_turnover.empty:
+        df_om = df_op_profit.div(df_turnover) * 100
+        df_om.index = ["Operating Margin"]
+    else:
+        om_list = [None] * df_pivot.shape[1]
+        df_om = pd.DataFrame(data=om_list).transpose()
+        df_om.columns = list(df_pivot.columns)
+        df_om.index = ["Operating Margin"]
+
+    return df_om
+
+
+def interest_coverage(df_pivot):
+    """
+    Interest Coverage Ratio = Operating Profit / Finance Costs (Interest Expense)
+
+    Warren Buffett context
+    ----------------------
+    Buffett is deeply averse to financial fragility. A company that must
+    dedicate a significant portion of its operating profit to service debt has
+    reduced financial flexibility and is vulnerable in an economic downturn.
+
+    Rule of thumb:
+      • > 5×   — strong; debt is not a constraint
+      • 3–5×   — adequate; manageable but warrants monitoring
+      • < 3×   — concerning; debt service consumes too much operating profit
+      • < 1×   — critical; the company cannot cover its interest from operations
+
+    Note: Finance costs are typically a negative number in UK accounts. This
+    function takes the absolute value of finance costs as the denominator.
+    Returns the coverage multiple (e.g. 8.2 means interest is covered 8.2×).
+    """
+    df_op_profit = _dataframe_slice(
+        df_pivot, "Operating profit_Continuous Operatings"
+    ).reset_index(drop=True)
+    df_finance_costs = _dataframe_slice(
+        df_pivot, "Finance costs_Continuous Operatings"
+    ).reset_index(drop=True)
+
+    if not df_op_profit.empty and not df_finance_costs.empty:
+        # Finance costs are typically reported as a negative; take absolute value
+        df_ic = df_op_profit.div(df_finance_costs.abs())
+        df_ic.index = ["Interest Coverage"]
+    else:
+        ic_list = [None] * df_pivot.shape[1]
+        df_ic = pd.DataFrame(data=ic_list).transpose()
+        df_ic.columns = list(df_pivot.columns)
+        df_ic.index = ["Interest Coverage"]
+
+    return df_ic
+
+
+def dividend_payout_ratio(df_pivot):
+    """
+    Dividend Payout Ratio = (Dividends Paid / Net Income) × 100
+
+    Warren Buffett context
+    ----------------------
+    Buffett actually *prefers* companies that retain most of their earnings
+    rather than paying them out — provided management can reinvest those
+    retained earnings at high rates of return (i.e. high ROCE / ROE). When
+    Berkshire Hathaway acquired See's Candies, it never paid a dividend;
+    instead, profits were redeployed into better opportunities.
+
+    However, a dividend payout ratio is still a useful quality indicator:
+      • Very high (> 80%) — may signal limited reinvestment opportunities or
+        that the dividend is being maintained at the expense of future growth.
+      • Moderate (30–60%) — balanced; management is both rewarding shareholders
+        and reinvesting for growth.
+      • Very low (< 20%) — aggressive reinvestment; only attractive if ROCE is
+        demonstrably high.
+
+    Data: Dividends paid is negative in cash flow statements; this function
+    multiplies by −1 before dividing by net income so the ratio is positive.
+    Returns percentage values (e.g. 45.0 = 45% of earnings paid as dividends).
+    """
+    df_dividends = _dataframe_slice(
+        df_pivot, "Dividends paid_Cash Flow"
+    ).reset_index(drop=True)
+    df_profit = _dataframe_slice(
+        df_pivot, "Profit for financial year_Continuous Operatings"
+    ).reset_index(drop=True)
+
+    if not df_dividends.empty and not df_profit.empty:
+        # Dividends paid is negative in cash flow — multiply by -1 for positive ratio
+        df_dpr = (df_dividends * -1).div(df_profit) * 100
+        df_dpr.index = ["Dividend Payout Ratio"]
+    else:
+        dpr_list = [None] * df_pivot.shape[1]
+        df_dpr = pd.DataFrame(data=dpr_list).transpose()
+        df_dpr.columns = list(df_pivot.columns)
+        df_dpr.index = ["Dividend Payout Ratio"]
+
+    return df_dpr
 
 
 def _dataframe_slice(df_input, row_title):

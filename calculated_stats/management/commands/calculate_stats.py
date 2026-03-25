@@ -32,6 +32,13 @@ from calculated_stats.managers import (
     div_cover,
     dcf_intrinsic_value,
     roce,
+    roic,
+    owner_earnings,
+    net_margin,
+    gross_margin,
+    operating_margin,
+    interest_coverage,
+    dividend_payout_ratio,
     margin_of_safety,
     latest_margin_of_safety,
 )
@@ -95,75 +102,125 @@ class Command(BaseCommand):
             calc_list = []
 
             df_t_e = total_equity(df_pivot)
-            calc_list.append(df_t_e)
+            if not df_t_e.empty:
+                calc_list.append(df_t_e)
 
             df_share_price_reduced = share_price(df_pivot, df_share_price)
-            calc_list.append(df_share_price_reduced)
+            if not df_share_price_reduced.empty:
+                calc_list.append(df_share_price_reduced)
 
             df_m_c = market_cap(df_pivot, df_share_price_reduced)
-            calc_list.append(df_m_c)
+            if not df_m_c.empty:
+                calc_list.append(df_m_c)
 
             df_e_v = enterprise_value(df_pivot, df_m_c)
-            calc_list.append(df_e_v)
+            if not df_e_v.empty:
+                calc_list.append(df_e_v)
 
             df_fcf = free_cash_flow(df_pivot)
-            calc_list.append(df_fcf)
+            if not df_fcf.empty:
+                calc_list.append(df_fcf)
 
             df_c_e = capital_employed(df_pivot)
-            calc_list.append(df_c_e)
+            if not df_c_e.empty:
+                calc_list.append(df_c_e)
 
             df_dps = dividends_per_share(df_pivot)
-            calc_list.append(df_dps)
+            if not df_dps.empty:
+                calc_list.append(df_dps)
 
             df_d_e = debt_to_eq_ratio(df_pivot, df_t_e)
-            calc_list.append(df_d_e)
+            if not df_d_e.empty:
+                calc_list.append(df_d_e)
 
             df_cr = current_ratio(df_pivot)
-            calc_list.append(df_cr)
+            if not df_cr.empty:
+                calc_list.append(df_cr)
 
             df_roe = return_on_equity(df_pivot, df_t_e)
-            calc_list.append(df_roe)
+            if not df_roe.empty:
+                calc_list.append(df_roe)
 
             df_eps = equity_per_share(df_pivot, df_t_e)
-            calc_list.append(df_eps)
+            if not df_eps.empty:
+                calc_list.append(df_eps)
 
             df_ppe = price_per_earnings(df_pivot, df_m_c)
-            calc_list.append(df_ppe)
+            if not df_ppe.empty:
+                calc_list.append(df_ppe)
 
             df_pbv = price_book_value(df_pivot, df_m_c, df_eps)
-            calc_list.append(df_pbv)
+            if not df_pbv.empty:
+                calc_list.append(df_pbv)
 
             df_e_yield = earnings_yield(df_pivot, df_e_v)
-            calc_list.append(df_e_yield)
+            if not df_e_yield.empty:
+                calc_list.append(df_e_yield)
 
             df_a_yield = annual_yield(df_pivot, df_m_c)
-            calc_list.append(df_a_yield)
+            if not df_a_yield.empty:
+                calc_list.append(df_a_yield)
 
             df_div_cover = div_cover(df_pivot)
-            calc_list.append(df_div_cover)
+            if not df_div_cover.empty:
+                calc_list.append(df_div_cover)
 
             df_dcf_intrinsic_value = dcf_intrinsic_value(
                 df_pivot, df_dcf_variables, df_fcf
             )
-            calc_list.append(df_dcf_intrinsic_value)
+            if not df_dcf_intrinsic_value.empty:
+                calc_list.append(df_dcf_intrinsic_value)
 
-            # ROCE
             df_roce = roce(df_pivot, df_c_e)
-            calc_list.append(df_roce)
+            if not df_roce.empty:
+                calc_list.append(df_roce)
 
-            # Margin of Safety
-            df_margin_of_safety = margin_of_safety(
-                df_share_price_reduced, df_dcf_intrinsic_value
-            )
-            calc_list.append(df_margin_of_safety)
+            df_roic = roic(df_pivot, df_t_e)
+            if not df_roic.empty:
+                calc_list.append(df_roic)
 
-            # Latest Margin of Safety
-            df_latest_margin_of_safety = latest_margin_of_safety(
-                df_dcf_intrinsic_value,
-                df_share_price_reduced,
-                df_share_price,
-            )
-            calc_list.append(df_latest_margin_of_safety)
+            df_owner_earnings = owner_earnings(df_pivot)
+            if not df_owner_earnings.empty:
+                calc_list.append(df_owner_earnings)
+
+            df_net_margin = net_margin(df_pivot)
+            if not df_net_margin.empty:
+                calc_list.append(df_net_margin)
+
+            df_gross_margin = gross_margin(df_pivot)
+            if not df_gross_margin.empty:
+                calc_list.append(df_gross_margin)
+
+            df_operating_margin = operating_margin(df_pivot)
+            if not df_operating_margin.empty:
+                calc_list.append(df_operating_margin)
+
+            df_interest_coverage = interest_coverage(df_pivot)
+            if not df_interest_coverage.empty:
+                calc_list.append(df_interest_coverage)
+
+            df_dividend_payout_ratio = dividend_payout_ratio(df_pivot)
+            if not df_dividend_payout_ratio.empty:
+                calc_list.append(df_dividend_payout_ratio)
+
+            if not df_dcf_intrinsic_value.empty:
+                df_margin_of_safety = margin_of_safety(
+                    df_share_price_reduced, df_dcf_intrinsic_value
+                )
+                if not df_margin_of_safety.empty:
+                    calc_list.append(df_margin_of_safety)
+
+                df_latest_margin_of_safety = latest_margin_of_safety(
+                    df_dcf_intrinsic_value,
+                    df_share_price_reduced,
+                    df_share_price,
+                )
+                if not df_latest_margin_of_safety.empty:
+                    calc_list.append(df_latest_margin_of_safety)
+
+            if not calc_list:
+                print(f"  No calculated stats for {company_tidm}, skipping.")
+                continue
 
             # Merge all dataframes
             df_calculated = pd.concat(calc_list)
