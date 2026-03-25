@@ -50,6 +50,8 @@ class CashQueryset(QuerySet):
         )
 
     def get_latest_balance(self):
+        if not self.exists():
+            return 0
         return self.latest("date_dealt").cash_balance
 
 
@@ -87,6 +89,8 @@ class PortfolioQueryset(QuerySet):
 
 
 def value_pie_chart(portfolio_df):
+    if portfolio_df.empty:
+        return ""
     fig = px.pie(portfolio_df, values="latest_shares_holding", names="company__company_name")
     plot_div = plot(fig, output_type="div")
 
@@ -94,7 +98,8 @@ def value_pie_chart(portfolio_df):
 
 
 def perf_bar_chart(tidm_list, pct_change_list):
-
+    if not tidm_list:
+        return ""
     chart_dict = {}
     chart_dict["tidm"] = tidm_list
     chart_dict["pct_value_change"] = pct_change_list

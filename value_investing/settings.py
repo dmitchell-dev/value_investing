@@ -174,6 +174,7 @@ ACCOUNT_LOGOUT_REDIRECT_URL = "home"
 
 # API Keys
 ALPHA_VANTAGE_API_KEY = env.str("ALPHA_VANTAGE_API_KEY")
+FMP_API_KEY = env.str("FMP_API_KEY")
 
 # LOGGING = {
 #     "version": 1,

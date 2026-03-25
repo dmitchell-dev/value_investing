@@ -274,15 +274,24 @@ class PortfolioOverviewView(TemplateView):
         results_table = NameTable(results_dict)
 
         total_dict = {}
-        total_fees = results_df['fees_bought'].sum() + results_df['fees_sold'].sum()
-        total_initial_value = results_df['initial_shares_cost'].sum()
-        total_latest_value = results_df['latest_shares_holding'].sum()
-        total_value_change = results_df['share_value_change'].sum()
-        total_pct_value_change = ((total_latest_value - total_initial_value) / total_initial_value) * 100
-        pct_fees = (total_fees / (total_initial_value + total_fees)) * 100
-        income_from_selling = results_df['income_from_selling'].sum()
-        total_profit = results_df['total_profit'].sum()
-        total_pct_profit_change = ((income_from_selling - total_initial_value) / total_initial_value) * 100
+
+        if not results_df.empty:
+            total_fees = results_df['fees_bought'].sum() + results_df['fees_sold'].sum()
+            total_initial_value = results_df['initial_shares_cost'].sum()
+            total_latest_value = results_df['latest_shares_holding'].sum()
+            total_value_change = results_df['share_value_change'].sum()
+            total_pct_value_change = ((total_latest_value - total_initial_value) / total_initial_value * 100) if total_initial_value else 0
+            pct_fees = (total_fees / (total_initial_value + total_fees) * 100) if (total_initial_value + total_fees) else 0
+            income_from_selling = results_df['income_from_selling'].sum()
+            total_profit = results_df['total_profit'].sum()
+            total_pct_profit_change = ((income_from_selling - total_initial_value) / total_initial_value * 100) if total_initial_value else 0
+            tidm_list = results_df['company__tidm'].to_list()
+            pct_change_list = results_df['share_pct_change'].to_list()
+        else:
+            total_fees = total_initial_value = total_latest_value = total_value_change = 0
+            total_pct_value_change = pct_fees = income_from_selling = total_profit = total_pct_profit_change = 0
+            tidm_list = []
+            pct_change_list = []
 
         # Cash
         latest_cash_bal = Cash.objects.get_latest_balance()
@@ -303,8 +312,6 @@ class PortfolioOverviewView(TemplateView):
         plot_div = value_pie_chart(results_df)
 
         # Chart 2
-        tidm_list = results_df['company__tidm'].to_list()
-        pct_change_list = results_df['share_pct_change'].to_list()
         plot_div2 = perf_bar_chart(tidm_list, pct_change_list)
 
         # Add context
@@ -318,6 +325,9 @@ class PortfolioOverviewView(TemplateView):
     def _get_portfolio_data(self):
         transaction_df = pd.DataFrame(list(Transactions.objects.get_table_joined()))
 
+        if transaction_df.empty:
+            return transaction_df
+
         transaction_df["price"] = transaction_df["price"].astype(float)
         transaction_df["fees"] = transaction_df["fees"].astype(float)
 
@@ -329,6 +339,9 @@ def portfolio_overview_charts(request):
     error_message = None
 
     df = pd.DataFrame(list(Transactions.objects.get_table_joined()))
+
+    if df.empty:
+        return render(request, "portfolio/portfolio_overview_charts.html", {"error": "No portfolio data."})
 
     df["price"] = df["price"].astype(float)
 

@@ -105,7 +105,11 @@ class Command(BaseCommand):
             if not df_t_e.empty:
                 calc_list.append(df_t_e)
 
-            df_share_price_reduced = share_price(df_pivot, df_share_price)
+            if not df_share_price.empty and "time_stamp" in df_share_price.columns:
+                df_share_price_reduced = share_price(df_pivot, df_share_price)
+            else:
+                df_share_price_reduced = pd.DataFrame()
+
             if not df_share_price_reduced.empty:
                 calc_list.append(df_share_price_reduced)
 

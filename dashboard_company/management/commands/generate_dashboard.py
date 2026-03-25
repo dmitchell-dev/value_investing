@@ -126,17 +126,22 @@ class Command(BaseCommand):
 
         df_share_latest = pd.DataFrame(qs_list)
 
-        df_share_latest = df_share_latest.rename(
-            columns={
-                0: "tidm",
-                1: "company_name",
-                2: "share_latest_date",
-                3: "latest_share_price",
-            }
-        )
-
-        df_share_latest = df_share_latest.drop(["company_name"], axis=1)
-        df_share_latest = df_share_latest.set_index("tidm")
+        if not df_share_latest.empty:
+            df_share_latest = df_share_latest.rename(
+                columns={
+                    0: "tidm",
+                    1: "company_name",
+                    2: "share_latest_date",
+                    3: "latest_share_price",
+                }
+            )
+            df_share_latest = df_share_latest.drop(["company_name"], axis=1)
+            df_share_latest = df_share_latest.set_index("tidm")
+        else:
+            df_share_latest = pd.DataFrame(
+                columns=["share_latest_date", "latest_share_price"]
+            )
+            df_share_latest.index.name = "tidm"
 
         # Look up dashboard decision type IDs by value (avoids hardcoding auto-assigned PKs)
         from ancillary_info.models import DecisionType as DT
@@ -153,19 +158,21 @@ class Command(BaseCommand):
 
         # Wish List
         df_wish_list = pd.DataFrame(list(WishList.objects.get_table_joined()))
-        df_decision_type['decision_type'] = np.where(
-            df_decision_type.index.isin(df_wish_list.company__tidm),
-            dt_watch,
-            df_decision_type.decision_type,
-        )
+        if not df_wish_list.empty and "company__tidm" in df_wish_list.columns:
+            df_decision_type['decision_type'] = np.where(
+                df_decision_type.index.isin(df_wish_list.company__tidm),
+                dt_watch,
+                df_decision_type.decision_type,
+            )
 
         # Transaction list (Holding / Sold)
         df_transaction_list = pd.DataFrame(list(Transactions.objects.get_latest_transactions()))
-        df_transaction_list = df_transaction_list.rename(columns={"company__tidm": "tidm"})
-        df_transaction_list = df_transaction_list.set_index("tidm")
-        df_transaction_list['decision_type'] = dt_no
-        df_transaction_list['decision_type'] = df_transaction_list['decision_type'].mask(df_transaction_list['num_stock_balance'] == 0, dt_sold)
-        df_transaction_list['decision_type'] = df_transaction_list['decision_type'].mask(df_transaction_list['num_stock_balance'] != 0, dt_hold)
+        if not df_transaction_list.empty and "company__tidm" in df_transaction_list.columns:
+            df_transaction_list = df_transaction_list.rename(columns={"company__tidm": "tidm"})
+            df_transaction_list = df_transaction_list.set_index("tidm")
+            df_transaction_list['decision_type'] = dt_no
+            df_transaction_list['decision_type'] = df_transaction_list['decision_type'].mask(df_transaction_list['num_stock_balance'] == 0, dt_sold)
+            df_transaction_list['decision_type'] = df_transaction_list['decision_type'].mask(df_transaction_list['num_stock_balance'] != 0, dt_hold)
 
         # Merge back into decision type df — update() only overwrites rows that
         # exist in df_transaction_list, leaving all other rows unchanged.
@@ -183,7 +190,7 @@ class Command(BaseCommand):
         )
 
         df_merged = pd.merge(
-            df_merged, df_share_latest, left_index=True, right_index=True
+            df_merged, df_share_latest, left_index=True, right_index=True, how="left"
         )
 
         df_merged = pd.merge(
@@ -273,10 +280,10 @@ class Command(BaseCommand):
                 pick_source=row["company_source__value"],
                 exchange_country=row["country__value"],
                 currency_symbol=row["currency__symbol"],
-                latest_financial_date=self._make_aware(row["financial_latest_date"]),
-                latest_share_price_date=self._make_aware(row["share_latest_date"]),
-                latest_share_price=row["latest_share_price"],
-                market_cap=float(row["Market Capitalisation"]),
+                latest_financial_date=self._make_aware(row.get("financial_latest_date")),
+                latest_share_price_date=self._make_aware(row.get("share_latest_date")),
+                latest_share_price=self._convert_float(row.get("latest_share_price")),
+                market_cap=self._convert_float(row.get("Market Capitalisation")),
                 net_margin=self._convert_float(row.get("Net Margin")),
                 gross_margin=self._convert_float(row.get("Gross Margin")),
                 operating_margin=self._convert_float(row.get("Operating Margin")),

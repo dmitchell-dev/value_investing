@@ -7,6 +7,7 @@ import random
 from datetime import date, timedelta
 from decimal import Decimal
 
+from django.utils import timezone
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
@@ -371,6 +372,9 @@ class Command(BaseCommand):
         self.stdout.write("Seeding parameters...")
         params = self._seed_params(lookups)
 
+        self.stdout.write("Seeding FMP API parameter mappings...")
+        self._seed_params_api(lookups, params)
+
         self.stdout.write("Seeding companies...")
         companies = self._seed_companies(lookups)
 
@@ -458,7 +462,7 @@ class Command(BaseCommand):
                         for v in ["Manual", "Alpha Vantage", "Yahoo Finance"]}
 
         datasources = {v: Datasource.objects.get_or_create(source_name=v)[0]
-                       for v in ["Alpha Vantage", "Yahoo Finance"]}
+                       for v in ["Alpha Vantage", "Yahoo Finance", "FMP"]}
 
         return {
             "exchanges": exchanges,
@@ -490,6 +494,41 @@ class Command(BaseCommand):
             )
             params[col] = obj
         return params
+
+    # ------------------------------------------------------------------
+    def _seed_params_api(self, lookups, params):
+        fmp_source = lookups["datasources"]["FMP"]
+        # (fmp_field_name, param_name_col)
+        fmp_mappings = [
+            ("revenue",                    "revenue"),
+            ("grossProfit",                "gross_profit"),
+            ("operatingIncome",            "op_income"),
+            ("netIncome",                  "net_income"),
+            ("interestExpense",            "interest_expense"),
+            ("epsDiluted",                 "eps"),
+            ("weightedAverageShsOutDil",   "shares_outstanding"),
+            ("totalAssets",                "total_assets"),
+            ("totalStockholdersEquity",    "total_equity"),
+            ("longTermDebt",               "lt_debt"),
+            ("totalCurrentAssets",         "total_current_assets"),
+            ("totalCurrentLiabilities",    "total_current_liabilities"),
+            ("totalLiabilities",           "total_liabilities"),
+            ("cashAndShortTermInvestments","total_cash"),
+            ("operatingCashFlow",          "op_cashflow"),
+            ("capitalExpenditure",         "capex"),
+            ("freeCashFlow",               "fcf"),
+            ("commonDividendsPaid",        "dividend_payout"),
+            ("depreciationAndAmortization","dna"),
+        ]
+        for fmp_field, param_col in fmp_mappings:
+            param_obj = params.get(param_col)
+            if param_obj is None:
+                continue
+            ParamsApi.objects.get_or_create(
+                param_name_api=fmp_field,
+                datasource=fmp_source,
+                defaults={"param": param_obj},
+            )
 
     # ------------------------------------------------------------------
     def _seed_companies(self, lookups):
@@ -645,7 +684,7 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------
     def _seed_dashboard_companies(self, companies, lookups):
         decision = lookups["decision_types"]["No"]
-        today = date(2024, 12, 31)
+        today = timezone.make_aware(timezone.datetime(2024, 12, 31))
 
         for tidm, (company, d) in companies.items():
             ne = d["net_income"][0]
@@ -839,8 +878,8 @@ class Command(BaseCommand):
                     "current_mos": cmos,
                     "buy_mos": bmos,
                     "dcf_intrinsic_value": iv,
-                    "latest_financial_date": date(2024, 12, 31),
-                    "latest_share_price_date": date(2024, 12, 31),
+                    "latest_financial_date": timezone.make_aware(timezone.datetime(2024, 12, 31)),
+                    "latest_share_price_date": timezone.make_aware(timezone.datetime(2024, 12, 31)),
                 },
             )
 
